@@ -10,6 +10,6 @@ public class Main {
         String name = console.nextLine();
         System.out.println("Теперича - как род ваш именуют сударь: ");
         String secname = console.nextLine();
-        System.out.print("Твои имя-фамилия, бро: " + name + " " + secname);
+        System.out.println("Твои имя-фамилия, бро: " + name + " " + secname);
     }
 }
