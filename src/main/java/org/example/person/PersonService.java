@@ -21,7 +21,7 @@ public class PersonService {
     public Person setValuePetr() {
         petr.setName("Петр");
         petr.setSurname("Васильков");
-        petr.setAge(35);
+        petr.setAge(43);
         return petr;
     }
 

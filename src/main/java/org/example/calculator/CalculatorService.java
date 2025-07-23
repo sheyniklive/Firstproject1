@@ -50,14 +50,15 @@ public class CalculatorService {
 
     private String getOperator() {
         input = console.nextLine();
+        while (!input.equals("+") && !input.equals("-") && !input.equals("*") && !input.equals("/") && !input.equals("exit")) {
+            System.out.println("только +, -, *,  / или exit");
+            input = console.nextLine();
+        }
         if (isExit()) {
             System.exit(0);
-        } else {
-            while (!input.equals("+") && !input.equals("-") && !input.equals("*") && !input.equals("/")) {
-                System.out.println("только +, -, * или /");
-                input = console.nextLine();
-            }
-        }
+        } else
+            return input;
+
         return input;
     }
 
