@@ -27,8 +27,9 @@ public class Main {
                 break;
             case "3":
                 PersonService personService2 = new PersonService();
-                personService2.addPersons();
-
+                personService2.setValuePetr();
+                System.out.println(personService2.alice.toString());
+                System.out.println("Имя: " + personService2.petr.getName() + ", Фамилия: " + personService2.petr.getSurname() + ", Возраст: " + personService2.petr.getAge());
                 break;
             case "exit":
                 System.out.println("До новых встреч!");

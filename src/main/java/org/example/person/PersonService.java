@@ -3,8 +3,11 @@ package org.example.person;
 import java.util.Scanner;
 
 public class PersonService {
+
     String yourName;
     String yourSecName;
+    public Person alice = new Person("Алиса", "Пупелкова", 35);
+    public Person petr = new Person();
 
     public void askImFam() {
         Scanner console = new Scanner(System.in);
@@ -14,14 +17,12 @@ public class PersonService {
         yourSecName = console.nextLine();
     }
 
-    Person alice = new Person("Алиса", "Пупелкова", 35);
-
-    public Person addPersons() {
-        Person petr = new Person();
+    public Person setValuePetr() {
         petr.setName("Петр");
         petr.setSurname("Васильков");
         petr.setAge(35);
         return petr;
     }
+
 }
 
