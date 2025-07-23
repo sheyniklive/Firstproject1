@@ -11,6 +11,12 @@ public class Person {
         this.age = age;
     }
 
+    public Person() {
+        name = "";
+        surname = "";
+        age = 0;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
