@@ -15,6 +15,7 @@ public class PersonService {
         yourName = console.nextLine();
         System.out.println("Теперича - как род ваш именуют сударь: ");
         yourSecName = console.nextLine();
+        System.out.println("Тебя зовут - " + yourName + " " + yourSecName);
     }
 
     public Person setValuePetr() {
