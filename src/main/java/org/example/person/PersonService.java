@@ -7,7 +7,6 @@ public class PersonService {
     String yourName;
     String yourSecName;
     Scanner console = new Scanner(System.in);
-    public Person person = new Person();
 
 
     public void processPerson() {
@@ -29,9 +28,10 @@ public class PersonService {
                         String name = console.nextLine();
                         System.out.println("фамилию:");
                         String surname = console.nextLine();
+                        System.out.println("возраст");
                         int age = console.nextInt();
                         Person person1 = new Person(name, surname, age);
-                        person1.toString();
+                        System.out.println(person1.toString());
                         break;
                     case "2":
                         Person person2 = new Person();
@@ -41,7 +41,7 @@ public class PersonService {
                         person2.setSurname(console.nextLine());
                         System.out.println("возраст:");
                         person2.setAge(console.nextInt());
-                        person2.toString();
+                        System.out.println(person2.toString());
                         break;
                 }
                 break;
