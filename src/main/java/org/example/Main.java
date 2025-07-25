@@ -14,7 +14,7 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Привет, выбери, чем ты хочешь заняться:");
-        System.out.println("1 - Сам(а) введешь свои Имя и Фамилию или выведем 2 персона,");
+        System.out.println("1 - Сам(а) введешь свои Имя и Фамилию или выведем сколько-то персонов,");
         System.out.println("2 - Калькулятор,");
         System.out.println("или введи exit для выхода");
         input = console.nextLine();
