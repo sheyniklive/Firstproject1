@@ -43,6 +43,6 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Персона(Имя: " + name + ", Фамилия: " + surname + ", Возраст: " + age + ")";
+        return "Персона(Имя: " + name + + "_" + n + ", Фамилия: " + surname + ", Возраст: " + age + ")";
     }
 }
