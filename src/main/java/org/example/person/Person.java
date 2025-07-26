@@ -4,17 +4,20 @@ public class Person {
     private String name;
     private String surname;
     private int age;
+    private int index;
 
-    public Person(String name, String surname, int age) {
+    public Person(String name, String surname, int age, int index) {
         this.name = name;
         this.surname = surname;
         this.age = age;
+        this.index = index;
     }
 
     public Person() {
         name = "";
         surname = "";
         age = 0;
+        index = 0;
     }
 
     public void setName(String name) {
@@ -43,6 +46,10 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Персона(Имя: " + name + + "_" + n + ", Фамилия: " + surname + ", Возраст: " + age + ")";
+        return "Персона(Имя: " + name + "_" + index + ", Фамилия: " + surname + "_" + index + ", Возраст: " + age + ")";
+    }
+
+    public String toStringWithoutIndex() {
+        return "Персона(Имя: " + name + ", Фамилия: " + surname + ", Возраст: " + age + ")";
     }
 }

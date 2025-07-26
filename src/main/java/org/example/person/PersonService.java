@@ -13,7 +13,8 @@ public class PersonService {
 
     public void processPerson() {
         System.out.println("1 - ты хочешь вручную ввести свои Ф-И,");
-        System.out.println("2 - создадим персона");
+        System.out.println("2 - создадим персона или несколько");
+        System.out.println("или выйти через exit");
         switch (console.nextLine()) {
             case "1":
                 System.out.println("братищщка, чекни имя: ");
@@ -23,15 +24,29 @@ public class PersonService {
                 System.out.println("Тебя зовут - " + yourName + " " + yourSecName);
                 break;
             case "2":
-                System.out.println("выбирай: одного - 1 или пачку - 2?");
+                System.out.println("выбирай: одного - 1 или пачку - 2? (или exit для котопультирования из программы)");
                 switch (console.nextLine()) {
                     case "1":
                         addOnePerson();
                         break;
                     case "2":
-
+                        addListPerson();
+                        break;
+                    case "exit":
+                        System.out.println("уже скучаю, щегол");
+                        System.exit(0);
+                        break;
+                    default:
+                        System.out.println("надо было 1, 2 или exit - перезапусти прорамму");
                         break;
                 }
+                break;
+            case "exit":
+                System.out.println("адьос)");
+                System.exit(0);
+                break;
+            default:
+                System.out.println("1, 2 or exit - не попал, перезапусти");
                 break;
         }
     }
@@ -44,7 +59,8 @@ public class PersonService {
         person1.setSurname(console.nextLine());
         System.out.println("возраст:");
         person1.setAge(console.nextInt());
-        System.out.println(person1.toString());
+        console.nextLine();
+        System.out.println(person1.toStringWithoutIndex());
     }
 
     private void addListPerson() {
@@ -54,11 +70,13 @@ public class PersonService {
         String surname = console.nextLine();
         System.out.println("возраст");
         int age = console.nextInt();
+        console.nextLine();
         System.out.println("сколько таких ты хочешь?");
         int n = console.nextInt();
+        console.nextLine();
         List<Person> persons = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            persons.add(new Person(name, surname, age));
+        for (int index = 0; index < n; index++) {
+            persons.add(new Person(name, surname, age, index));
         }
         System.out.println(persons.toString());
     }
