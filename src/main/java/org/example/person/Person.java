@@ -5,7 +5,7 @@ public class Person {
     private String surname;
     private int age;
 
-    public Person(String name, String surname, int age, int index) {
+    public Person(String name, String surname, int age) {
         this.name = name;
         this.surname = surname;
         this.age = age;
@@ -43,10 +43,6 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Персона(Имя: " + name + "_" + index + ", Фамилия: " + surname + "_" + index + ", Возраст: " + age + ")";
-    }
-
-    public String toStringWithoutIndex() {
         return "Персона(Имя: " + name + ", Фамилия: " + surname + ", Возраст: " + age + ")";
     }
 }

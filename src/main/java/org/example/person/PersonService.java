@@ -51,33 +51,30 @@ public class PersonService {
         }
     }
 
-    private void addOnePerson() {
-        Person person1 = new Person();
-        System.out.println("вводи имя:");
-        person1.setName(console.nextLine());
-        System.out.println("фамилию:");
-        person1.setSurname(console.nextLine());
-        System.out.println("возраст:");
-        person1.setAge(console.nextInt());
-        console.nextLine();
-        System.out.println(person1.toStringWithoutIndex());
-    }
 
     private void addListPerson() {
+        Person person = new Person();
+        addInePerson(person);
+        console.nextLine();
+        System.out.println("сколько таких ты хочешь?");
+        int n = console.nextInt();
+        console.nextLine();
+        List<Person> persons = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            persons.add(new Person(name, surname, age));
+        }
+        System.out.println(persons.toString());
+    }
+
+    private void addPersons() {
         System.out.println("введи имя:");
         String name = console.nextLine();
         System.out.println("фамилию:");
         String surname = console.nextLine();
         System.out.println("возраст");
         int age = console.nextInt();
-        console.nextLine();
-        System.out.println("сколько таких ты хочешь?");
-        int n = console.nextInt();
-        console.nextLine();
-        List<Person> persons = new ArrayList<>();
-        for (int index = 0; index < n; index++) {
-            persons.add(new Person(name, surname, age, index));
-        }
-        System.out.println(persons.toString());
+        Person person = new Person(name, surname, age);
+        var list = List.of("");
+
     }
 }
