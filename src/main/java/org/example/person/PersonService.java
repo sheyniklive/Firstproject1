@@ -55,18 +55,18 @@ public class PersonService {
         System.out.println("фамилию:");
         String surname = console.nextLine();
         System.out.println("возраст");
-        int age = console.nextInt();
+        Integer age = console.nextInt();
         console.nextLine();
         System.out.println("сколько таких ты хочешь?");
-        int n = console.nextInt();
+        Integer n = console.nextInt();
         console.nextLine();
         if (n == 1) {
-            var person = List.of( new Person (name, surname, age) );
+            var person = List.of(new Person(name, surname, age));
             System.out.println(person);
         } else {
             if (n > 0) {
                 var persons = new ArrayList<Person>();
-                for (int i = 0; i < n; i++) {
+                for (Integer i = 0; i < n; i++) {
                     Person person = new Person(name + "_" + i, surname + "_" + i, age);
                     persons.add(person);
                 }
