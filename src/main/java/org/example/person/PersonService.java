@@ -1,5 +1,7 @@
 package org.example.person;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class PersonService {
@@ -11,7 +13,8 @@ public class PersonService {
 
     public void processPerson() {
         System.out.println("1 - ты хочешь вручную ввести свои Ф-И,");
-        System.out.println("2 - создадим персона");
+        System.out.println("2 - создадим персона или несколько");
+        System.out.println("или выйти через exit");
         switch (console.nextLine()) {
             case "1":
                 System.out.println("братищщка, чекни имя: ");
@@ -21,30 +24,57 @@ public class PersonService {
                 System.out.println("Тебя зовут - " + yourName + " " + yourSecName);
                 break;
             case "2":
-                System.out.println("выбирай: через конструктор - 1 или сеттеры - 2?");
+                System.out.println("1 - создать персона(ов) или exit - для котопультирования из программы");
                 switch (console.nextLine()) {
                     case "1":
-                        System.out.println("введи имя:");
-                        String name = console.nextLine();
-                        System.out.println("фамилию:");
-                        String surname = console.nextLine();
-                        System.out.println("возраст");
-                        int age = console.nextInt();
-                        Person person1 = new Person(name, surname, age);
-                        System.out.println(person1.toString());
+                        addPersons();
                         break;
-                    case "2":
-                        Person person2 = new Person();
-                        System.out.println("вводи имя:");
-                        person2.setName(console.nextLine());
-                        System.out.println("фамилию:");
-                        person2.setSurname(console.nextLine());
-                        System.out.println("возраст:");
-                        person2.setAge(console.nextInt());
-                        System.out.println(person2.toString());
+                    case "exit":
+                        System.out.println("уже скучаю, щегол");
+                        System.exit(0);
+                        break;
+                    default:
+                        System.out.println("надо было 1, 2 или exit - перезапусти прорамму");
                         break;
                 }
                 break;
+            case "exit":
+                System.out.println("адьос)");
+                System.exit(0);
+                break;
+            default:
+                System.out.println("1, 2 or exit - не попал, перезапусти");
+                break;
+        }
+    }
+
+
+    private void addPersons() {
+        System.out.println("введи имя:");
+        String name = console.nextLine();
+        System.out.println("фамилию:");
+        String surname = console.nextLine();
+        System.out.println("возраст");
+        int age = console.nextInt();
+        console.nextLine();
+        System.out.println("сколько таких ты хочешь?");
+        int n = console.nextInt();
+        console.nextLine();
+        if (n == 1) {
+            var person = List.of( new Person (name, surname, age) );
+            System.out.println(person);
+        } else {
+            if (n > 0) {
+                var persons = new ArrayList<Person>();
+                for (int i = 0; i < n; i++) {
+                    Person person = new Person(name + "_" + i, surname + "_" + i, age);
+                    persons.add(person);
+                }
+                System.out.println(persons);
+            } else {
+                System.out.println("не сильно-то и хочешь, пока");
+                System.exit(0);
+            }
         }
     }
 }
