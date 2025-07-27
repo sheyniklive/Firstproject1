@@ -24,13 +24,10 @@ public class PersonService {
                 System.out.println("Тебя зовут - " + yourName + " " + yourSecName);
                 break;
             case "2":
-                System.out.println("выбирай: одного - 1 или пачку - 2? (или exit для котопультирования из программы)");
+                System.out.println("1 - создать персона(ов) или exit - для котопультирования из программы");
                 switch (console.nextLine()) {
                     case "1":
-                        addOnePerson();
-                        break;
-                    case "2":
-                        addListPerson();
+                        addPersons();
                         break;
                     case "exit":
                         System.out.println("уже скучаю, щегол");
@@ -52,20 +49,6 @@ public class PersonService {
     }
 
 
-    private void addListPerson() {
-        Person person = new Person();
-        addInePerson(person);
-        console.nextLine();
-        System.out.println("сколько таких ты хочешь?");
-        int n = console.nextInt();
-        console.nextLine();
-        List<Person> persons = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            persons.add(new Person(name, surname, age));
-        }
-        System.out.println(persons.toString());
-    }
-
     private void addPersons() {
         System.out.println("введи имя:");
         String name = console.nextLine();
@@ -73,8 +56,25 @@ public class PersonService {
         String surname = console.nextLine();
         System.out.println("возраст");
         int age = console.nextInt();
-        Person person = new Person(name, surname, age);
-        var list = List.of("");
-
+        console.nextLine();
+        System.out.println("сколько таких ты хочешь?");
+        int n = console.nextInt();
+        console.nextLine();
+        if (n == 1) {
+            var person = List.of( new Person (name, surname, age) );
+            System.out.println(person);
+        } else {
+            if (n > 0) {
+                var persons = new ArrayList<Person>();
+                for (int i = 0; i < n; i++) {
+                    Person person = new Person(name + "_" + i, surname + "_" + i, age);
+                    persons.add(person);
+                }
+                System.out.println(persons);
+            } else {
+                System.out.println("не сильно-то и хочешь, пока");
+                System.exit(0);
+            }
+        }
     }
 }
