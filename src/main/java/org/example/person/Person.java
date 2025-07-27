@@ -4,20 +4,17 @@ public class Person {
     private String name;
     private String surname;
     private int age;
-    private int index;
 
     public Person(String name, String surname, int age, int index) {
         this.name = name;
         this.surname = surname;
         this.age = age;
-        this.index = index;
     }
 
     public Person() {
         name = "";
         surname = "";
         age = 0;
-        index = 0;
     }
 
     public void setName(String name) {
