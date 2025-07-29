@@ -6,6 +6,7 @@ import java.util.Scanner;
 public class Exits {
     public static HashMap<String, String> mapExits = new HashMap<>();
     Scanner console = new Scanner(System.in);
+    private boolean customAdded = false;
 
     static {
         mapExits.put("вежливо", "Хорошего дня, сеньор");
@@ -15,7 +16,6 @@ public class Exits {
 
     public void addExits() {
 
-        System.out.println("Привет,");
         System.out.println("введи 1 - чтобы скастомить свою реплику,");
         System.out.println("0 - пойдем в программу,");
         System.out.println("exit - вообще выйдем");
@@ -32,6 +32,7 @@ public class Exits {
                     System.out.println("теперь фразу,которую ты получишь при выходе: ");
                     String value = console.nextLine();
                     mapExits.put(key, value);
+                    customAdded = true;
                     System.out.println("хочешь добавить нового:");
                     System.out.println("пиши 'еще',");
                     System.out.println("любой другой ввод - пойдем в программу");
@@ -68,6 +69,10 @@ public class Exits {
                 System.out.println(mapExits.get("грубо"));
                 break;
             case "4":
+                if (!customAdded) {
+                    System.out.println("так а ты и не вводил ничего своего -> вылетаешь молча");
+                    System.exit(0);
+                }
                 System.out.println("введи свой ключ:");
                 String userKey = console.nextLine();
                 while (!mapExits.containsKey(userKey)) {
