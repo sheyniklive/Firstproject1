@@ -21,6 +21,7 @@ public class ExitsUtils {
 
     public static void addExits() {
 
+        System.out.println("Привет, хочешь перед началом добавить свои варианты выходных реплик?");
         System.out.println("введи 1 - чтобы скастомить свою реплику,");
         System.out.println("0 - пойдем в программу,");
         System.out.println("exit - вообще выйдем");

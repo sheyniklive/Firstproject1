@@ -11,28 +11,9 @@ public class Main {
     static String input;
     static PersonService personService = new PersonService();
     static CalculatorService calculatorService = new CalculatorService();
-    static ExitsUtils exits = new ExitsUtils();
 
     public static void main(String[] args) {
-        System.out.println("Привет, хочешь перед началом добавить свои варианты выходных реплик?");
-        System.out.println("1 - да,");
-        System.out.println("0 - идем дальше");
-        System.out.println("exit - вообще выйдем");
-        input = console.nextLine();
-        while (!input.equals("1") && !input.equals("0") && !input.equals("exit")) {
-            System.out.println("только 1, 0 или exit");
-            input = console.nextLine();
-        }
-        switch (input) {
-            case "1":
-                exits.addExits();
-                break;
-            case "0":
-                break;
-            case "exit":
-                exits.doExit();
-                break;
-        }
+        ExitsUtils.addExits();
         System.out.println("хорошо, теперь выбери, чем ты хочешь заняться:");
         System.out.println("1 - Сам(а) введешь свои Имя и Фамилию или выведем сколько-то персонов,");
         System.out.println("2 - Калькулятор,");
