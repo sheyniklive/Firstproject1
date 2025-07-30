@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.calculator.CalculatorService;
+import org.example.util.ExitsUtils;
 import org.example.person.PersonService;
 
 import java.util.Scanner;
@@ -11,9 +12,9 @@ public class Main {
     static PersonService personService = new PersonService();
     static CalculatorService calculatorService = new CalculatorService();
 
-
     public static void main(String[] args) {
-        System.out.println("Привет, выбери, чем ты хочешь заняться:");
+        ExitsUtils.addExits();
+        System.out.println("хорошо, теперь выбери, чем ты хочешь заняться:");
         System.out.println("1 - Сам(а) введешь свои Имя и Фамилию или выведем сколько-то персонов,");
         System.out.println("2 - Калькулятор,");
         System.out.println("или введи exit для выхода");
@@ -30,8 +31,7 @@ public class Main {
                 calculatorService.calculate();
                 break;
             case "exit":
-                System.out.println("До новых встреч!");
-                System.exit(0);
+                ExitsUtils.doExit();
                 break;
         }
     }

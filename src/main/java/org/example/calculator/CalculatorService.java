@@ -1,5 +1,7 @@
 package org.example.calculator;
 
+import org.example.util.ExitsUtils;
+
 import java.util.Scanner;
 
 public class CalculatorService {
@@ -9,7 +11,6 @@ public class CalculatorService {
     double b;
     String operator;
     Scanner console = new Scanner(System.in);
-
 
     public void calculate() {
         System.out.println("Привет, введи первое число (или выйди с помощью 'exit': ");
@@ -44,7 +45,8 @@ public class CalculatorService {
                 result = b != 0 ? a / b : 0;
                 break;
             default:
-                System.out.println("Миша, всё хуйня давай по-новой");
+                System.out.println("Миша, всё хуйня давай по-новой, щас выйдем и зайдешь по масти");
+                ExitsUtils.doExit();
         }
     }
 
@@ -55,7 +57,7 @@ public class CalculatorService {
             input = console.nextLine();
         }
         if (isExit()) {
-            System.exit(0);
+            ExitsUtils.doExit();
         } else
             return input;
 
@@ -65,7 +67,7 @@ public class CalculatorService {
     private double getOperand() {
         input = console.nextLine();
         if (isExit()) {
-            System.exit(0);
+            ExitsUtils.doExit();
             return 0;
         } else {
             if (!isNumeric()) {
@@ -73,7 +75,7 @@ public class CalculatorService {
                     System.out.println("только число");
                     input = console.nextLine();
                     if (isExit()) {
-                        System.exit(0);
+                        ExitsUtils.doExit();
                     }
                 }
             }
@@ -91,10 +93,6 @@ public class CalculatorService {
     }
 
     private boolean isExit() {
-        if (input.equalsIgnoreCase("exit")) {
-            System.out.println("Хорошего дня");
-            return true;
-        }
-        return false;
+        return input.equalsIgnoreCase("exit");
     }
 }
