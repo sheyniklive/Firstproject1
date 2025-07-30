@@ -8,10 +8,10 @@ import java.util.Scanner;
 
 @UtilityClass
 public class ExitsUtils {
-    public static Map<String, String> mapExits = new HashMap<>();
-    public static Scanner console = new Scanner(System.in);
-    public static String chooseExit;
-    public static String input;
+    private static Map<String, String> mapExits = new HashMap<>();
+    private static Scanner console = new Scanner(System.in);
+    private static String chooseExit;
+    private static String input;
 
     static {
         mapExits.put("вежливо", "Хорошего дня, сеньор");
