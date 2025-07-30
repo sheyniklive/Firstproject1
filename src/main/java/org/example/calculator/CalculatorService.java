@@ -1,6 +1,6 @@
 package org.example.calculator;
 
-import org.example.exits.Exits;
+import org.example.util.ExitsUtils;
 
 import java.util.Scanner;
 
@@ -11,7 +11,6 @@ public class CalculatorService {
     double b;
     String operator;
     Scanner console = new Scanner(System.in);
-    private final Exits exits = new Exits();
 
     public void calculate() {
         System.out.println("Привет, введи первое число (или выйди с помощью 'exit': ");
@@ -47,7 +46,7 @@ public class CalculatorService {
                 break;
             default:
                 System.out.println("Миша, всё хуйня давай по-новой, щас выйдем и зайдешь по масти");
-                exits.doExit();
+                ExitsUtils.doExit();
         }
     }
 
@@ -58,7 +57,7 @@ public class CalculatorService {
             input = console.nextLine();
         }
         if (isExit()) {
-            exits.doExit();
+            ExitsUtils.doExit();
         } else
             return input;
 
@@ -68,7 +67,7 @@ public class CalculatorService {
     private double getOperand() {
         input = console.nextLine();
         if (isExit()) {
-            exits.doExit();
+            ExitsUtils.doExit();
             return 0;
         } else {
             if (!isNumeric()) {
@@ -76,7 +75,7 @@ public class CalculatorService {
                     System.out.println("только число");
                     input = console.nextLine();
                     if (isExit()) {
-                        exits.doExit();
+                        ExitsUtils.doExit();
                     }
                 }
             }

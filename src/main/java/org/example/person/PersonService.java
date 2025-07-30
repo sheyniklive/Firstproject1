@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import org.example.exits.Exits;
+import org.example.util.ExitsUtils;
 
 public class PersonService {
 
     String yourName;
     String yourSecName;
     Scanner console = new Scanner(System.in);
-    private final Exits exits = new Exits();
 
     public void processPerson() {
         System.out.println("1 - ты хочешь вручную ввести свои Ф-И,");
@@ -32,7 +31,7 @@ public class PersonService {
                         addPersons();
                         break;
                     case "exit":
-                        exits.doExit();
+                        ExitsUtils.doExit();
                         break;
                     default:
                         System.out.println("надо было 1, 2 или exit - перезапусти прорамму");
@@ -40,11 +39,11 @@ public class PersonService {
                 }
                 break;
             case "exit":
-                exits.doExit();
+                ExitsUtils.doExit();
                 break;
             default:
                 System.out.println("1, 2 or exit - не попал, выходи и перезапусти");
-                exits.doExit();
+                ExitsUtils.doExit();
                 break;
         }
     }
@@ -74,7 +73,7 @@ public class PersonService {
                 System.out.println(persons);
             } else {
                 System.out.println("не сильно-то и хочешь, пока");
-                exits.doExit();
+                ExitsUtils.doExit();
             }
         }
     }

@@ -1,7 +1,7 @@
 package org.example;
 
 import org.example.calculator.CalculatorService;
-import org.example.exits.Exits;
+import org.example.util.ExitsUtils;
 import org.example.person.PersonService;
 
 import java.util.Scanner;
@@ -11,8 +11,7 @@ public class Main {
     static String input;
     static PersonService personService = new PersonService();
     static CalculatorService calculatorService = new CalculatorService();
-    static Exits exits = new Exits();
-
+    static ExitsUtils exits = new ExitsUtils();
 
     public static void main(String[] args) {
         System.out.println("Привет, хочешь перед началом добавить свои варианты выходных реплик?");
@@ -51,7 +50,7 @@ public class Main {
                 calculatorService.calculate();
                 break;
             case "exit":
-                exits.doExit();
+                ExitsUtils.doExit();
                 break;
         }
     }
