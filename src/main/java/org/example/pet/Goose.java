@@ -5,17 +5,13 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class Cat implements InterfacePet {
+public class Goose implements InterfacePet{
     private final String name;
-
     @Override
     public String getType() {
-        return "Cat";
+        return "Goose";
     }
-
-    @Override
     public void makeSound() {
-        System.out.println("Meow");
+        System.out.println("GaGaGa");
     }
-
 }
