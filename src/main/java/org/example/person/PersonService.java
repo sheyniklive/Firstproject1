@@ -61,7 +61,7 @@ public class PersonService {
         Integer n = console.nextInt();
         console.nextLine();
         if (n == 1) {
-            var person = List.of(new Person(name, surname, age));
+            var person = List.of(new Person(name, surname, age, pets));
             System.out.println(person);
         } else {
             if (n > 0) {
