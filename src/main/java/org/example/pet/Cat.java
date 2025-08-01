@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 public class Cat implements InterfacePet {
     private final String name;
 
-
     @Override
     public String getType() {
         return "cat";
