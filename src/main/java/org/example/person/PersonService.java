@@ -18,9 +18,9 @@ public class PersonService {
     String input;
 
     public void processPerson() {
-        System.out.println("1 - ты хочешь вручную ввести свои Ф-И,");
-        System.out.println("2 - создадим персона или несколько");
-        System.out.println("или выйти через exit");
+        log.info("1 - ты хочешь вручную ввести свои Ф-И,");
+        log.info("2 - создадим персона или несколько");
+        log.info("или выйти через exit");
         input = console.nextLine();
         switch (input) {
             case "1":
