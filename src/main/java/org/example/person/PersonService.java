@@ -1,22 +1,24 @@
 package org.example.person;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
+import org.example.pet.PetService;
 import org.example.util.ExitsUtils;
+
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class PersonService {
 
     String yourName;
     String yourSecName;
     Scanner console = new Scanner(System.in);
+    String input;
 
     public void processPerson() {
         System.out.println("1 - ты хочешь вручную ввести свои Ф-И,");
         System.out.println("2 - создадим персона или несколько");
         System.out.println("или выйти через exit");
-        switch (console.nextLine()) {
+        input = console.nextLine();
+        switch (input) {
             case "1":
                 System.out.println("братищщка, чекни имя: ");
                 yourName = console.nextLine();
@@ -26,7 +28,7 @@ public class PersonService {
                 break;
             case "2":
                 System.out.println("1 - создать персона(ов) или exit - для котопультирования из программы");
-                switch (console.nextLine()) {
+                switch (input) {
                     case "1":
                         addPersons();
                         break;
@@ -61,20 +63,34 @@ public class PersonService {
         Integer n = console.nextInt();
         console.nextLine();
         if (n == 1) {
-            var person = List.of(new Person(name, surname, age, pets));
-            System.out.println(person);
+            PersonHolder.personHolder.put(name, new Person(name, surname, age, new ArrayList<>()));
+            askAddPets();
+            System.out.println(PersonHolder.personHolder.get(name).toString());
         } else {
             if (n > 0) {
-                var persons = new ArrayList<Person>();
+
                 for (Integer i = 0; i < n; i++) {
-                    Person person = new Person(name + "_" + i, surname + "_" + i, age);
-                    persons.add(person);
+                    PersonHolder.personHolder.put(name + "_" + i, new Person(name + "_" + i, surname + "_" + i, age, new ArrayList<>()));
                 }
-                System.out.println(persons);
+                askAddPets();
             } else {
                 System.out.println("не сильно-то и хочешь, пока");
                 ExitsUtils.doExit();
             }
+        }
+    }
+
+    private void askAddPets() {
+        System.out.println("хочешь добавить питомца (ев)?" +
+                "1- да," +
+                "0- нет");
+        input = console.nextLine();
+        switch (input) {
+            case "1":
+                PetService.addPets();
+                break;
+            case "0":
+                break;
         }
     }
 }
