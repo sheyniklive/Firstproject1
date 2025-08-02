@@ -1,9 +1,11 @@
 package org.example.calculator;
 
+import lombok.experimental.UtilityClass;
 import org.example.util.ExitsUtils;
 
 import java.util.Scanner;
 
+@UtilityClass
 public class CalculatorService {
     String input;
     double result;

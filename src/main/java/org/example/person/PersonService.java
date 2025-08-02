@@ -1,11 +1,13 @@
 package org.example.person;
 
+import lombok.experimental.UtilityClass;
 import org.example.pet.PetService;
 import org.example.util.ExitsUtils;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
+@UtilityClass
 public class PersonService {
 
     String yourName;

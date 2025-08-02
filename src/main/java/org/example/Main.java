@@ -9,8 +9,6 @@ import java.util.Scanner;
 public class Main {
     static Scanner console = new Scanner(System.in);
     static String input;
-    static PersonService personService = new PersonService();
-    static CalculatorService calculatorService = new CalculatorService();
 
     public static void main(String[] args) {
         ExitsUtils.addExits();
@@ -25,10 +23,10 @@ public class Main {
         }
         switch (input) {
             case "1":
-                personService.processPerson();
+                PersonService.processPerson();
                 break;
             case "2":
-                calculatorService.calculate();
+                CalculatorService.calculate();
                 break;
             case "exit":
                 ExitsUtils.doExit();
