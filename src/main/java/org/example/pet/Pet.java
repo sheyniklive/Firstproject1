@@ -2,6 +2,7 @@ package org.example.pet;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 public interface Pet {
     String getName();
@@ -13,6 +14,7 @@ public interface Pet {
 
 @RequiredArgsConstructor
 @Getter
+@Slf4j
 class Cat implements Pet {
     private final String name;
 
@@ -30,6 +32,7 @@ class Cat implements Pet {
 
 @RequiredArgsConstructor
 @Getter
+@Slf4j
 class Dog implements Pet {
     private final String name;
 
@@ -46,6 +49,7 @@ class Dog implements Pet {
 
 @RequiredArgsConstructor
 @Getter
+@Slf4j
 class Goose implements Pet {
     private final String name;
 

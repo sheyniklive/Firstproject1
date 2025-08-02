@@ -1,11 +1,12 @@
 package org.example;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.calculator.CalculatorService;
 import org.example.util.ExitsUtils;
 import org.example.person.PersonService;
 
 import java.util.Scanner;
-
+@Slf4j
 public class Main {
     static Scanner console = new Scanner(System.in);
     static String input;

@@ -1,6 +1,7 @@
 package org.example.person;
 
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import org.example.pet.PetService;
 import org.example.util.ExitsUtils;
 
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 @UtilityClass
+@Slf4j
 public class PersonService {
 
     String yourName;

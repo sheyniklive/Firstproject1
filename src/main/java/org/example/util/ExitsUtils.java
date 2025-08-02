@@ -1,12 +1,14 @@
 package org.example.util;
 
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 @UtilityClass
+@Slf4j
 public class ExitsUtils {
     private static Map<String, String> mapExits = new HashMap<>();
     private static Scanner console = new Scanner(System.in);

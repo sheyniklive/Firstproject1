@@ -1,11 +1,13 @@
 package org.example.calculator;
 
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import org.example.util.ExitsUtils;
 
 import java.util.Scanner;
 
 @UtilityClass
+@Slf4j
 public class CalculatorService {
     String input;
     double result;

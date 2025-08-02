@@ -1,10 +1,13 @@
 package org.example.pet;
 
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import org.example.person.Person;
 import org.example.person.PersonHolder;
 
 import java.util.Scanner;
-
+@Slf4j
+@UtilityClass
 public class PetService {
     static Scanner console = new Scanner(System.in);
     static String input;
