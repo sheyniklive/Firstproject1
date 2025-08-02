@@ -13,13 +13,13 @@ public class Main {
 
     public static void main(String[] args) {
         ExitsUtils.addExits();
-        System.out.println("хорошо, теперь выбери, чем ты хочешь заняться:");
-        System.out.println("1 - Сам(а) введешь свои Имя и Фамилию или выведем сколько-то персонов,");
-        System.out.println("2 - Калькулятор,");
-        System.out.println("или введи exit для выхода");
+        log.info("хорошо, теперь выбери, чем ты хочешь заняться:");
+        log.info("1 - Сам(а) введешь свои Имя и Фамилию или выведем сколько-то персонов,");
+        log.info("2 - Калькулятор,");
+        log.info("или введи exit для выхода");
         input = console.nextLine();
         while (!input.equals("exit") && !input.equals("1") && !input.equals("2")) {
-            System.out.println("только 1, 2 или exit");
+            log.warn("неверный ввод, повтори: только 1, 2 или exit");
             input = console.nextLine();
         }
         switch (input) {

@@ -6,6 +6,7 @@ import org.example.pet.PetService;
 import org.example.util.ExitsUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 @UtilityClass
@@ -24,14 +25,14 @@ public class PersonService {
         input = console.nextLine();
         switch (input) {
             case "1":
-                System.out.println("братищщка, чекни имя: ");
+                log.info("братищщка, чекни имя: ");
                 yourName = console.nextLine();
-                System.out.println("Теперича - как род ваш именуют сударь: ");
+                log.info("Теперича - как род ваш именуют сударь: ");
                 yourSecName = console.nextLine();
-                System.out.println("Тебя зовут - " + yourName + " " + yourSecName);
+                log.info("Тебя зовут - {} {}", yourName, yourSecName);
                 break;
             case "2":
-                System.out.println("1 - создать персона(ов) или exit - для котопультирования из программы");
+                log.info("1 - создать персона(ов) или exit - для котопультирования из программы");
                 switch (input) {
                     case "1":
                         addPersons();
@@ -40,7 +41,8 @@ public class PersonService {
                         ExitsUtils.doExit();
                         break;
                     default:
-                        System.out.println("надо было 1, 2 или exit - перезапусти прорамму");
+                        log.error("надо было 1, 2 или exit - перезапусти прорамму");
+                        ExitsUtils.doExit();
                         break;
                 }
                 break;
@@ -48,7 +50,7 @@ public class PersonService {
                 ExitsUtils.doExit();
                 break;
             default:
-                System.out.println("1, 2 or exit - не попал, выходи и перезапусти");
+                log.error("1, 2 or exit - не попал, выходи и перезапусти");
                 ExitsUtils.doExit();
                 break;
         }
@@ -56,39 +58,51 @@ public class PersonService {
 
 
     private void addPersons() {
-        System.out.println("введи имя:");
+        log.info("введи имя:");
         String name = console.nextLine();
-        System.out.println("фамилию:");
+        log.info("фамилию:");
         String surname = console.nextLine();
-        System.out.println("возраст");
+        log.info("возраст");
         Integer age = console.nextInt();
         console.nextLine();
-        System.out.println("сколько таких ты хочешь?");
-        Integer n = console.nextInt();
+        log.info("сколько таких ты хочешь?");
+        int n = console.nextInt();
         console.nextLine();
         if (n == 1) {
             PersonHolder.personHolder.put(name, new Person(name, surname, age, new ArrayList<>()));
-            askAddPets();
-            System.out.println(PersonHolder.personHolder.get(name).toString());
+            askToAddPets();
+            log.info("создан: {}", PersonHolder.personHolder.get(name).toString());
+            //back
         } else {
             if (n > 0) {
-
-                for (Integer i = 0; i < n; i++) {
-                    PersonHolder.personHolder.put(name + "_" + i, new Person(name + "_" + i, surname + "_" + i, age, new ArrayList<>()));
+                List<String> tempPersons = new ArrayList<>();
+                for (int i = 0; i < n; i++) {
+                    Person person = new Person(name + "_" + i, surname + "_" + i, age, new ArrayList<>());
+                    PersonHolder.personHolder.put(person.getName(), person);
+                    tempPersons.add(person.getName());
                 }
-                askAddPets();
+                askToAddPets();
+                log.info("созданы:");
+                for (String tempName : tempPersons) {
+                    Person tempPerson = PersonHolder.personHolder.get(tempName);
+                    log.info("{}", tempPerson);
+                }
             } else {
-                System.out.println("не сильно-то и хочешь, пока");
+                log.error("не сильно-то и хочешь, пока");
                 ExitsUtils.doExit();
             }
         }
     }
 
-    private void askAddPets() {
-        System.out.println("хочешь добавить питомца (ев)?" +
+    private void askToAddPets() {
+        log.info("хочешь добавить питомца (ев)?" +
                 "1- да," +
                 "0- нет");
         input = console.nextLine();
+        while (!input.equals("1") && !input.equals("0")) {
+            log.warn("только 1 или 0 - повтори");
+            input = console.nextLine();
+        }
         switch (input) {
             case "1":
                 PetService.addPets();

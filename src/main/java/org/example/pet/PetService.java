@@ -2,34 +2,34 @@ package org.example.pet;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.example.person.Person;
 import org.example.person.PersonHolder;
 
 import java.util.Scanner;
-@Slf4j
+
 @UtilityClass
+@Slf4j
 public class PetService {
     static Scanner console = new Scanner(System.in);
     static String input;
 
     public static void addPets() {
-        System.out.println("кому из людей ты хочешь пристроить животное?");
-        System.out.println(PersonHolder.personHolder.keySet().toString());
+        log.info("кому из людей ты хочешь пристроить животное?");
+        log.info(PersonHolder.personHolder.keySet().toString());
         String wantPerson = console.nextLine();
         while (!PersonHolder.personHolder.containsKey(wantPerson)) {
-            System.out.println("такого человека не найдено, добавить не получится, введи еще раз как в списке");
+            log.warn("такого человека не найдено, добавить не получится, введи еще раз как в списке");
             wantPerson = console.nextLine();
         }
         do {
-            System.out.println("поехали: как питомца зовут?");
+            log.info("поехали: как питомца зовут?");
             String petName = console.nextLine();
-            System.out.println("кто это:" +
+            log.info("кто это:" +
                     "1 - кошка" +
                     "2 - собака" +
                     "3 - гусь");
             input = console.nextLine();
             while (!input.equals("1") && !input.equals("2") && !input.equals("3")) {
-                System.out.println("только 1, 2 или 3");
+                log.warn("только 1, 2 или 3 - повтори");
                 input = console.nextLine();
             }
             switch (input) {
@@ -43,9 +43,9 @@ public class PetService {
                     PersonHolder.personHolder.get(wantPerson).getPets().add(new Goose(petName));
                     break;
             }
-            System.out.println("хочешь добавить нового:");
-            System.out.println("пиши 'еще',");
-            System.out.println("любой другой ввод - закончим");
+            log.info("хочешь добавить нового:");
+            log.info("пиши 'еще',");
+            log.info("любой другой ввод - закончим");
             input = console.nextLine();
         } while (input.equals("еще"));
     }

@@ -10,10 +10,9 @@ import java.util.Scanner;
 @UtilityClass
 @Slf4j
 public class ExitsUtils {
-    private static Map<String, String> mapExits = new HashMap<>();
-    private static Scanner console = new Scanner(System.in);
-    private static String chooseExit;
-    private static String input;
+    private static final Map<String, String> mapExits = new HashMap<>();
+    private static final Scanner console = new Scanner(System.in);
+
 
     static {
         mapExits.put("вежливо", "Хорошего дня, сеньор");
@@ -22,27 +21,28 @@ public class ExitsUtils {
     }
 
     public static void addExits() {
+        String input;
 
-        System.out.println("Привет, хочешь перед началом добавить свои варианты выходных реплик?");
-        System.out.println("введи 1 - чтобы скастомить свою реплику,");
-        System.out.println("0 - пойдем в программу,");
-        System.out.println("exit - вообще выйдем");
+        log.info("Привет, хочешь перед началом добавить свои варианты выходных реплик?");
+        log.info("введи 1 - чтобы скастомить свою реплику,");
+        log.info("0 - пойдем в программу,");
+        log.info("exit - вообще выйдем");
         input = console.nextLine();
         while (!input.equals("1") && !input.equals("0") && !input.equals("exit")) {
-            System.out.println("только 1, 0 или exit");
+            log.warn("только 1, 0 или exit - введи еще раз");
             input = console.nextLine();
         }
         switch (input) {
             case "1":
                 do {
-                    System.out.println("давай ключ: ");
+                    log.info("давай ключ: ");
                     String key = console.nextLine();
-                    System.out.println("теперь фразу,которую ты получишь при выходе: ");
+                    log.info("теперь фразу,которую ты получишь при выходе: ");
                     String value = console.nextLine();
                     mapExits.put(key, value);
-                    System.out.println("хочешь добавить нового:");
-                    System.out.println("пиши 'еще',");
-                    System.out.println("любой другой ввод - пойдем в программу");
+                    log.info("хочешь добавить новую:");
+                    log.info("пиши 'еще',");
+                    log.info("любой другой ввод - пойдем в программу");
                     input = console.nextLine();
                 } while (input.equals("еще"));
                 break;
@@ -55,14 +55,15 @@ public class ExitsUtils {
     }
 
     public static void doExit() {
-        System.out.println("как с тобой попрощаться - пиши вариант из списка:");
-        System.out.println(mapExits.keySet().toString());
+        String chooseExit;
+        log.info("как с тобой попрощаться - пиши вариант из списка:");
+        log.info(mapExits.keySet().toString());
         chooseExit = console.nextLine();
         while (!mapExits.containsKey(chooseExit)) {
-            System.out.println("только ключ из списка");
+            log.warn("только ключ из списка - повтори ввод");
             chooseExit = console.nextLine();
         }
-        System.out.println(mapExits.get(chooseExit));
+        log.info(mapExits.get(chooseExit));
         System.exit(0);
     }
 }
