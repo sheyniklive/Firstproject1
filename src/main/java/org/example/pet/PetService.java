@@ -11,15 +11,34 @@ import java.util.Scanner;
 public class PetService {
     static Scanner console = new Scanner(System.in);
     static String input;
+    static String wantPerson;
+
+    public static void processPetService() {
+        log.info("выбирай:" +
+                "1 - пойдем к чьим-то питомцам," +
+                "2 - можем добавить кому-нибудь из людей новых" +
+                "или 'back' для возврата");
+        input = console.nextLine();
+        while (!input.equals("back") && !input.equals("1") && !input.equals("2")) {
+            log.warn("только 1, 2 или 'back'- повтори");
+            input = console.nextLine();
+        }
+        switch (input) {
+            case "1":
+                getPets();
+                break;
+            case "2":
+                addPets();
+                break;
+            case "back":
+                // back
+                break;
+        }
+    }
 
     public static void addPets() {
         log.info("кому из людей ты хочешь пристроить животное?");
-        log.info(PersonHolder.personHolder.keySet().toString());
-        String wantPerson = console.nextLine();
-        while (!PersonHolder.personHolder.containsKey(wantPerson)) {
-            log.warn("такого человека не найдено, добавить не получится, введи еще раз как в списке");
-            wantPerson = console.nextLine();
-        }
+        whatPersonWant();
         do {
             log.info("поехали: как питомца зовут?");
             String petName = console.nextLine();
@@ -48,5 +67,20 @@ public class PetService {
             log.info("любой другой ввод - закончим");
             input = console.nextLine();
         } while (input.equals("еще"));
+    }
+
+    public static void getPets() {
+        log.info("с чьими животными ты хочешь взаимодействовать?");
+        whatPersonWant();
+
+    }
+
+    private static void whatPersonWant() {
+        log.info(PersonHolder.personHolder.keySet().toString());
+        wantPerson = console.nextLine();
+        while (!PersonHolder.personHolder.containsKey(wantPerson)) {
+            log.warn("такого человека не найдено, не получится, введи еще раз как в списке");
+            wantPerson = console.nextLine();
+        }
     }
 }

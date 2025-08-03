@@ -1,8 +1,10 @@
 package org.example.person;
 
+import lombok.ToString;
+
 import java.util.HashMap;
 import java.util.Map;
-
+@ToString
 public class PersonHolder {
     PersonHolder() {
     }
