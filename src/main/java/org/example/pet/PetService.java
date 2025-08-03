@@ -72,7 +72,7 @@ public class PetService {
     public static void getPets() {
         log.info("с чьими животными ты хочешь взаимодействовать?");
         whatPersonWant();
-
+        //продолжить
     }
 
     private static void whatPersonWant() {
