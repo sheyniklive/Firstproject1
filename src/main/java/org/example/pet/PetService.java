@@ -72,7 +72,32 @@ public class PetService {
     public static void getPets() {
         log.info("с чьими животными ты хочешь взаимодействовать?");
         whatPersonWant();
-        //продолжить
+        log.info("вот список его(ее) питомцев: {}", PersonHolder.personHolder.get(wantPerson).getPets().toString());
+        log.info("твой выбор:" +
+                "1 - получить их кличку и вид" +
+                "2 - они издадут звук (кто умеет)" +
+                "'back' для возврата");
+        input = console.nextLine();
+        while (!input.equals("1") && !input.equals("2") && !input.equals("back")) {
+            log.warn("только 1, 2 или back - повтори");
+            input = console.nextLine();
+        }
+        switch (input) {
+            case "1":
+                for (Pet pet : PersonHolder.personHolder.get(wantPerson).getPets()) {
+                    log.info("{}{}", pet.getName(), pet.getType());
+                }
+                break;
+            case "2":
+                for (Pet pet : PersonHolder.personHolder.get(wantPerson).getPets()) {
+                    log.info("{}{} -> ", pet.getName(), pet.getType());
+                    pet.makeSound();
+                }
+                break;
+            case "back":
+                //back
+                break;
+        }
     }
 
     private static void whatPersonWant() {
