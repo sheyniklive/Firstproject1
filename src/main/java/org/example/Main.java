@@ -6,15 +6,26 @@ import org.example.pet.PetService;
 import org.example.util.ExitsUtils;
 import org.example.person.PersonService;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Scanner;
+import java.util.Stack;
 
 @Slf4j
 public class Main {
     static Scanner console = new Scanner(System.in);
     static String input;
+    static Deque<Runnable> menuStack = new ArrayDeque<>();
 
     public static void main(String[] args) {
         ExitsUtils.addExits();
+        menuStack.addLast(Main::mainMenu);
+        while (!menuStack.isEmpty()) {
+            menuStack.peekLast().run();
+        }
+    }
+
+    public static void mainMenu() {
         log.info("хорошо, теперь выбери, чем ты хочешь заняться:");
         log.info("1 - поделаем что-то с людьми,");
         log.info("2 - Калькулятор,");
@@ -27,14 +38,14 @@ public class Main {
         }
         switch (input) {
             case "1":
-                PersonService.processPerson();
-                break;
+                menuStack.addLast(PersonService::processPerson);
+                return;
             case "2":
-                CalculatorService.calculate();
-                break;
+                menuStack.addLast(CalculatorService::calculate);
+                return;
             case "3":
-                PetService.processPetService();
-                break;
+                menuStack.addLast(PetService::processPetService);
+                return;
             case "exit":
                 ExitsUtils.doExit();
                 break;
