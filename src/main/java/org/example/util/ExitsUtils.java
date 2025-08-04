@@ -39,9 +39,9 @@ public class ExitsUtils {
                     log.info("теперь фразу,которую ты получишь при выходе: ");
                     String value = console.nextLine();
                     mapExits.put(key, value);
-                    log.info("хочешь добавить новую:");
-                    log.info("пиши 'еще',");
-                    log.info("любой другой ввод - пойдем в программу");
+                    log.info("хочешь добавить новую:" +
+                            "пиши 'еще'," +
+                            "любой другой ввод - пойдем в программу");
                     input = console.nextLine();
                 } while (input.equals("еще"));
                 break;
