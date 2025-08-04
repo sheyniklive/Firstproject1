@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import static org.example.Main.menuStack;
+
 @UtilityClass
 @Slf4j
 public class ExitsUtils {
@@ -25,13 +27,10 @@ public class ExitsUtils {
 
         log.info("Привет, хочешь перед началом добавить свои варианты выходных реплик?");
         log.info("введи 1 - чтобы скастомить свою реплику,");
-        log.info("0 - пойдем в программу,");
+        log.info("любой другой ввод - пойдем в программу,");
         log.info("exit - вообще выйдем");
         input = console.nextLine();
-        while (!input.equals("1") && !input.equals("0") && !input.equals("exit")) {
-            log.warn("только 1, 0 или exit - введи еще раз");
-            input = console.nextLine();
-        }
+
         switch (input) {
             case "1":
                 do {
@@ -46,10 +45,10 @@ public class ExitsUtils {
                     input = console.nextLine();
                 } while (input.equals("еще"));
                 break;
-            case "0":
-                break;
             case "exit":
                 doExit();
+                break;
+            default:
                 break;
         }
     }
@@ -65,5 +64,13 @@ public class ExitsUtils {
         }
         log.info(mapExits.get(chooseExit));
         System.exit(0);
+    }
+
+    public static void informingBack() {
+        log.info("теперь можешь вернуться в прошлое меню через exit");
+        String input = console.nextLine();
+        if (input.equalsIgnoreCase("exit")) {
+            menuStack.pop();
+        }
     }
 }

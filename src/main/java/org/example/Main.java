@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class Main {
     static Scanner console = new Scanner(System.in);
     static String input;
-    public static Deque<Runnable> menuStack = new ArrayDeque<>();
+    public static final Deque<Runnable> menuStack = new ArrayDeque<>();
 
     public static void main(String[] args) {
         ExitsUtils.addExits();
@@ -43,10 +43,12 @@ public class Main {
                 menuStack.addLast(CalculatorService::calculate);
                 return;
             case "3":
-                menuStack.addLast(PetService::processPetService);
+                menuStack.addLast(PetService::processPetServiceMenu);
                 return;
             case "exit":
                 ExitsUtils.doExit();
+                break;
+            default:
                 break;
         }
     }

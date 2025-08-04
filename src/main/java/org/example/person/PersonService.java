@@ -60,7 +60,7 @@ public class PersonService {
             PersonHolder.personHolder.put(name, new Person(name, surname, age, new ArrayList<>()));
             askToAddPets();
             log.info("создан: {}", PersonHolder.personHolder.get(name).toString());
-            informingBack();
+            ExitsUtils.informingBack();
         } else {
             if (n > 0) {
                 List<String> tempPersons = new ArrayList<>();
@@ -75,10 +75,10 @@ public class PersonService {
                     Person tempPerson = PersonHolder.personHolder.get(tempName);
                     log.info("{}", tempPerson);
                 }
-                informingBack();
+                ExitsUtils.informingBack();
             } else {
-                log.error("не сильно-то и хочешь, пока");
-                ExitsUtils.doExit();
+                log.error("не сильно-то и хочешь, возвращаемся назад");
+                menuStack.pop();
             }
         }
     }
@@ -89,32 +89,18 @@ public class PersonService {
         log.info("Теперича - как род ваш именуют сударь: ");
         yourSecName = console.nextLine();
         log.info("Тебя зовут - {} {}", yourName, yourSecName);
-        informingBack();
+        ExitsUtils.informingBack();
     }
 
     private void askToAddPets() {
         log.info("хочешь добавить питомца (ев)?" +
                 "1- да," +
-                "0- нет");
+                "любой другой ввод - нет");
         input = console.nextLine();
-        while (!input.equals("1") && !input.equals("0")) {
-            log.warn("только 1 или 0 - повтори");
-            input = console.nextLine();
-        }
-        switch (input) {
-            case "1":
-                PetService.addPets();
-                break;
-            case "0":
-                break;
+        if (input.equals("1")) {
+            PetService.addPets();
         }
     }
 
-    private void informingBack() {
-        log.info("теперь можешь вернуться в прошлое меню через exit");
-        input = console.nextLine();
-        if (input.equalsIgnoreCase("exit")) {
-            menuStack.pop();
-        }
-    }
+
 }
