@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import static org.example.Main.menuStack;
+
 @UtilityClass
 @Slf4j
 public class PersonService {
@@ -18,40 +20,26 @@ public class PersonService {
     Scanner console = new Scanner(System.in);
     String input;
 
-    public void processPerson() {
+    public void processPersonMenu() {
         log.info("1 - ты хочешь вручную ввести свои Ф-И,");
         log.info("2 - создадим персона или несколько");
-        log.info("или выйти через exit");
+        log.info("или выйти в прошлое меню через exit");
         input = console.nextLine();
+        while (!input.equalsIgnoreCase("exit") && !input.equals("1") && !input.equals("2")) {
+            log.warn("1, 2 или exit - не попал, повтори");
+            input = console.nextLine();
+        }
         switch (input) {
             case "1":
-                log.info("братищщка, чекни имя: ");
-                yourName = console.nextLine();
-                log.info("Теперича - как род ваш именуют сударь: ");
-                yourSecName = console.nextLine();
-                log.info("Тебя зовут - {} {}", yourName, yourSecName);
-                break;
+                menuStack.addLast(PersonService::manuallyNameFamilyMenu);
+                return;
             case "2":
-                log.info("1 - создать персона(ов) или exit - для котопультирования из программы");
-                switch (input) {
-                    case "1":
-                        addPersons();
-                        break;
-                    case "exit":
-                        ExitsUtils.doExit();
-                        break;
-                    default:
-                        log.error("надо было 1, 2 или exit - перезапусти прорамму");
-                        ExitsUtils.doExit();
-                        break;
-                }
-                break;
+                menuStack.addLast(PersonService::addPersons);
+                return;
             case "exit":
-                ExitsUtils.doExit();
-                break;
+                menuStack.pop();
+                return;
             default:
-                log.error("1, 2 or exit - не попал, выходи и перезапусти");
-                ExitsUtils.doExit();
                 break;
         }
     }
@@ -72,7 +60,7 @@ public class PersonService {
             PersonHolder.personHolder.put(name, new Person(name, surname, age, new ArrayList<>()));
             askToAddPets();
             log.info("создан: {}", PersonHolder.personHolder.get(name).toString());
-            //back
+            informingBack();
         } else {
             if (n > 0) {
                 List<String> tempPersons = new ArrayList<>();
@@ -87,11 +75,21 @@ public class PersonService {
                     Person tempPerson = PersonHolder.personHolder.get(tempName);
                     log.info("{}", tempPerson);
                 }
+                informingBack();
             } else {
                 log.error("не сильно-то и хочешь, пока");
                 ExitsUtils.doExit();
             }
         }
+    }
+
+    private void manuallyNameFamilyMenu() {
+        log.info("братищщка, чекни имя: ");
+        yourName = console.nextLine();
+        log.info("Теперича - как род ваш именуют сударь: ");
+        yourSecName = console.nextLine();
+        log.info("Тебя зовут - {} {}", yourName, yourSecName);
+        informingBack();
     }
 
     private void askToAddPets() {
@@ -109,6 +107,14 @@ public class PersonService {
                 break;
             case "0":
                 break;
+        }
+    }
+
+    private void informingBack() {
+        log.info("теперь можешь вернуться в прошлое меню через exit");
+        input = console.nextLine();
+        if (input.equalsIgnoreCase("exit")) {
+            menuStack.pop();
         }
     }
 }

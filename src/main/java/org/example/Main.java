@@ -9,13 +9,12 @@ import org.example.person.PersonService;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Scanner;
-import java.util.Stack;
 
 @Slf4j
 public class Main {
     static Scanner console = new Scanner(System.in);
     static String input;
-    static Deque<Runnable> menuStack = new ArrayDeque<>();
+    public static Deque<Runnable> menuStack = new ArrayDeque<>();
 
     public static void main(String[] args) {
         ExitsUtils.addExits();
@@ -38,7 +37,7 @@ public class Main {
         }
         switch (input) {
             case "1":
-                menuStack.addLast(PersonService::processPerson);
+                menuStack.addLast(PersonService::processPersonMenu);
                 return;
             case "2":
                 menuStack.addLast(CalculatorService::calculate);
