@@ -1,5 +1,6 @@
 package org.example.person;
 
+import lombok.ToString;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.example.pet.PetService;
@@ -12,6 +13,7 @@ import java.util.Scanner;
 import static org.example.Main.menuStack;
 
 @UtilityClass
+@ToString
 @Slf4j
 public class PersonService {
 
@@ -73,7 +75,7 @@ public class PersonService {
                 log.info("созданы:");
                 for (String tempName : tempPersons) {
                     Person tempPerson = PersonHolder.personHolder.get(tempName);
-                    log.info("{}", tempPerson);
+                    log.info("{}", tempPerson.toString());
                 }
                 ExitsUtils.informingBack();
             } else {

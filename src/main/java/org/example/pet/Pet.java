@@ -2,6 +2,7 @@ package org.example.pet;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 public interface Pet {

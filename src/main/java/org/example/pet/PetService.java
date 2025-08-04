@@ -1,5 +1,6 @@
 package org.example.pet;
 
+import lombok.ToString;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.example.person.PersonHolder;
@@ -10,6 +11,7 @@ import java.util.Scanner;
 import static org.example.Main.menuStack;
 
 @UtilityClass
+@ToString
 @Slf4j
 public class PetService {
     Scanner console = new Scanner(System.in);
