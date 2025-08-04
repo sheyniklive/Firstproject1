@@ -25,10 +25,10 @@ public class ExitsUtils {
     public static void addExits() {
         String input;
 
-        log.info("Привет, хочешь перед началом добавить свои варианты выходных реплик?" +
-                "введи 1 - чтобы скастомить свою реплику," +
-                "любой другой ввод - пойдем в программу," +
-                "exit - вообще выйдем");
+        log.info("Привет, хочешь перед началом добавить свои варианты выходных реплик?");
+        log.info("введи 1 - чтобы скастомить свою реплику,");
+        log.info("любой другой ввод - пойдем в программу,");
+        log.info("exit - вообще выйдем");
         input = console.nextLine();
 
         switch (input) {
@@ -39,9 +39,9 @@ public class ExitsUtils {
                     log.info("теперь фразу,которую ты получишь при выходе: ");
                     String value = console.nextLine();
                     mapExits.put(key, value);
-                    log.info("хочешь добавить новую:" +
-                            "пиши 'еще'," +
-                            "любой другой ввод - пойдем в программу");
+                    log.info("хочешь добавить новую:");
+                    log.info("пиши 'еще',");
+                    log.info("любой другой ввод - пойдем в программу");
                     input = console.nextLine();
                 } while (input.equals("еще"));
                 break;

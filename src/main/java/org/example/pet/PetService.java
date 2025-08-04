@@ -17,10 +17,10 @@ public class PetService {
     String wantPerson;
 
     public void processPetServiceMenu() {
-        log.info("выбирай:" +
-                "1 - пойдем к чьим-то питомцам," +
-                "2 - можем добавить кому-нибудь из людей новых" +
-                "или 'exit' для возврата");
+        log.info("выбирай:");
+        log.info("1 - пойдем к чьим-то питомцам,");
+        log.info("2 - можем добавить кому-нибудь из людей новых");
+        log.info("или 'exit' для возврата");
         input = console.nextLine();
         while (!input.equals("exit") && !input.equals("1") && !input.equals("2")) {
             log.warn("только 1, 2 или 'exit'- повтори");
@@ -47,10 +47,10 @@ public class PetService {
         do {
             log.info("поехали: как питомца зовут?");
             String petName = console.nextLine();
-            log.info("кто это:" +
-                    "1 - кошка" +
-                    "2 - собака" +
-                    "3 - гусь");
+            log.info("кто это:");
+            log.info("1 - кошка");
+            log.info("2 - собака");
+            log.info("3 - гусь");
             input = console.nextLine();
             while (!input.equals("1") && !input.equals("2") && !input.equals("3")) {
                 log.warn("только 1, 2 или 3 - повтори");
@@ -69,9 +69,9 @@ public class PetService {
                 default:
                     break;
             }
-            log.info("хочешь добавить нового:" +
-                    "пиши 'еще'," +
-                    "любой другой ввод - закончим");
+            log.info("хочешь добавить нового:");
+            log.info("пиши 'еще',");
+            log.info("любой другой ввод - закончим");
             input = console.nextLine();
         } while (input.equals("еще"));
         if (needInformingBack) {
@@ -83,10 +83,10 @@ public class PetService {
         log.info("с чьими животными ты хочешь взаимодействовать?");
         whatPersonWant();
         log.info("вот список его(ее) питомцев: {}", PersonHolder.personHolder.get(wantPerson).getPets().toString());
-        log.info("твой выбор:" +
-                "1 - получить их кличку и вид" +
-                "2 - они издадут звук (кто умеет)" +
-                "'exit' для возврата");
+        log.info("твой выбор:");
+        log.info("1 - получить их кличку и вид");
+        log.info("2 - они издадут звук (кто умеет)");
+        log.info("'exit' для возврата");
         input = console.nextLine();
         while (!input.equals("1") && !input.equals("2") && !input.equals("exit")) {
             log.warn("только 1, 2 или exit - повтори");

@@ -21,9 +21,9 @@ public class PersonService {
     String input;
 
     public void processPersonMenu() {
-        log.info("1 - ты хочешь вручную ввести свои Ф-И," +
-                "2 - создадим персона или несколько" +
-                "или выйти в прошлое меню через exit");
+        log.info("1 - ты хочешь вручную ввести свои Ф-И,");
+        log.info("2 - создадим персона или несколько");
+        log.info("или выйти в прошлое меню через exit");
         input = console.nextLine();
         while (!input.equalsIgnoreCase("exit") && !input.equals("1") && !input.equals("2")) {
             log.warn("1, 2 или exit - не попал, повтори");
@@ -93,9 +93,9 @@ public class PersonService {
     }
 
     private void askToAddPets() {
-        log.info("хочешь добавить питомца (ев)?" +
-                "1- да," +
-                "любой другой ввод - нет");
+        log.info("хочешь добавить питомца (ев)?");
+        log.info("1- да,");
+        log.info("любой другой ввод - нет");
         input = console.nextLine();
         if (input.equals("1")) {
             PetService.addPets(false);
