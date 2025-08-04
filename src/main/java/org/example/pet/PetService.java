@@ -69,9 +69,9 @@ public class PetService {
                 default:
                     break;
             }
-            log.info("хочешь добавить нового:");
-            log.info("пиши 'еще',");
-            log.info("любой другой ввод - закончим");
+            log.info("хочешь добавить нового:" +
+                    "пиши 'еще'," +
+                    "любой другой ввод - закончим");
             input = console.nextLine();
         } while (input.equals("еще"));
         if (needInformingBack) {
