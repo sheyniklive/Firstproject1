@@ -98,7 +98,7 @@ public class PersonService {
                 "любой другой ввод - нет");
         input = console.nextLine();
         if (input.equals("1")) {
-            PetService.addPets();
+            PetService.addPets(false);
         }
     }
 

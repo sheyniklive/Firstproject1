@@ -31,7 +31,7 @@ public class PetService {
                 menuStack.addLast(PetService::getPets);
                 return;
             case "2":
-                menuStack.addLast(PetService::addPets);
+                menuStack.addLast(() -> PetService.addPets(true));
                 return;
             case "exit":
                 menuStack.pop();
@@ -41,7 +41,7 @@ public class PetService {
         }
     }
 
-    public void addPets() {
+    public void addPets(boolean needInformingBack) {
         log.info("кому из людей ты хочешь пристроить животное?");
         whatPersonWant();
         do {
@@ -74,6 +74,9 @@ public class PetService {
             log.info("любой другой ввод - закончим");
             input = console.nextLine();
         } while (input.equals("еще"));
+        if (needInformingBack) {
+            ExitsUtils.informingBack();
+        }
     }
 
     private void getPets() {
