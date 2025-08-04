@@ -2,9 +2,10 @@ package org.example.calculator;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.example.util.ExitsUtils;
 
 import java.util.Scanner;
+
+import static org.example.Main.menuStack;
 
 @UtilityClass
 @Slf4j
@@ -17,7 +18,7 @@ public class CalculatorService {
     Scanner console = new Scanner(System.in);
 
     public void calculate() {
-        log.info("Привет, введи первое число (или выйди с помощью 'exit': ");
+        log.info("Привет, введи первое число (или выйди в главное меню с помощью 'exit': ");
         a = getOperand();
 
         while (!isExit()) {
@@ -29,7 +30,7 @@ public class CalculatorService {
 
             doCalculate();
             log.info(String.valueOf(result));
-            a = result;
+            a = Double.parseDouble(String.valueOf(result));
             log.info("Если хочешь продолжить :");
         }
     }
@@ -49,8 +50,7 @@ public class CalculatorService {
                 result = b != 0 ? a / b : 0;
                 break;
             default:
-                log.error("Миша, всё хуйня давай по-новой, щас выйдем и зайдешь по масти");
-                ExitsUtils.doExit();
+                break;
         }
     }
 
@@ -61,30 +61,28 @@ public class CalculatorService {
             input = console.nextLine();
         }
         if (isExit()) {
-            ExitsUtils.doExit();
-        } else
+            menuStack.pop();
+        } else {
             return input;
-
+        }
         return input;
     }
 
     private double getOperand() {
         input = console.nextLine();
         if (isExit()) {
-            ExitsUtils.doExit();
-            return 0;
+            menuStack.pop();
         } else {
-            if (!isNumeric()) {
-                while (!isNumeric()) {
-                    log.warn("введено не число, введи еще раз");
-                    input = console.nextLine();
-                    if (isExit()) {
-                        ExitsUtils.doExit();
-                    }
+            while (!isNumeric()) {
+                log.warn("введено не число, введи еще раз");
+                input = console.nextLine();
+                if (isExit()) {
+                    menuStack.pop();
                 }
             }
             return Double.parseDouble(input);
         }
+        return Double.parseDouble(input);
     }
 
     private boolean isNumeric() {
