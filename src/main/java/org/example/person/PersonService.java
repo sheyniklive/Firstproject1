@@ -86,7 +86,7 @@ public class PersonService {
                 log.error("не сильно-то и хочешь, возвращаемся назад");
                 menuStack.pop();
             }
-        }
+         }
     }
 
     private void manuallyNameFamilyMenu() {
