@@ -15,17 +15,12 @@ public class Main {
     static Scanner console = new Scanner(System.in);
     static String input;
     public static final Deque<Runnable> menuStack = new ArrayDeque<>();
-    static boolean running = true;
 
     public static void main(String[] args) {
         ExitsUtils.addExits();
-        while (running) {
-            if (menuStack.isEmpty()) {
-                menuStack.addLast(Main::mainMenu);
-            }
-            while (!menuStack.isEmpty()) {
-                menuStack.removeLast().run();
-            }
+        menuStack.addLast(Main::mainMenu);
+        while (!menuStack.isEmpty()) {
+            menuStack.peekLast().run();
         }
     }
 
@@ -52,7 +47,6 @@ public class Main {
                 return;
             case "exit":
                 ExitsUtils.doExit();
-                running = false;
                 break;
             default:
                 break;

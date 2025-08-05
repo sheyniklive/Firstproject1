@@ -48,11 +48,7 @@ public class PersonService {
 
 
     private void addPersons() {
-        log.info("для возврата введи exit, либо введи имя:");
-        input = console.nextLine();
-        if (input.equalsIgnoreCase("exit")) {
-            menuStack.pop();
-        }
+        log.info("введи имя:");
         String name = console.nextLine();
         log.info("фамилию:");
         String surname = console.nextLine();
@@ -86,7 +82,7 @@ public class PersonService {
                 log.error("не сильно-то и хочешь, возвращаемся назад");
                 menuStack.pop();
             }
-         }
+        }
     }
 
     private void manuallyNameFamilyMenu() {

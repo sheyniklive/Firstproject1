@@ -63,6 +63,7 @@ public class ExitsUtils {
             chooseExit = console.nextLine();
         }
         log.info(mapExits.get(chooseExit));
+        System.exit(0);
     }
 
     public static void informingBack() {
