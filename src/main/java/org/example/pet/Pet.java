@@ -16,6 +16,7 @@ public interface Pet {
 @RequiredArgsConstructor
 @Getter
 @Slf4j
+@ToString
 class Cat implements Pet {
     private final String name;
 
@@ -34,6 +35,7 @@ class Cat implements Pet {
 @RequiredArgsConstructor
 @Getter
 @Slf4j
+@ToString
 class Dog implements Pet {
     private final String name;
 
@@ -51,6 +53,7 @@ class Dog implements Pet {
 @RequiredArgsConstructor
 @Getter
 @Slf4j
+@ToString
 class Goose implements Pet {
     private final String name;
 
