@@ -27,9 +27,8 @@ class Cat implements Pet {
 
     @Override
     public void makeSound() {
-        log.info("Meow");
+        log.info("{}({}) -> Meow", getName(), getType());
     }
-
 }
 
 @RequiredArgsConstructor
@@ -46,7 +45,7 @@ class Dog implements Pet {
 
     @Override
     public void makeSound() {
-        log.info("Wow");
+        log.info("{}({}) -> Wow", getName(), getType());
     }
 }
 
@@ -63,7 +62,7 @@ class Goose implements Pet {
     }
 
     public void makeSound() {
-        log.info("GaGaGa");
+        log.info("{}({}) -> GaGaGa", getName(), getType());
     }
 }
 

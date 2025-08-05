@@ -2,9 +2,9 @@ package org.example;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.calculator.CalculatorService;
+import org.example.person.PersonService;
 import org.example.pet.PetService;
 import org.example.util.ExitsUtils;
-import org.example.person.PersonService;
 
 import java.util.ArrayDeque;
 import java.util.Deque;

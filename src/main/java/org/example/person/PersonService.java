@@ -1,7 +1,5 @@
 package org.example.person;
 
-import lombok.ToString;
-import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.example.pet.PetService;
 import org.example.util.ExitsUtils;
@@ -12,17 +10,14 @@ import java.util.Scanner;
 
 import static org.example.Main.menuStack;
 
-@UtilityClass
-@ToString
+
 @Slf4j
 public class PersonService {
 
-    String yourName;
-    String yourSecName;
-    Scanner console = new Scanner(System.in);
-    String input;
+    private static Scanner console = new Scanner(System.in);
+    private static String input;
 
-    public void processPersonMenu() {
+    public static void processPersonMenu() {
         log.info("1 - ты хочешь вручную ввести свои Ф-И,");
         log.info("2 - создадим персона или несколько");
         log.info("или выйти в прошлое меню через exit");
@@ -47,7 +42,7 @@ public class PersonService {
     }
 
 
-    private void addPersons() {
+    private static void addPersons() {
         log.info("введи имя:");
         String name = console.nextLine();
         log.info("фамилию:");
@@ -87,16 +82,16 @@ public class PersonService {
         }
     }
 
-    private void manuallyNameFamilyMenu() {
+    private static void manuallyNameFamilyMenu() {
         log.info("братищщка, чекни имя: ");
-        yourName = console.nextLine();
+        String yourName = console.nextLine();
         log.info("Теперича - как род ваш именуют сударь: ");
-        yourSecName = console.nextLine();
+        String yourSecName = console.nextLine();
         log.info("Тебя зовут - {} {}", yourName, yourSecName);
         ExitsUtils.informingBack();
     }
 
-    private void askToAddPets() {
+    private static void askToAddPets() {
         log.info("хочешь добавить питомца (ев)?");
         log.info("1- да,");
         log.info("любой другой ввод - нет");

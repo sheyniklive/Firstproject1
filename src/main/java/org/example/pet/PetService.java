@@ -1,7 +1,5 @@
 package org.example.pet;
 
-import lombok.ToString;
-import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.example.person.PersonHolder;
 import org.example.util.ExitsUtils;
@@ -10,15 +8,13 @@ import java.util.Scanner;
 
 import static org.example.Main.menuStack;
 
-@UtilityClass
-@ToString
 @Slf4j
 public class PetService {
-    Scanner console = new Scanner(System.in);
-    String input;
-    String wantPerson;
+    private static Scanner console = new Scanner(System.in);
+    private static String input;
+    private static String wantPerson;
 
-    public void processPetServiceMenu() {
+    public static void processPetServiceMenu() {
         log.info("выбирай:");
         log.info("1 - пойдем к чьим-то питомцам,");
         log.info("2 - можем добавить кому-нибудь из людей новых");
@@ -43,7 +39,7 @@ public class PetService {
         }
     }
 
-    public void addPets(boolean needInformingBack) {
+    public static void addPets(boolean needInformingBack) {
         if (PersonHolder.personHolder.isEmpty()) {
             log.warn("пока не добавлено ни одного человека");
             menuStack.removeLast();
@@ -86,7 +82,7 @@ public class PetService {
         }
     }
 
-    private void getPets() {
+    private static void getPets() {
         if (PersonHolder.personHolder.isEmpty()) {
             log.warn("пока нет ни одного человека");
             menuStack.removeLast();
@@ -118,20 +114,19 @@ public class PetService {
                 break;
             case "2":
                 for (Pet pet : PersonHolder.personHolder.get(wantPerson).getPets()) {
-                    log.info("{}({}) -> ", pet.getName(), pet.getType());
                     pet.makeSound();
                 }
                 ExitsUtils.informingBack();
                 break;
             case "exit":
-                menuStack.pop();
-                break;
+                menuStack.removeLast();
+                return;
             default:
                 break;
         }
     }
 
-    private void whatPersonWant() {
+    private static void whatPersonWant() {
         log.info(PersonHolder.personHolder.keySet().toString());
         wantPerson = console.nextLine();
         while (!PersonHolder.personHolder.containsKey(wantPerson)) {

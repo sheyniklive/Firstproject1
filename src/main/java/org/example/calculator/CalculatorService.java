@@ -1,23 +1,22 @@
 package org.example.calculator;
 
-import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Scanner;
 
 import static org.example.Main.menuStack;
 
-@UtilityClass
+
 @Slf4j
 public class CalculatorService {
-    String input;
-    double result;
-    double a;
-    double b;
-    String operator;
-    Scanner console = new Scanner(System.in);
+    private static String input;
+    private static double result;
+    private static double a;
+    private static double b;
+    private static String operator;
+    private static Scanner console = new Scanner(System.in);
 
-    public void calculate() {
+    public static void calculate() {
         log.info("Привет, введи первое число (или выйди в главное меню с помощью 'exit': ");
         input = console.nextLine();
         if (input.equals("exit")) {
@@ -50,7 +49,7 @@ public class CalculatorService {
         }
     }
 
-    private void doCalculate() {
+    private static void doCalculate() {
         switch (operator) {
             case "+":
                 result = a + b;
@@ -69,7 +68,7 @@ public class CalculatorService {
         }
     }
 
-    private String getOperator() {
+    private static String getOperator() {
         while (!input.equals("+") && !input.equals("-") && !input.equals("*") && !input.equals("/")) {
             log.warn("нужно только +, -, *,  / или exit - введено что-то другое, введи еще раз");
             input = console.nextLine();
@@ -77,7 +76,7 @@ public class CalculatorService {
         return input;
     }
 
-    private double getOperand() {
+    private static double getOperand() {
         while (!isNumeric()) {
             log.warn("введено не число, введи еще раз");
             input = console.nextLine();
@@ -85,7 +84,7 @@ public class CalculatorService {
         return Double.parseDouble(input);
     }
 
-    private boolean isNumeric() {
+    private static boolean isNumeric() {
         try {
             Double.parseDouble(input);
             return true;
@@ -94,7 +93,7 @@ public class CalculatorService {
         }
     }
 
-    private boolean isExit() {
+    private static boolean isExit() {
         return input.equalsIgnoreCase("exit");
     }
 }
