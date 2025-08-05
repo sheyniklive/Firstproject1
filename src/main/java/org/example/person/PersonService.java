@@ -48,7 +48,11 @@ public class PersonService {
 
 
     private void addPersons() {
-        log.info("введи имя:");
+        log.info("для возврата введи exit, либо введи имя:");
+        input = console.nextLine();
+        if (input.equalsIgnoreCase("exit")) {
+            menuStack.pop();
+        }
         String name = console.nextLine();
         log.info("фамилию:");
         String surname = console.nextLine();
