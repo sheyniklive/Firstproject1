@@ -39,7 +39,7 @@ public class PersonService {
                 menuStack.addLast(PersonService::addPersons);
                 return;
             case "exit":
-                menuStack.pop();
+                menuStack.removeLast();
                 return;
             default:
                 break;
@@ -63,6 +63,7 @@ public class PersonService {
             askToAddPets();
             log.info("создан: {}", PersonHolder.personHolder.get(name).toString());
             ExitsUtils.informingBack();
+            input = console.nextLine();
         } else {
             if (n > 0) {
                 List<String> tempPersons = new ArrayList<>();
@@ -78,9 +79,10 @@ public class PersonService {
                     log.info("{}", tempPerson.toString());
                 }
                 ExitsUtils.informingBack();
+                input = console.nextLine();
             } else {
                 log.error("не сильно-то и хочешь, возвращаемся назад");
-                menuStack.pop();
+                menuStack.removeLast();
             }
         }
     }
@@ -100,7 +102,13 @@ public class PersonService {
         log.info("любой другой ввод - нет");
         input = console.nextLine();
         if (input.equals("1")) {
-            PetService.addPets(false);
+            do {
+                PetService.addPets(false);
+                log.info("хочешь добавить другому?");
+                log.info("пиши 'еще'");
+                log.info("любой другой ввод - продолжим");
+                input = console.nextLine();
+            } while (input.equalsIgnoreCase("еще"));
         }
     }
 }

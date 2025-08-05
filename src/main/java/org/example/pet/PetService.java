@@ -36,14 +36,19 @@ public class PetService {
                 menuStack.addLast(() -> PetService.addPets(true));
                 return;
             case "exit":
-                menuStack.pop();
-                break;
+                menuStack.removeLast();
+                return;
             default:
                 break;
         }
     }
 
     public void addPets(boolean needInformingBack) {
+        if (PersonHolder.personHolder.isEmpty()) {
+            log.warn("пока не добавлено ни одного человека");
+            menuStack.removeLast();
+            return;
+        }
         log.info("кому из людей ты хочешь пристроить животное?");
         whatPersonWant();
         do {
@@ -82,8 +87,18 @@ public class PetService {
     }
 
     private void getPets() {
+        if (PersonHolder.personHolder.isEmpty()) {
+            log.warn("пока нет ни одного человека");
+            menuStack.removeLast();
+            return;
+        }
         log.info("с чьими животными ты хочешь взаимодействовать?");
         whatPersonWant();
+        if (PersonHolder.personHolder.get(wantPerson).getPets().isEmpty()) {
+            log.warn("к сожалению, у этого человека пока нет животных");
+            menuStack.removeLast();
+            return;
+        }
         log.info("вот список его(ее) питомцев: {}", PersonHolder.personHolder.get(wantPerson).getPets().toString());
         log.info("твой выбор:");
         log.info("1 - получить их кличку и вид");
@@ -97,13 +112,13 @@ public class PetService {
         switch (input) {
             case "1":
                 for (Pet pet : PersonHolder.personHolder.get(wantPerson).getPets()) {
-                    log.info("{}{}", pet.getName(), pet.getType());
+                    log.info("{}({})", pet.getName(), pet.getType());
                 }
                 ExitsUtils.informingBack();
                 break;
             case "2":
                 for (Pet pet : PersonHolder.personHolder.get(wantPerson).getPets()) {
-                    log.info("{}{} -> ", pet.getName(), pet.getType());
+                    log.info("{}({}) -> ", pet.getName(), pet.getType());
                     pet.makeSound();
                 }
                 ExitsUtils.informingBack();

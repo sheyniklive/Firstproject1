@@ -19,13 +19,28 @@ public class CalculatorService {
 
     public void calculate() {
         log.info("Привет, введи первое число (или выйди в главное меню с помощью 'exit': ");
+        input = console.nextLine();
+        if (input.equals("exit")) {
+            menuStack.removeLast();
+            return;
+        }
         a = getOperand();
 
         while (!isExit()) {
             log.info("введи +, -, * или / (или для выхода введи 'exit'):");
+            input = console.nextLine();
+            if (input.equals("exit")) {
+                menuStack.removeLast();
+                return;
+            }
             operator = getOperator();
 
             log.info("введи второе число (или для выхода введи 'exit'):");
+            input = console.nextLine();
+            if (input.equals("exit")) {
+                menuStack.removeLast();
+                return;
+            }
             b = getOperand();
 
             doCalculate();
@@ -55,32 +70,17 @@ public class CalculatorService {
     }
 
     private String getOperator() {
-        input = console.nextLine();
-        while (!input.equals("+") && !input.equals("-") && !input.equals("*") && !input.equals("/") && !input.equals("exit")) {
+        while (!input.equals("+") && !input.equals("-") && !input.equals("*") && !input.equals("/")) {
             log.warn("нужно только +, -, *,  / или exit - введено что-то другое, введи еще раз");
             input = console.nextLine();
-        }
-        if (isExit()) {
-            menuStack.pop();
-        } else {
-            return input;
         }
         return input;
     }
 
     private double getOperand() {
-        input = console.nextLine();
-        if (isExit()) {
-            menuStack.pop();
-        } else {
-            while (!isNumeric()) {
-                log.warn("введено не число, введи еще раз");
-                input = console.nextLine();
-                if (isExit()) {
-                    menuStack.pop();
-                }
-            }
-            return Double.parseDouble(input);
+        while (!isNumeric()) {
+            log.warn("введено не число, введи еще раз");
+            input = console.nextLine();
         }
         return Double.parseDouble(input);
     }
