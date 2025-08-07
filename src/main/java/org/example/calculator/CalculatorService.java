@@ -2,21 +2,19 @@ package org.example.calculator;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Scanner;
-
+import static org.example.Main.console;
 import static org.example.Main.menuStack;
 
 
 @Slf4j
 public class CalculatorService {
-    private static String input;
-    private static double result;
-    private static double a;
-    private static double b;
-    private static String operator;
-    private static Scanner console = new Scanner(System.in);
+    private String input;
+    private double result;
+    private double a;
+    private double b;
+    private String operator;
 
-    public static void calculate() {
+    public void calculate() {
         log.info("Привет, введи первое число (или выйди в главное меню с помощью 'exit': ");
         input = console.nextLine();
         if (input.equals("exit")) {
@@ -49,7 +47,7 @@ public class CalculatorService {
         }
     }
 
-    private static void doCalculate() {
+    private void doCalculate() {
         switch (operator) {
             case "+":
                 result = a + b;
@@ -68,7 +66,7 @@ public class CalculatorService {
         }
     }
 
-    private static String getOperator() {
+    private String getOperator() {
         while (!input.equals("+") && !input.equals("-") && !input.equals("*") && !input.equals("/")) {
             log.warn("нужно только +, -, *,  / или exit - введено что-то другое, введи еще раз");
             input = console.nextLine();
@@ -76,7 +74,7 @@ public class CalculatorService {
         return input;
     }
 
-    private static double getOperand() {
+    private double getOperand() {
         while (!isNumeric()) {
             log.warn("введено не число, введи еще раз");
             input = console.nextLine();
@@ -84,7 +82,7 @@ public class CalculatorService {
         return Double.parseDouble(input);
     }
 
-    private static boolean isNumeric() {
+    private boolean isNumeric() {
         try {
             Double.parseDouble(input);
             return true;
@@ -93,7 +91,7 @@ public class CalculatorService {
         }
     }
 
-    private static boolean isExit() {
+    private boolean isExit() {
         return input.equalsIgnoreCase("exit");
     }
 }

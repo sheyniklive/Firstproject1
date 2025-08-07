@@ -1,23 +1,20 @@
 package org.example.person;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.pet.PetService;
 import org.example.util.ExitsUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
-import static org.example.Main.menuStack;
+import static org.example.Main.*;
 
 
 @Slf4j
 public class PersonService {
 
-    private static Scanner console = new Scanner(System.in);
-    private static String input;
+    private String input;
 
-    public static void processPersonMenu() {
+    public void processPersonMenu() {
         log.info("1 - ты хочешь вручную ввести свои Ф-И,");
         log.info("2 - создадим персона или несколько");
         log.info("или выйти в прошлое меню через exit");
@@ -28,10 +25,10 @@ public class PersonService {
         }
         switch (input) {
             case "1":
-                menuStack.addLast(PersonService::manuallyNameFamilyMenu);
+                menuStack.addLast(personService::manuallyNameFamilyMenu);
                 return;
             case "2":
-                menuStack.addLast(PersonService::addPersons);
+                menuStack.addLast(personService::addPersons);
                 return;
             case "exit":
                 menuStack.removeLast();
@@ -42,7 +39,7 @@ public class PersonService {
     }
 
 
-    private static void addPersons() {
+    private void addPersons() {
         log.info("введи имя:");
         String name = console.nextLine();
         log.info("фамилию:");
@@ -82,7 +79,7 @@ public class PersonService {
         }
     }
 
-    private static void manuallyNameFamilyMenu() {
+    private void manuallyNameFamilyMenu() {
         log.info("братищщка, чекни имя: ");
         String yourName = console.nextLine();
         log.info("Теперича - как род ваш именуют сударь: ");
@@ -91,14 +88,14 @@ public class PersonService {
         ExitsUtils.informingBack();
     }
 
-    private static void askToAddPets() {
+    private void askToAddPets() {
         log.info("хочешь добавить питомца (ев)?");
         log.info("1- да,");
         log.info("любой другой ввод - нет");
         input = console.nextLine();
         if (input.equals("1")) {
             do {
-                PetService.addPets(false);
+                petService.addPets(false);
                 log.info("хочешь добавить другому?");
                 log.info("пиши 'еще'");
                 log.info("любой другой ввод - продолжим");

@@ -12,38 +12,41 @@ import java.util.Scanner;
 
 @Slf4j
 public class Main {
-    static Scanner console = new Scanner(System.in);
-    static String input;
     public static final Deque<Runnable> menuStack = new ArrayDeque<>();
+    public static final PersonService personService = new PersonService();
+    public static final PetService petService = new PetService();
+    public static final CalculatorService calculatorService = new CalculatorService();
+    public static final Scanner console = new Scanner(System.in);
 
     public static void main(String[] args) {
         ExitsUtils.addExits();
-        menuStack.addLast(Main::mainMenu);
+        Main main = new Main();
+        menuStack.addLast(main::mainMenu);
         while (!menuStack.isEmpty()) {
             menuStack.peekLast().run();
         }
     }
 
-    public static void mainMenu() {
+    public void mainMenu() {
         log.info("хорошо, теперь выбери, чем ты хочешь заняться:");
         log.info("1 - поделаем что-то с людьми,");
         log.info("2 - Калькулятор,");
         log.info("3 - повзаимодействуем с возможными питомцами");
         log.info("или введи exit для выхода");
-        input = console.nextLine();
+        String input = console.nextLine();
         while (!input.equals("exit") && !input.equals("1") && !input.equals("2") && !input.equals("3")) {
             log.warn("неверный ввод, повтори: только 1, 2, 3 или exit");
             input = console.nextLine();
         }
         switch (input) {
             case "1":
-                menuStack.addLast(PersonService::processPersonMenu);
+                menuStack.addLast(personService::processPersonMenu);
                 return;
             case "2":
-                menuStack.addLast(CalculatorService::calculate);
+                menuStack.addLast(calculatorService::calculate);
                 return;
             case "3":
-                menuStack.addLast(PetService::processPetServiceMenu);
+                menuStack.addLast(petService::processPetServiceMenu);
                 return;
             case "exit":
                 ExitsUtils.doExit();
