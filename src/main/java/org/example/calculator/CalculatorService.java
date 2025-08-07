@@ -1,32 +1,49 @@
 package org.example.calculator;
 
-import org.example.util.ExitsUtils;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.Scanner;
+import static org.example.Main.console;
+import static org.example.Main.menuStack;
 
+
+@Slf4j
 public class CalculatorService {
-    String input;
-    double result;
-    double a;
-    double b;
-    String operator;
-    Scanner console = new Scanner(System.in);
+    private String input;
+    private double result;
+    private double a;
+    private double b;
+    private String operator;
 
     public void calculate() {
-        System.out.println("Привет, введи первое число (или выйди с помощью 'exit': ");
+        log.info("Привет, введи первое число (или выйди в главное меню с помощью 'exit': ");
+        input = console.nextLine();
+        if (input.equals("exit")) {
+            menuStack.removeLast();
+            return;
+        }
         a = getOperand();
 
         while (!isExit()) {
-            System.out.println("введи +, -, * или / (или для выхода введи 'exit'):");
+            log.info("введи +, -, * или / (или для выхода введи 'exit'):");
+            input = console.nextLine();
+            if (input.equals("exit")) {
+                menuStack.removeLast();
+                return;
+            }
             operator = getOperator();
 
-            System.out.println("введи второе число (или для выхода введи 'exit'):");
+            log.info("введи второе число (или для выхода введи 'exit'):");
+            input = console.nextLine();
+            if (input.equals("exit")) {
+                menuStack.removeLast();
+                return;
+            }
             b = getOperand();
 
             doCalculate();
-            System.out.println(result);
-            a = result;
-            System.out.println("Если хочешь продолжить :");
+            log.info(String.valueOf(result));
+            a = Double.parseDouble(String.valueOf(result));
+            log.info("Если хочешь продолжить :");
         }
     }
 
@@ -45,42 +62,24 @@ public class CalculatorService {
                 result = b != 0 ? a / b : 0;
                 break;
             default:
-                System.out.println("Миша, всё хуйня давай по-новой, щас выйдем и зайдешь по масти");
-                ExitsUtils.doExit();
+                break;
         }
     }
 
     private String getOperator() {
-        input = console.nextLine();
-        while (!input.equals("+") && !input.equals("-") && !input.equals("*") && !input.equals("/") && !input.equals("exit")) {
-            System.out.println("только +, -, *,  / или exit");
+        while (!input.equals("+") && !input.equals("-") && !input.equals("*") && !input.equals("/")) {
+            log.warn("нужно только +, -, *,  / или exit - введено что-то другое, введи еще раз");
             input = console.nextLine();
         }
-        if (isExit()) {
-            ExitsUtils.doExit();
-        } else
-            return input;
-
         return input;
     }
 
     private double getOperand() {
-        input = console.nextLine();
-        if (isExit()) {
-            ExitsUtils.doExit();
-            return 0;
-        } else {
-            if (!isNumeric()) {
-                while (!isNumeric()) {
-                    System.out.println("только число");
-                    input = console.nextLine();
-                    if (isExit()) {
-                        ExitsUtils.doExit();
-                    }
-                }
-            }
-            return Double.parseDouble(input);
+        while (!isNumeric()) {
+            log.warn("введено не число, введи еще раз");
+            input = console.nextLine();
         }
+        return Double.parseDouble(input);
     }
 
     private boolean isNumeric() {

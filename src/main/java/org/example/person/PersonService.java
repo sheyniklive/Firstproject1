@@ -1,80 +1,106 @@
 package org.example.person;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
+import lombok.extern.slf4j.Slf4j;
 import org.example.util.ExitsUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.example.Main.*;
+
+
+@Slf4j
 public class PersonService {
 
-    String yourName;
-    String yourSecName;
-    Scanner console = new Scanner(System.in);
+    private String input;
 
-    public void processPerson() {
-        System.out.println("1 - ты хочешь вручную ввести свои Ф-И,");
-        System.out.println("2 - создадим персона или несколько");
-        System.out.println("или выйти через exit");
-        switch (console.nextLine()) {
+    public void processPersonMenu() {
+        log.info("1 - ты хочешь вручную ввести свои Ф-И,");
+        log.info("2 - создадим персона или несколько");
+        log.info("или выйти в прошлое меню через exit");
+        input = console.nextLine();
+        while (!input.equalsIgnoreCase("exit") && !input.equals("1") && !input.equals("2")) {
+            log.warn("1, 2 или exit - не попал, повтори");
+            input = console.nextLine();
+        }
+        switch (input) {
             case "1":
-                System.out.println("братищщка, чекни имя: ");
-                yourName = console.nextLine();
-                System.out.println("Теперича - как род ваш именуют сударь: ");
-                yourSecName = console.nextLine();
-                System.out.println("Тебя зовут - " + yourName + " " + yourSecName);
-                break;
+                menuStack.addLast(personService::manuallyNameFamilyMenu);
+                return;
             case "2":
-                System.out.println("1 - создать персона(ов) или exit - для котопультирования из программы");
-                switch (console.nextLine()) {
-                    case "1":
-                        addPersons();
-                        break;
-                    case "exit":
-                        ExitsUtils.doExit();
-                        break;
-                    default:
-                        System.out.println("надо было 1, 2 или exit - перезапусти прорамму");
-                        break;
-                }
-                break;
+                menuStack.addLast(personService::addPersons);
+                return;
             case "exit":
-                ExitsUtils.doExit();
-                break;
+                menuStack.removeLast();
+                return;
             default:
-                System.out.println("1, 2 or exit - не попал, выходи и перезапусти");
-                ExitsUtils.doExit();
                 break;
         }
     }
 
 
     private void addPersons() {
-        System.out.println("введи имя:");
+        log.info("введи имя:");
         String name = console.nextLine();
-        System.out.println("фамилию:");
+        log.info("фамилию:");
         String surname = console.nextLine();
-        System.out.println("возраст");
+        log.info("возраст");
         Integer age = console.nextInt();
         console.nextLine();
-        System.out.println("сколько таких ты хочешь?");
-        Integer n = console.nextInt();
+        log.info("сколько таких ты хочешь?");
+        int n = console.nextInt();
         console.nextLine();
         if (n == 1) {
-            var person = List.of(new Person(name, surname, age));
-            System.out.println(person);
+            PersonHolder.personHolder.put(name, new Person(name, surname, age, new ArrayList<>()));
+            askToAddPets();
+            log.info("создан: {}", PersonHolder.personHolder.get(name).toString());
+            ExitsUtils.informingBack();
+            input = console.nextLine();
         } else {
             if (n > 0) {
-                var persons = new ArrayList<Person>();
-                for (Integer i = 0; i < n; i++) {
-                    Person person = new Person(name + "_" + i, surname + "_" + i, age);
-                    persons.add(person);
+                List<String> tempPersons = new ArrayList<>();
+                for (int i = 0; i < n; i++) {
+                    Person person = new Person(name + "_" + i, surname + "_" + i, age, new ArrayList<>());
+                    PersonHolder.personHolder.put(person.getName(), person);
+                    tempPersons.add(person.getName());
                 }
-                System.out.println(persons);
+                askToAddPets();
+                log.info("созданы:");
+                for (String tempName : tempPersons) {
+                    Person tempPerson = PersonHolder.personHolder.get(tempName);
+                    log.info("{}", tempPerson.toString());
+                }
+                ExitsUtils.informingBack();
+                input = console.nextLine();
             } else {
-                System.out.println("не сильно-то и хочешь, пока");
-                ExitsUtils.doExit();
+                log.error("не сильно-то и хочешь, возвращаемся назад");
+                menuStack.removeLast();
             }
+        }
+    }
+
+    private void manuallyNameFamilyMenu() {
+        log.info("братищщка, чекни имя: ");
+        String yourName = console.nextLine();
+        log.info("Теперича - как род ваш именуют сударь: ");
+        String yourSecName = console.nextLine();
+        log.info("Тебя зовут - {} {}", yourName, yourSecName);
+        ExitsUtils.informingBack();
+    }
+
+    private void askToAddPets() {
+        log.info("хочешь добавить питомца (ев)?");
+        log.info("1- да,");
+        log.info("любой другой ввод - нет");
+        input = console.nextLine();
+        if (input.equals("1")) {
+            do {
+                petService.addPets(false);
+                log.info("хочешь добавить другому?");
+                log.info("пиши 'еще'");
+                log.info("любой другой ввод - продолжим");
+                input = console.nextLine();
+            } while (input.equalsIgnoreCase("еще"));
         }
     }
 }
