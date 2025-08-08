@@ -6,9 +6,7 @@ import org.example.person.PersonService;
 import org.example.pet.PetService;
 import org.example.util.ExitsUtils;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Scanner;
+import java.util.*;
 
 @Slf4j
 public class Main {
@@ -21,38 +19,34 @@ public class Main {
     public static void main(String[] args) {
         ExitsUtils.addExits();
         Main main = new Main();
-        menuStack.addLast(main::mainMenu);
+        Map<String, Runnable> menu = new HashMap<>();
+        menu.put("1", personService::processPersonMenu);
+        menu.put("2", calculatorService::calculate);
+        menu.put("3", petService::processPetServiceMenu);
+        if (menuStack.isEmpty()) {
+            menuStack.addLast(() -> main.mainMenu(menu));
+        }
         while (!menuStack.isEmpty()) {
             menuStack.peekLast().run();
         }
     }
 
-    public void mainMenu() {
+    private void mainMenu(Map<String, Runnable> menu) {
         log.info("хорошо, теперь выбери, чем ты хочешь заняться:");
         log.info("1 - поделаем что-то с людьми,");
         log.info("2 - Калькулятор,");
         log.info("3 - повзаимодействуем с возможными питомцами");
         log.info("или введи exit для выхода");
         String input = console.nextLine();
-        while (!input.equals("exit") && !input.equals("1") && !input.equals("2") && !input.equals("3")) {
+        while (!input.equals("exit") && !menu.containsKey(input)) {
             log.warn("неверный ввод, повтори: только 1, 2, 3 или exit");
             input = console.nextLine();
         }
-        switch (input) {
-            case "1":
-                menuStack.addLast(personService::processPersonMenu);
-                return;
-            case "2":
-                menuStack.addLast(calculatorService::calculate);
-                return;
-            case "3":
-                menuStack.addLast(petService::processPetServiceMenu);
-                return;
-            case "exit":
-                ExitsUtils.doExit();
-                break;
-            default:
-                break;
+        if (input.equals("exit")) {
+            ExitsUtils.doExit();
         }
+        Runnable next = menu.get(input);
+        menuStack.addLast(next);
+        next.run();
     }
 }
