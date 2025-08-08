@@ -4,7 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.person.PersonHolder;
 import org.example.util.ExitsUtils;
 
-import static org.example.Main.*;
+import static org.example.Main.console;
+import static org.example.Main.menuStack;
 
 @Slf4j
 public class PetService {
@@ -23,10 +24,10 @@ public class PetService {
         }
         switch (input) {
             case "1":
-                menuStack.addLast(petService::getPets);
+                menuStack.addLast(this::getPets);
                 return;
             case "2":
-                menuStack.addLast(() -> petService.addPets(true));
+                menuStack.addLast(() -> addPets(true));
                 return;
             case "exit":
                 menuStack.removeLast();
