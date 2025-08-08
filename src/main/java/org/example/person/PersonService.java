@@ -25,10 +25,10 @@ public class PersonService {
         }
         switch (input) {
             case "1":
-                menuStack.addLast(personService::manuallyNameFamilyMenu);
+                menuStack.addLast(this::manuallyNameFamilyMenu);
                 return;
             case "2":
-                menuStack.addLast(personService::addPersons);
+                menuStack.addLast(this::addPersons);
                 return;
             case "exit":
                 menuStack.removeLast();
