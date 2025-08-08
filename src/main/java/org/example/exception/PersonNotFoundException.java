@@ -1,7 +1,9 @@
 package org.example.exception;
 
 public class PersonNotFoundException extends RuntimeException {
-    public PersonNotFoundException(String message) {
-        super(message);
+    final String invalidName;
+    public PersonNotFoundException(String name) {
+        super(String.format("Не найдено человека с именем %s", name));
+        invalidName = name;
     }
 }
