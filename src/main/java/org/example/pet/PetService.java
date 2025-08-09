@@ -4,6 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.person.PersonHolder;
 import org.example.util.ExitsUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.example.Main.console;
 import static org.example.Main.menuStack;
 
@@ -13,28 +16,25 @@ public class PetService {
     private String wantPerson;
 
     public void processPetServiceMenu() {
+        Map<String, Runnable> choiseProcessPetServiceMenu = new HashMap<>();
+        choiseProcessPetServiceMenu.put("1", () -> menuStack.addLast(this::getPets));
+        choiseProcessPetServiceMenu.put("2", () -> menuStack.addLast(() -> addPets(true)));
         log.info("выбирай:");
         log.info("1 - пойдем к чьим-то питомцам,");
         log.info("2 - можем добавить кому-нибудь из людей новых");
         log.info("или 'exit' для возврата");
         input = console.nextLine();
-        while (!input.equals("exit") && !input.equals("1") && !input.equals("2")) {
+        while (!input.equals("exit") && !choiseProcessPetServiceMenu.containsKey(input)) {
             log.warn("только 1, 2 или 'exit'- повтори");
             input = console.nextLine();
         }
-        switch (input) {
-            case "1":
-                menuStack.addLast(this::getPets);
-                return;
-            case "2":
-                menuStack.addLast(() -> addPets(true));
-                return;
-            case "exit":
-                menuStack.removeLast();
-                return;
-            default:
-                break;
+        if (input.equals("exit")) {
+            menuStack.removeLast();
+            return;
         }
+        Runnable next = choiseProcessPetServiceMenu.get(input);
+        menuStack.addLast(next);
+        next.run();
     }
 
     public void addPets(boolean needInformingBack) {
@@ -48,33 +48,26 @@ public class PetService {
         do {
             log.info("поехали: как питомца зовут?");
             String petName = console.nextLine();
+            Map<String, Runnable> choiseAddPets = new HashMap<>();
+            choiseAddPets.put("1", () -> PersonHolder.personHolder.get(wantPerson).getPets().add(new Cat(petName)));
+            choiseAddPets.put("2", () -> PersonHolder.personHolder.get(wantPerson).getPets().add(new Dog(petName)));
+            choiseAddPets.put("3", () -> PersonHolder.personHolder.get(wantPerson).getPets().add(new Goose(petName)));
             log.info("кто это:");
             log.info("1 - кошка");
             log.info("2 - собака");
             log.info("3 - гусь");
             input = console.nextLine();
-            while (!input.equals("1") && !input.equals("2") && !input.equals("3")) {
+            while (!choiseAddPets.containsKey(input)) {
                 log.warn("только 1, 2 или 3 - повтори");
                 input = console.nextLine();
             }
-            switch (input) {
-                case "1":
-                    PersonHolder.personHolder.get(wantPerson).getPets().add(new Cat(petName));
-                    break;
-                case "2":
-                    PersonHolder.personHolder.get(wantPerson).getPets().add(new Dog(petName));
-                    break;
-                case "3":
-                    PersonHolder.personHolder.get(wantPerson).getPets().add(new Goose(petName));
-                    break;
-                default:
-                    break;
-            }
+            Runnable addCertainPet = choiseAddPets.get(input);
+            addCertainPet.run();
             log.info("хочешь добавить нового:");
-            log.info("пиши 'еще',");
-            log.info("любой другой ввод - закончим");
+            log.info("1 - да,");
+            log.info("0 - закончим");
             input = console.nextLine();
-        } while (input.equals("еще"));
+        } while (input.equals("1"));
         if (needInformingBack) {
             ExitsUtils.informingBack();
         }
@@ -94,34 +87,34 @@ public class PetService {
             return;
         }
         log.info("вот список его(ее) питомцев: {}", PersonHolder.personHolder.get(wantPerson).getPets().toString());
+        Map<String, Runnable> choiseGetPets = new HashMap<>();
+        choiseGetPets.put("1", () -> {
+            for (Pet pet : PersonHolder.personHolder.get(wantPerson).getPets()) {
+                log.info("{}({})", pet.getName(), pet.getType());
+            }
+            ExitsUtils.informingBack();
+        });
+        choiseGetPets.put("2", () -> {
+            for (Pet pet : PersonHolder.personHolder.get(wantPerson).getPets()) {
+                pet.makeSound();
+            }
+            ExitsUtils.informingBack();
+        });
         log.info("твой выбор:");
         log.info("1 - получить их кличку и вид");
         log.info("2 - они издадут звук (кто умеет)");
         log.info("'exit' для возврата");
         input = console.nextLine();
-        while (!input.equals("1") && !input.equals("2") && !input.equals("exit")) {
+        while (!input.equals("exit") && !choiseGetPets.containsKey(input)) {
             log.warn("только 1, 2 или exit - повтори");
             input = console.nextLine();
         }
-        switch (input) {
-            case "1":
-                for (Pet pet : PersonHolder.personHolder.get(wantPerson).getPets()) {
-                    log.info("{}({})", pet.getName(), pet.getType());
-                }
-                ExitsUtils.informingBack();
-                break;
-            case "2":
-                for (Pet pet : PersonHolder.personHolder.get(wantPerson).getPets()) {
-                    pet.makeSound();
-                }
-                ExitsUtils.informingBack();
-                break;
-            case "exit":
-                menuStack.removeLast();
-                return;
-            default:
-                break;
+        if (input.equals("exit")) {
+            menuStack.removeLast();
+            return;
         }
+        Runnable actionWithPets = choiseGetPets.get(input);
+        actionWithPets.run();
     }
 
     private void whatPersonWant() {

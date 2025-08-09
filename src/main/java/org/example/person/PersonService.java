@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.util.ExitsUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.example.Main.*;
 
@@ -15,27 +17,24 @@ public class PersonService {
     private String input;
 
     public void processPersonMenu() {
+        Map<String, Runnable> choisePersonMenu = new HashMap<>();
+        choisePersonMenu.put("1", () -> menuStack.addLast(this::manuallyNameFamilyMenu));
+        choisePersonMenu.put("2", () -> menuStack.addLast(this::addPersons));
         log.info("1 - ты хочешь вручную ввести свои Ф-И,");
         log.info("2 - создадим персона или несколько");
         log.info("или выйти в прошлое меню через exit");
         input = console.nextLine();
-        while (!input.equalsIgnoreCase("exit") && !input.equals("1") && !input.equals("2")) {
+        while (!input.equalsIgnoreCase("exit") && !choisePersonMenu.containsKey(input)) {
             log.warn("1, 2 или exit - не попал, повтори");
             input = console.nextLine();
         }
-        switch (input) {
-            case "1":
-                menuStack.addLast(this::manuallyNameFamilyMenu);
-                return;
-            case "2":
-                menuStack.addLast(this::addPersons);
-                return;
-            case "exit":
-                menuStack.removeLast();
-                return;
-            default:
-                break;
+        if (input.equalsIgnoreCase("exit")) {
+            menuStack.removeLast();
+            return;
         }
+        Runnable next = choisePersonMenu.get(input);
+        menuStack.addLast(next);
+        next.run();
     }
 
 
@@ -91,16 +90,16 @@ public class PersonService {
     private void askToAddPets() {
         log.info("хочешь добавить питомца (ев)?");
         log.info("1- да,");
-        log.info("любой другой ввод - нет");
+        log.info("0 - нет");
         input = console.nextLine();
         if (input.equals("1")) {
             do {
                 petService.addPets(false);
                 log.info("хочешь добавить другому?");
-                log.info("пиши 'еще'");
-                log.info("любой другой ввод - продолжим");
+                log.info("1 - да");
+                log.info("0 - продолжим");
                 input = console.nextLine();
-            } while (input.equalsIgnoreCase("еще"));
+            } while (input.equals("1"));
         }
     }
 }
