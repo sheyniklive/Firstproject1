@@ -30,26 +30,22 @@ public class ExitsUtils {
         log.info("любой другой ввод - пойдем в программу,");
         log.info("exit - вообще выйдем");
         input = console.nextLine();
-
-        switch (input) {
-            case "1":
-                do {
-                    log.info("давай ключ: ");
-                    String key = console.nextLine();
-                    log.info("теперь фразу,которую ты получишь при выходе: ");
-                    String value = console.nextLine();
-                    mapExits.put(key, value);
-                    log.info("хочешь добавить новую:");
-                    log.info("пиши 'еще',");
-                    log.info("любой другой ввод - пойдем в программу");
-                    input = console.nextLine();
-                } while (input.equals("еще"));
-                break;
-            case "exit":
-                doExit();
-                break;
-            default:
-                break;
+        if (input.equals("exit")) {
+            doExit();
+            return;
+        }
+        if (input.equals("1")) {
+            do {
+                log.info("давай ключ: ");
+                String key = console.nextLine();
+                log.info("теперь фразу,которую ты получишь при выходе: ");
+                String value = console.nextLine();
+                mapExits.put(key, value);
+                log.info("хочешь добавить новую:");
+                log.info("1 - да,");
+                log.info("любой другой ввод - пойдем в программу");
+                input = console.nextLine();
+            } while (input.equals("1"));
         }
     }
 

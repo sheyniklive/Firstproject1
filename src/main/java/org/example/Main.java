@@ -2,9 +2,11 @@ package org.example;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.calculator.CalculatorService;
+import org.example.exception.InvalidMenuChoiceException;
 import org.example.person.PersonService;
 import org.example.pet.PetService;
 import org.example.util.ExitsUtils;
+import org.example.validator.Validators;
 
 import java.util.*;
 
@@ -28,7 +30,7 @@ public class Main {
     }
 
     private void mainMenu() {
-        Map<String, Runnable> choiceMainMenu = new HashMap<>();
+        Map<String, Runnable> choiceMainMenu = new LinkedHashMap<>();
         choiceMainMenu.put("1", personService::processPersonMenu);
         choiceMainMenu.put("2", calculatorService::calculate);
         choiceMainMenu.put("3", petService::processPetServiceMenu);
@@ -38,15 +40,21 @@ public class Main {
         log.info("3 - повзаимодействуем с возможными питомцами");
         log.info("или введи exit для выхода");
         String input = console.nextLine();
-        while (!input.equals("exit") && !choiceMainMenu.containsKey(input)) {
-            log.warn("неверный ввод, повтори: только 1, 2, 3 или exit");
-            input = console.nextLine();
-        }
         if (input.equals("exit")) {
             ExitsUtils.doExit();
+            return;
+        }
+        while (true) {
+            try {
+                Validators.choiceMenu.validate(input);
+                break;
+            } catch (InvalidMenuChoiceException e) {
+                log.error(e.getMessage());
+                log.info("Попробуй еще, варианты: {}", choiceMainMenu.keySet().toString());
+                input = console.nextLine();
+            }
         }
         Runnable next = choiceMainMenu.get(input);
         menuStack.addLast(next);
-        next.run();
     }
 }
