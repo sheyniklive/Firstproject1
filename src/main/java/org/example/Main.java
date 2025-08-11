@@ -39,20 +39,20 @@ public class Main {
         log.info("2 - Калькулятор,");
         log.info("3 - повзаимодействуем с возможными питомцами");
         log.info("или введи exit для выхода");
-        String input = console.nextLine();
-        if (input.equals("exit")) {
-            ExitsUtils.doExit();
-            return;
-        }
+        String input;
         while (true) {
             try {
-                Validators.choiceMenu.validate(input);
+                input = console.nextLine();
+                Validators.choiceMainMenu.validate(input);
                 break;
             } catch (InvalidMenuChoiceException e) {
                 log.error(e.getMessage());
-                log.info("Попробуй еще, варианты: {}", choiceMainMenu.keySet().toString());
-                input = console.nextLine();
+                log.info("Попробуй еще, варианты: {} или exit", choiceMainMenu.keySet());
             }
+        }
+        if (input.equals("exit")) {
+            ExitsUtils.doExit();
+            return;
         }
         Runnable next = choiceMainMenu.get(input);
         menuStack.addLast(next);

@@ -6,8 +6,8 @@ import lombok.Getter;
 public class InvalidAgeException extends RuntimeException {
     private final int invalidAge;
 
-    public InvalidAgeException(Integer age) {
-        super(String.format("Неверно введен возраст: %d, должно быть от 0 до 150 лет", age));
-        invalidAge = age;
+    public InvalidAgeException(String input) {
+        super(String.format("Неверно введен возраст: %s, должно быть от 0 до 150 лет", input));
+        invalidAge = Integer.parseInt(input);
     }
 }

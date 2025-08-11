@@ -1,10 +1,13 @@
 package org.example.person;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.exception.InvalidAgeException;
+import org.example.exception.InvalidMenuChoiceException;
 import org.example.util.ExitsUtils;
+import org.example.validator.Validators;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,24 +20,28 @@ public class PersonService {
     private String input;
 
     public void processPersonMenu() {
-        Map<String, Runnable> choisePersonMenu = new HashMap<>();
-        choisePersonMenu.put("1", () -> menuStack.addLast(this::manuallyNameFamilyMenu));
-        choisePersonMenu.put("2", () -> menuStack.addLast(this::addPersons));
+        Map<String, Runnable> choicePersonMenu = new LinkedHashMap<>();
+        choicePersonMenu.put("1", this::manuallyNameFamilyMenu);
+        choicePersonMenu.put("2", this::addPersons);
         log.info("1 - ты хочешь вручную ввести свои Ф-И,");
         log.info("2 - создадим персона или несколько");
         log.info("или выйти в прошлое меню через exit");
-        input = console.nextLine();
-        while (!input.equalsIgnoreCase("exit") && !choisePersonMenu.containsKey(input)) {
-            log.warn("1, 2 или exit - не попал, повтори");
-            input = console.nextLine();
+        while (true) {
+            try {
+                input = console.nextLine();
+                Validators.choicePersonServiceMenu.validate(input);
+                break;
+            } catch (InvalidMenuChoiceException e) {
+                log.error(e.getMessage());
+                log.info("Попробуй еще раз: {} или exit", choicePersonMenu.keySet());
+            }
         }
         if (input.equalsIgnoreCase("exit")) {
             menuStack.removeLast();
             return;
         }
-        Runnable next = choisePersonMenu.get(input);
+        Runnable next = choicePersonMenu.get(input);
         menuStack.addLast(next);
-        next.run();
     }
 
 
@@ -44,8 +51,17 @@ public class PersonService {
         log.info("фамилию:");
         String surname = console.nextLine();
         log.info("возраст");
-        Integer age = console.nextInt();
-        console.nextLine();
+        while (true) {
+            try {
+                input = console.nextLine();
+                Validators.isValidAge.validate(input);
+                break;
+            } catch (InvalidAgeException e) {
+                log.error(e.getMessage());
+                log.info("давай еще раз");
+            }
+        }
+        Integer age = Integer.parseInt(input);
         log.info("сколько таких ты хочешь?");
         int n = console.nextInt();
         console.nextLine();
@@ -54,7 +70,6 @@ public class PersonService {
             askToAddPets();
             log.info("создан: {}", PersonHolder.personHolder.get(name).toString());
             ExitsUtils.informingBack();
-            input = console.nextLine();
         } else {
             if (n > 0) {
                 List<String> tempPersons = new ArrayList<>();
@@ -70,7 +85,6 @@ public class PersonService {
                     log.info("{}", tempPerson.toString());
                 }
                 ExitsUtils.informingBack();
-                input = console.nextLine();
             } else {
                 log.error("не сильно-то и хочешь, возвращаемся назад");
                 menuStack.removeLast();

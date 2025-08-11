@@ -64,8 +64,11 @@ public class ExitsUtils {
 
     public static void informingBack() {
         log.info("теперь можешь вернуться в прошлое меню через exit");
-        if (console.nextLine().equalsIgnoreCase("exit")) {
-            menuStack.removeLast();
+        String input = console.nextLine();
+        while (!input.equals("exit")) {
+            log.warn("пытаешься ввести что-то другое, попробуй еще");
+            input = console.nextLine();
         }
+        menuStack.removeLast();
     }
 }
