@@ -105,14 +105,32 @@ public class PersonService {
         log.info("хочешь добавить питомца (ев)?");
         log.info("1- да,");
         log.info("0 - нет");
-        input = console.nextLine();
+        while (true) {
+            try {
+                input = console.nextLine();
+                Validators.yesNo.validate(input);
+                break;
+            } catch (InvalidMenuChoiceException e) {
+                log.error(e.getMessage());
+                log.info("введи еще раз 1 или 0");
+            }
+        }
         if (input.equals("1")) {
             do {
                 petService.addPets(false);
                 log.info("хочешь добавить другому?");
                 log.info("1 - да");
                 log.info("0 - продолжим");
-                input = console.nextLine();
+                while (true) {
+                    try {
+                        input = console.nextLine();
+                        Validators.yesNo.validate(input);
+                        break;
+                    } catch (InvalidMenuChoiceException e) {
+                        log.error(e.getMessage());
+                        log.info("1 или 0, еще раз пож-та");
+                    }
+                }
             } while (input.equals("1"));
         }
     }

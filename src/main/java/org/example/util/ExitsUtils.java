@@ -2,6 +2,8 @@ package org.example.util;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.example.exception.InvalidMenuChoiceException;
+import org.example.validator.Validators;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,12 +26,20 @@ public class ExitsUtils {
 
     public static void addExits() {
         String input;
-
         log.info("Привет, хочешь перед началом добавить свои варианты выходных реплик?");
         log.info("введи 1 - чтобы скастомить свою реплику,");
-        log.info("любой другой ввод - пойдем в программу,");
+        log.info("2 - пойдем в программу,");
         log.info("exit - вообще выйдем");
-        input = console.nextLine();
+        while (true) {
+            try {
+                input = console.nextLine();
+                Validators.choiceServicesMenu.validate(input);
+                break;
+            } catch (InvalidMenuChoiceException e) {
+                log.error(e.getMessage());
+                log.info("попробуй еще раз: 1, 2 или exit");
+            }
+        }
         if (input.equals("exit")) {
             doExit();
             return;
@@ -43,8 +53,17 @@ public class ExitsUtils {
                 mapExits.put(key, value);
                 log.info("хочешь добавить новую:");
                 log.info("1 - да,");
-                log.info("любой другой ввод - пойдем в программу");
-                input = console.nextLine();
+                log.info("0 - пойдем в программу");
+                while (true) {
+                    try {
+                        input = console.nextLine();
+                        Validators.yesNo.validate(input);
+                        break;
+                    } catch (InvalidMenuChoiceException e) {
+                        log.error(e.getMessage());
+                        log.info("повтори: 1 или 0");
+                    }
+                }
             } while (input.equals("1"));
         }
     }

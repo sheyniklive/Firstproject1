@@ -7,7 +7,6 @@ import org.example.person.PersonHolder;
 import org.example.util.ExitsUtils;
 import org.example.validator.Validators;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -21,7 +20,7 @@ public class PetService {
 
     public void processPetServiceMenu() {
         Map<String, Runnable> choiceProcessPetServiceMenu = new LinkedHashMap<>();
-        choiceProcessPetServiceMenu.put("1", this::getPets);
+        choiceProcessPetServiceMenu.put("1", this::getPersonPets);
         choiceProcessPetServiceMenu.put("2", () -> addPets(true));
         log.info("выбирай:");
         log.info("1 - пойдем к чьим-то питомцам,");
@@ -56,7 +55,7 @@ public class PetService {
         do {
             log.info("поехали: как питомца зовут?");
             String petName = console.nextLine();
-            Map<String, Runnable> choiceAddPets = new HashMap<>();
+            Map<String, Runnable> choiceAddPets = new LinkedHashMap<>();
             choiceAddPets.put("1", () -> PersonHolder.personHolder.get(wantPerson).getPets().add(new Cat(petName)));
             choiceAddPets.put("2", () -> PersonHolder.personHolder.get(wantPerson).getPets().add(new Dog(petName)));
             choiceAddPets.put("3", () -> PersonHolder.personHolder.get(wantPerson).getPets().add(new Goose(petName)));
@@ -74,14 +73,23 @@ public class PetService {
             log.info("хочешь добавить нового:");
             log.info("1 - да,");
             log.info("0 - закончим");
-            input = console.nextLine();
+            while (true) {
+                try {
+                    input = console.nextLine();
+                    Validators.yesNo.validate(input);
+                    break;
+                } catch (InvalidMenuChoiceException e) {
+                    log.error(e.getMessage());
+                    log.info("попробуй еще: 1/0");
+                }
+            }
         } while (input.equals("1"));
         if (needInformingBack) {
             ExitsUtils.informingBack();
         }
     }
 
-    private void getPets() {
+    private void getPersonPets() {
         if (PersonHolder.personHolder.isEmpty()) {
             log.warn("пока нет ни одного человека");
             menuStack.removeLast();
@@ -95,14 +103,14 @@ public class PetService {
             return;
         }
         log.info("вот список его(ее) питомцев: {}", PersonHolder.personHolder.get(wantPerson).getPets().toString());
-        Map<String, Runnable> choiseGetPets = new HashMap<>();
-        choiseGetPets.put("1", () -> {
+        Map<String, Runnable> choiceGetPersonPets = new LinkedHashMap<>();
+        choiceGetPersonPets.put("1", () -> {
             for (Pet pet : PersonHolder.personHolder.get(wantPerson).getPets()) {
                 log.info("{}({})", pet.getName(), pet.getType());
             }
             ExitsUtils.informingBack();
         });
-        choiseGetPets.put("2", () -> {
+        choiceGetPersonPets.put("2", () -> {
             for (Pet pet : PersonHolder.personHolder.get(wantPerson).getPets()) {
                 pet.makeSound();
             }
@@ -112,16 +120,21 @@ public class PetService {
         log.info("1 - получить их кличку и вид");
         log.info("2 - они издадут звук (кто умеет)");
         log.info("'exit' для возврата");
-        input = console.nextLine();
-        while (!input.equals("exit") && !choiseGetPets.containsKey(input)) {
-            log.warn("только 1, 2 или exit - повтори");
-            input = console.nextLine();
+        while (true) {
+            try {
+                input = console.nextLine();
+                Validators.choiceServicesMenu.validate(input);
+                break;
+            } catch (InvalidMenuChoiceException e) {
+                log.error(e.getMessage());
+                log.info("повтори: {} или exit", choiceGetPersonPets.keySet());
+            }
         }
         if (input.equals("exit")) {
             menuStack.removeLast();
             return;
         }
-        Runnable actionWithPets = choiseGetPets.get(input);
+        Runnable actionWithPets = choiceGetPersonPets.get(input);
         actionWithPets.run();
     }
 
@@ -129,7 +142,7 @@ public class PetService {
         while (true) {
             log.info(PersonHolder.personHolder.keySet().toString());
             try {
-                wantPerson = console.nextLine().trim();
+                wantPerson = console.nextLine();
                 if (PersonHolder.personHolder.containsKey(wantPerson)) {
                     break;
                 } else {
