@@ -10,7 +10,7 @@ public class Validators {
         }
         return true;
     };
-    public static final MenuInputValidator choicePersonServiceMenu = input -> {
+    public static final MenuInputValidator choiceServicesMenu = input -> {
         if (!input.equals("1") && !input.equals("2") && !input.equals("exit")) {
             throw new InvalidMenuChoiceException(input);
         }

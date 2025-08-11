@@ -29,7 +29,7 @@ public class PersonService {
         while (true) {
             try {
                 input = console.nextLine();
-                Validators.choicePersonServiceMenu.validate(input);
+                Validators.choiceServicesMenu.validate(input);
                 break;
             } catch (InvalidMenuChoiceException e) {
                 log.error(e.getMessage());

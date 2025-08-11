@@ -6,8 +6,8 @@ import lombok.Getter;
 public class PersonNotFoundException extends RuntimeException {
     private final String invalidName;
 
-    public PersonNotFoundException(String name) {
-        super(String.format("Не найдено человека с именем %s", name));
-        invalidName = name;
+    public PersonNotFoundException(String wantPerson) {
+        super(String.format("Не найдено человека с именем %s", wantPerson));
+        invalidName = wantPerson;
     }
 }

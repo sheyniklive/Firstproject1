@@ -1,10 +1,14 @@
 package org.example.pet;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.exception.InvalidMenuChoiceException;
+import org.example.exception.PersonNotFoundException;
 import org.example.person.PersonHolder;
 import org.example.util.ExitsUtils;
+import org.example.validator.Validators;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.example.Main.console;
@@ -16,25 +20,29 @@ public class PetService {
     private String wantPerson;
 
     public void processPetServiceMenu() {
-        Map<String, Runnable> choiseProcessPetServiceMenu = new HashMap<>();
-        choiseProcessPetServiceMenu.put("1", () -> menuStack.addLast(this::getPets));
-        choiseProcessPetServiceMenu.put("2", () -> menuStack.addLast(() -> addPets(true)));
+        Map<String, Runnable> choiceProcessPetServiceMenu = new LinkedHashMap<>();
+        choiceProcessPetServiceMenu.put("1", this::getPets);
+        choiceProcessPetServiceMenu.put("2", () -> addPets(true));
         log.info("выбирай:");
         log.info("1 - пойдем к чьим-то питомцам,");
         log.info("2 - можем добавить кому-нибудь из людей новых");
         log.info("или 'exit' для возврата");
-        input = console.nextLine();
-        while (!input.equals("exit") && !choiseProcessPetServiceMenu.containsKey(input)) {
-            log.warn("только 1, 2 или 'exit'- повтори");
-            input = console.nextLine();
+        while (true) {
+            try {
+                input = console.nextLine();
+                Validators.choiceServicesMenu.validate(input);
+                break;
+            } catch (InvalidMenuChoiceException e) {
+                log.error(e.getMessage());
+                log.info("повтори, только {} или exit", choiceProcessPetServiceMenu.keySet());
+            }
         }
         if (input.equals("exit")) {
             menuStack.removeLast();
             return;
         }
-        Runnable next = choiseProcessPetServiceMenu.get(input);
+        Runnable next = choiceProcessPetServiceMenu.get(input);
         menuStack.addLast(next);
-        next.run();
     }
 
     public void addPets(boolean needInformingBack) {
@@ -118,11 +126,19 @@ public class PetService {
     }
 
     private void whatPersonWant() {
-        log.info(PersonHolder.personHolder.keySet().toString());
-        wantPerson = console.nextLine();
-        while (!PersonHolder.personHolder.containsKey(wantPerson)) {
-            log.warn("такого человека не найдено, не получится, введи еще раз как в списке");
-            wantPerson = console.nextLine();
+        while (true) {
+            log.info(PersonHolder.personHolder.keySet().toString());
+            try {
+                wantPerson = console.nextLine().trim();
+                if (PersonHolder.personHolder.containsKey(wantPerson)) {
+                    break;
+                } else {
+                    throw new PersonNotFoundException(wantPerson);
+                }
+            } catch (PersonNotFoundException e) {
+                log.error(e.getMessage());
+                log.info("попробуй еще");
+            }
         }
     }
 }
