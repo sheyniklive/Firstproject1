@@ -56,20 +56,20 @@ public class PetService {
         do {
             log.info("поехали: как питомца зовут?");
             String petName = console.nextLine();
-            Map<String, Runnable> choiseAddPets = new HashMap<>();
-            choiseAddPets.put("1", () -> PersonHolder.personHolder.get(wantPerson).getPets().add(new Cat(petName)));
-            choiseAddPets.put("2", () -> PersonHolder.personHolder.get(wantPerson).getPets().add(new Dog(petName)));
-            choiseAddPets.put("3", () -> PersonHolder.personHolder.get(wantPerson).getPets().add(new Goose(petName)));
+            Map<String, Runnable> choiceAddPets = new HashMap<>();
+            choiceAddPets.put("1", () -> PersonHolder.personHolder.get(wantPerson).getPets().add(new Cat(petName)));
+            choiceAddPets.put("2", () -> PersonHolder.personHolder.get(wantPerson).getPets().add(new Dog(petName)));
+            choiceAddPets.put("3", () -> PersonHolder.personHolder.get(wantPerson).getPets().add(new Goose(petName)));
             log.info("кто это:");
             log.info("1 - кошка");
             log.info("2 - собака");
             log.info("3 - гусь");
             input = console.nextLine();
-            while (!choiseAddPets.containsKey(input)) {
+            while (!choiceAddPets.containsKey(input)) {
                 log.warn("только 1, 2 или 3 - повтори");
                 input = console.nextLine();
             }
-            Runnable addCertainPet = choiseAddPets.get(input);
+            Runnable addCertainPet = choiceAddPets.get(input);
             addCertainPet.run();
             log.info("хочешь добавить нового:");
             log.info("1 - да,");
