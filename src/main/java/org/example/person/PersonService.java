@@ -7,7 +7,6 @@ import org.example.util.ExitsUtils;
 import org.example.validator.Validators;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,13 +15,12 @@ import static org.example.Main.*;
 
 @Slf4j
 public class PersonService {
-
     private String input;
+    private final Map<String, Runnable> choicePersonMenu = Map.of(
+            "1", this::manuallyNameFamilyMenu,
+            "2", this::addPersons);
 
     public void processPersonMenu() {
-        Map<String, Runnable> choicePersonMenu = new LinkedHashMap<>();
-        choicePersonMenu.put("1", this::manuallyNameFamilyMenu);
-        choicePersonMenu.put("2", this::addPersons);
         log.info("1 - ты хочешь вручную ввести свои Ф-И,");
         log.info("2 - создадим персона или несколько");
         log.info("или выйти в прошлое меню через exit");

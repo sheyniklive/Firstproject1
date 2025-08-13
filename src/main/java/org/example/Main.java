@@ -8,7 +8,10 @@ import org.example.pet.PetService;
 import org.example.util.ExitsUtils;
 import org.example.validator.Validators;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Map;
+import java.util.Scanner;
 
 @Slf4j
 public class Main {
@@ -17,6 +20,11 @@ public class Main {
     public static final PetService petService = new PetService();
     public static final CalculatorService calculatorService = new CalculatorService();
     public static final Scanner console = new Scanner(System.in);
+    public final Map<String, Runnable> choiceMainMenu = Map.of(
+            "1", personService::processPersonMenu,
+            "2", calculatorService::calculate,
+            "3", petService::processPetServiceMenu);
+
 
     public static void main(String[] args) {
         ExitsUtils.addExits();
@@ -30,10 +38,6 @@ public class Main {
     }
 
     private void mainMenu() {
-        Map<String, Runnable> choiceMainMenu = new LinkedHashMap<>();
-        choiceMainMenu.put("1", personService::processPersonMenu);
-        choiceMainMenu.put("2", calculatorService::calculate);
-        choiceMainMenu.put("3", petService::processPetServiceMenu);
         log.info("хорошо, теперь выбери, чем ты хочешь заняться:");
         log.info("1 - поделаем что-то с людьми,");
         log.info("2 - Калькулятор,");

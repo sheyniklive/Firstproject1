@@ -7,7 +7,6 @@ import org.example.person.PersonHolder;
 import org.example.util.ExitsUtils;
 import org.example.validator.Validators;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.example.Main.console;
@@ -17,11 +16,32 @@ import static org.example.Main.menuStack;
 public class PetService {
     private String input;
     private String wantPerson;
+    private String petName;
+
+    private final Map<String, Runnable> choiceProcessPetServiceMenu = Map.of(
+            "1", this::getPersonPets,
+            "2", () -> addPets(true));
+
+    private final Map<String, Runnable> choiceAddPets = Map.of(
+            "1", () -> PersonHolder.personHolder.get(wantPerson).getPets().add(new Cat(petName)),
+            "2", () -> PersonHolder.personHolder.get(wantPerson).getPets().add(new Dog(petName)),
+            "3", () -> PersonHolder.personHolder.get(wantPerson).getPets().add(new Goose(petName)));
+
+    private final Map<String, Runnable> choiceGetPersonPets = Map.of(
+            "1", () -> {
+                for (Pet pet : PersonHolder.personHolder.get(wantPerson).getPets()) {
+                    log.info("{}({})", pet.getName(), pet.getType());
+                }
+                ExitsUtils.informingBack();
+            },
+            "2", () -> {
+                for (Pet pet : PersonHolder.personHolder.get(wantPerson).getPets()) {
+                    pet.makeSound();
+                }
+                ExitsUtils.informingBack();
+            });
 
     public void processPetServiceMenu() {
-        Map<String, Runnable> choiceProcessPetServiceMenu = new LinkedHashMap<>();
-        choiceProcessPetServiceMenu.put("1", this::getPersonPets);
-        choiceProcessPetServiceMenu.put("2", () -> addPets(true));
         log.info("выбирай:");
         log.info("1 - пойдем к чьим-то питомцам,");
         log.info("2 - можем добавить кому-нибудь из людей новых");
@@ -54,11 +74,7 @@ public class PetService {
         whatPersonWant();
         do {
             log.info("поехали: как питомца зовут?");
-            String petName = console.nextLine();
-            Map<String, Runnable> choiceAddPets = new LinkedHashMap<>();
-            choiceAddPets.put("1", () -> PersonHolder.personHolder.get(wantPerson).getPets().add(new Cat(petName)));
-            choiceAddPets.put("2", () -> PersonHolder.personHolder.get(wantPerson).getPets().add(new Dog(petName)));
-            choiceAddPets.put("3", () -> PersonHolder.personHolder.get(wantPerson).getPets().add(new Goose(petName)));
+            petName = console.nextLine();
             log.info("кто это:");
             log.info("1 - кошка");
             log.info("2 - собака");
@@ -103,19 +119,6 @@ public class PetService {
             return;
         }
         log.info("вот список его(ее) питомцев: {}", PersonHolder.personHolder.get(wantPerson).getPets().toString());
-        Map<String, Runnable> choiceGetPersonPets = new LinkedHashMap<>();
-        choiceGetPersonPets.put("1", () -> {
-            for (Pet pet : PersonHolder.personHolder.get(wantPerson).getPets()) {
-                log.info("{}({})", pet.getName(), pet.getType());
-            }
-            ExitsUtils.informingBack();
-        });
-        choiceGetPersonPets.put("2", () -> {
-            for (Pet pet : PersonHolder.personHolder.get(wantPerson).getPets()) {
-                pet.makeSound();
-            }
-            ExitsUtils.informingBack();
-        });
         log.info("твой выбор:");
         log.info("1 - получить их кличку и вид");
         log.info("2 - они издадут звук (кто умеет)");
