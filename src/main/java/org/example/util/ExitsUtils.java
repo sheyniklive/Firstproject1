@@ -36,7 +36,7 @@ public class ExitsUtils {
                 Validators.choiceServicesMenu.validate(input);
                 break;
             } catch (InvalidMenuChoiceException e) {
-                log.error(e.getMessage());
+                log.error("", e);
                 log.info("попробуй еще раз: 1, 2 или exit");
             }
         }
@@ -60,7 +60,7 @@ public class ExitsUtils {
                         Validators.yesNo.validate(input);
                         break;
                     } catch (InvalidMenuChoiceException e) {
-                        log.error(e.getMessage());
+                        log.error("", e);
                         log.info("повтори: 1 или 0");
                     }
                 }

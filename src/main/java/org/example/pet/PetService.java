@@ -52,7 +52,7 @@ public class PetService {
                 Validators.choiceServicesMenu.validate(input);
                 break;
             } catch (InvalidMenuChoiceException e) {
-                log.error(e.getMessage());
+                log.error("", e);
                 log.info("повтори, только {} или exit", choiceProcessPetServiceMenu.keySet());
             }
         }
@@ -95,7 +95,7 @@ public class PetService {
                     Validators.yesNo.validate(input);
                     break;
                 } catch (InvalidMenuChoiceException e) {
-                    log.error(e.getMessage());
+                    log.error("", e);
                     log.info("попробуй еще: 1/0");
                 }
             }
@@ -129,7 +129,7 @@ public class PetService {
                 Validators.choiceServicesMenu.validate(input);
                 break;
             } catch (InvalidMenuChoiceException e) {
-                log.error(e.getMessage());
+                log.error("", e);
                 log.info("повтори: {} или exit", choiceGetPersonPets.keySet());
             }
         }
@@ -152,7 +152,7 @@ public class PetService {
                     throw new PersonNotFoundException(wantPerson);
                 }
             } catch (PersonNotFoundException e) {
-                log.error(e.getMessage());
+                log.error("", e);
                 log.info("попробуй еще");
             }
         }

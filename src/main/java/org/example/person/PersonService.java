@@ -16,6 +16,7 @@ import static org.example.Main.*;
 @Slf4j
 public class PersonService {
     private String input;
+
     private final Map<String, Runnable> choicePersonMenu = Map.of(
             "1", this::manuallyNameFamilyMenu,
             "2", this::addPersons);
@@ -30,7 +31,7 @@ public class PersonService {
                 Validators.choiceServicesMenu.validate(input);
                 break;
             } catch (InvalidMenuChoiceException e) {
-                log.error(e.getMessage());
+                log.error("", e);
                 log.info("Попробуй еще раз: {} или exit", choicePersonMenu.keySet());
             }
         }
@@ -55,8 +56,8 @@ public class PersonService {
                 Validators.isValidAge.validate(input);
                 break;
             } catch (InvalidAgeException e) {
-                log.error(e.getMessage());
-                log.info("давай еще раз");
+                log.error("", e);
+                log.info("давай еще раз: должно быть от 0 до 150 лет");
             }
         }
         Integer age = Integer.parseInt(input);
@@ -84,7 +85,8 @@ public class PersonService {
                 }
                 ExitsUtils.informingBack();
             } else {
-                log.error("не сильно-то и хочешь, возвращаемся назад");
+                log.error("введено недопустимое число персонов - 0");
+                log.info("не сильно-то и хочешь, возвращаемся назад");
                 menuStack.removeLast();
             }
         }
@@ -109,7 +111,7 @@ public class PersonService {
                 Validators.yesNo.validate(input);
                 break;
             } catch (InvalidMenuChoiceException e) {
-                log.error(e.getMessage());
+                log.error("", e);
                 log.info("введи еще раз 1 или 0");
             }
         }
@@ -125,7 +127,7 @@ public class PersonService {
                         Validators.yesNo.validate(input);
                         break;
                     } catch (InvalidMenuChoiceException e) {
-                        log.error(e.getMessage());
+                        log.error("", e);
                         log.info("1 или 0, еще раз пож-та");
                     }
                 }

@@ -50,7 +50,7 @@ public class Main {
                 Validators.choiceMainMenu.validate(input);
                 break;
             } catch (InvalidMenuChoiceException e) {
-                log.error(e.getMessage());
+                log.error("", e);
                 log.info("Попробуй еще, варианты: {} или exit", choiceMainMenu.keySet());
             }
         }
