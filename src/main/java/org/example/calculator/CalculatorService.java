@@ -1,6 +1,7 @@
 package org.example.calculator;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.validator.Validators;
 
 import static org.example.Main.console;
 import static org.example.Main.menuStack;
@@ -75,20 +76,11 @@ public class CalculatorService {
     }
 
     private double getOperand() {
-        while (!isNumeric()) {
+        while (!Validators.isNumeric.validate(input)) {
             log.warn("введено не число, введи еще раз");
             input = console.nextLine();
         }
         return Double.parseDouble(input);
-    }
-
-    private boolean isNumeric() {
-        try {
-            Double.parseDouble(input);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
     }
 
     private boolean isExit() {

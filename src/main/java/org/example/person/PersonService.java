@@ -1,41 +1,46 @@
 package org.example.person;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.exception.InvalidAgeException;
+import org.example.exception.InvalidMenuChoiceException;
 import org.example.util.ExitsUtils;
+import org.example.validator.Validators;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.example.Main.*;
 
 
 @Slf4j
 public class PersonService {
-
     private String input;
+
+    private final Map<String, Runnable> choicePersonMenu = Map.of(
+            "1", this::manuallyNameFamilyMenu,
+            "2", this::addPersons);
 
     public void processPersonMenu() {
         log.info("1 - ты хочешь вручную ввести свои Ф-И,");
         log.info("2 - создадим персона или несколько");
         log.info("или выйти в прошлое меню через exit");
-        input = console.nextLine();
-        while (!input.equalsIgnoreCase("exit") && !input.equals("1") && !input.equals("2")) {
-            log.warn("1, 2 или exit - не попал, повтори");
-            input = console.nextLine();
-        }
-        switch (input) {
-            case "1":
-                menuStack.addLast(this::manuallyNameFamilyMenu);
-                return;
-            case "2":
-                menuStack.addLast(this::addPersons);
-                return;
-            case "exit":
-                menuStack.removeLast();
-                return;
-            default:
+        while (true) {
+            try {
+                input = console.nextLine();
+                Validators.choiceServicesMenu.validate(input);
                 break;
+            } catch (InvalidMenuChoiceException e) {
+                log.error("Ошибка выбора меню в PersonService`е", e);
+                log.info("Попробуй еще раз: {} или exit", choicePersonMenu.keySet());
+            }
         }
+        if (input.equalsIgnoreCase("exit")) {
+            menuStack.removeLast();
+            return;
+        }
+        Runnable next = choicePersonMenu.get(input);
+        menuStack.addLast(next);
     }
 
 
@@ -45,8 +50,17 @@ public class PersonService {
         log.info("фамилию:");
         String surname = console.nextLine();
         log.info("возраст");
-        Integer age = console.nextInt();
-        console.nextLine();
+        while (true) {
+            try {
+                input = console.nextLine();
+                Validators.isValidAge.validate(input);
+                break;
+            } catch (InvalidAgeException e) {
+                log.error("Ошибка при вводе возраста", e);
+                log.info("давай еще раз: должно быть от 0 до 150 лет");
+            }
+        }
+        Integer age = Integer.parseInt(input);
         log.info("сколько таких ты хочешь?");
         int n = console.nextInt();
         console.nextLine();
@@ -55,7 +69,6 @@ public class PersonService {
             askToAddPets();
             log.info("создан: {}", PersonHolder.personHolder.get(name).toString());
             ExitsUtils.informingBack();
-            input = console.nextLine();
         } else {
             if (n > 0) {
                 List<String> tempPersons = new ArrayList<>();
@@ -71,9 +84,9 @@ public class PersonService {
                     log.info("{}", tempPerson.toString());
                 }
                 ExitsUtils.informingBack();
-                input = console.nextLine();
             } else {
-                log.error("не сильно-то и хочешь, возвращаемся назад");
+                log.error("введено недопустимое число персонов - 0");
+                log.info("не сильно-то и хочешь, возвращаемся назад");
                 menuStack.removeLast();
             }
         }
@@ -91,16 +104,34 @@ public class PersonService {
     private void askToAddPets() {
         log.info("хочешь добавить питомца (ев)?");
         log.info("1- да,");
-        log.info("любой другой ввод - нет");
-        input = console.nextLine();
+        log.info("0 - нет");
+        while (true) {
+            try {
+                input = console.nextLine();
+                Validators.yesNo.validate(input);
+                break;
+            } catch (InvalidMenuChoiceException e) {
+                log.error("Ошибка выбора действия", e);
+                log.info("введи еще раз 1 или 0");
+            }
+        }
         if (input.equals("1")) {
             do {
                 petService.addPets(false);
                 log.info("хочешь добавить другому?");
-                log.info("пиши 'еще'");
-                log.info("любой другой ввод - продолжим");
-                input = console.nextLine();
-            } while (input.equalsIgnoreCase("еще"));
+                log.info("1 - да");
+                log.info("0 - продолжим");
+                while (true) {
+                    try {
+                        input = console.nextLine();
+                        Validators.yesNo.validate(input);
+                        break;
+                    } catch (InvalidMenuChoiceException e) {
+                        log.error("Ошибка выбора действия", e);
+                        log.info("1 или 0, еще раз пож-та");
+                    }
+                }
+            } while (input.equals("1"));
         }
     }
 }
