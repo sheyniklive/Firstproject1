@@ -31,7 +31,7 @@ public class PersonService {
                 Validators.choiceServicesMenu.validate(input);
                 break;
             } catch (InvalidMenuChoiceException e) {
-                log.error("", e);
+                log.error("Ошибка выбора меню в PersonService`е", e);
                 log.info("Попробуй еще раз: {} или exit", choicePersonMenu.keySet());
             }
         }
@@ -56,7 +56,7 @@ public class PersonService {
                 Validators.isValidAge.validate(input);
                 break;
             } catch (InvalidAgeException e) {
-                log.error("", e);
+                log.error("Ошибка при вводе возраста", e);
                 log.info("давай еще раз: должно быть от 0 до 150 лет");
             }
         }
@@ -111,7 +111,7 @@ public class PersonService {
                 Validators.yesNo.validate(input);
                 break;
             } catch (InvalidMenuChoiceException e) {
-                log.error("", e);
+                log.error("Ошибка выбора действия", e);
                 log.info("введи еще раз 1 или 0");
             }
         }
@@ -127,7 +127,7 @@ public class PersonService {
                         Validators.yesNo.validate(input);
                         break;
                     } catch (InvalidMenuChoiceException e) {
-                        log.error("", e);
+                        log.error("Ошибка выбора действия", e);
                         log.info("1 или 0, еще раз пож-та");
                     }
                 }
