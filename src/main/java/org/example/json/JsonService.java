@@ -9,6 +9,7 @@ import org.example.validator.Validators;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Scanner;
 
 import static org.example.Main.menuStack;
@@ -17,12 +18,40 @@ import static org.example.Main.menuStack;
 public class JsonService {
     private final Scanner console = new Scanner(System.in);
     private final ObjectMapper mapper = new ObjectMapper();
+    private String input;
 
     {
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
+    private final Map<String, Runnable> choiceJsonServiceMenu = Map.of(
+            "1", this::savePersonsToFile,
+            "2", this::loadPersonsFromFile,
+            "3", this::showJsonContent
+    );
+
     public void processJsonService() {
+        log.info("выбери, как будем взаимодействовать с Json`ом:");
+        log.info("1 - сохраним персонов в файл");
+        log.info("2 - выгрузим из файла");
+        log.info("3 - посмотрим содержимое файла");
+        log.info("exit - вернемся в главное меню");
+        while (true) {
+            try {
+                input = console.nextLine();
+                Validators.choiceMenuOf3.validate(input);
+                break;
+            } catch (InvalidMenuChoiceException e) {
+                log.error("неверный выбор меню", e);
+                log.info("повтори: {} или exit", choiceJsonServiceMenu.keySet());
+            }
+        }
+        if (input.equalsIgnoreCase("exit")) {
+            menuStack.removeLast();
+            return;
+        }
+        Runnable next = choiceJsonServiceMenu.get(input);
+        menuStack.addLast(next);
     }
 
     private void savePersonsToFile() {
@@ -63,5 +92,14 @@ public class JsonService {
         }
     }
 
+    private void loadPersonsFromFile() {
+
+
+    }
+
+    private void showJsonContent() {
+
+
+    }
 
 }

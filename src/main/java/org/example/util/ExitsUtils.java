@@ -33,7 +33,7 @@ public class ExitsUtils {
         while (true) {
             try {
                 input = console.nextLine();
-                Validators.choiceServicesMenu.validate(input);
+                Validators.choiceMenuOf2.validate(input);
                 break;
             } catch (InvalidMenuChoiceException e) {
                 log.error("Ошибка выбора меню в ExitUtils`е", e);

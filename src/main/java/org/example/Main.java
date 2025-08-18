@@ -3,6 +3,7 @@ package org.example;
 import lombok.extern.slf4j.Slf4j;
 import org.example.calculator.CalculatorService;
 import org.example.exception.InvalidMenuChoiceException;
+import org.example.json.JsonService;
 import org.example.person.PersonService;
 import org.example.pet.PetService;
 import org.example.util.ExitsUtils;
@@ -19,11 +20,13 @@ public class Main {
     public static final PersonService personService = new PersonService();
     public static final PetService petService = new PetService();
     public static final CalculatorService calculatorService = new CalculatorService();
+    public static final JsonService jsonService = new JsonService();
     public static final Scanner console = new Scanner(System.in);
     public final Map<String, Runnable> choiceMainMenu = Map.of(
             "1", personService::processPersonMenu,
             "2", calculatorService::calculate,
-            "3", petService::processPetServiceMenu);
+            "3", petService::processPetServiceMenu,
+            "4", jsonService::processJsonService);
 
 
     public static void main(String[] args) {
@@ -42,12 +45,13 @@ public class Main {
         log.info("1 - поделаем что-то с людьми,");
         log.info("2 - Калькулятор,");
         log.info("3 - повзаимодействуем с возможными питомцами");
+        log.info("4 - поработаем с JSON");
         log.info("или введи exit для выхода");
         String input;
         while (true) {
             try {
                 input = console.nextLine();
-                Validators.choiceMainMenu.validate(input);
+                Validators.choiceMenuOf4.validate(input);
                 break;
             } catch (InvalidMenuChoiceException e) {
                 log.error("Ошибка выбора в Главном меню", e);
