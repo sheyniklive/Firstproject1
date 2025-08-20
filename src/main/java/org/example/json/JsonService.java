@@ -1,10 +1,13 @@
 package org.example.json;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exception.InvalidMenuChoiceException;
+import org.example.person.Person;
 import org.example.person.PersonHolder;
+import org.example.util.ExitsUtils;
 import org.example.validator.Validators;
 
 import java.io.File;
@@ -18,7 +21,7 @@ import static org.example.Main.menuStack;
 public class JsonService {
     private final Scanner console = new Scanner(System.in);
     private final ObjectMapper mapper = new ObjectMapper();
-    private String input;
+    private String fileName;
 
     {
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -36,6 +39,7 @@ public class JsonService {
         log.info("2 - выгрузим из файла");
         log.info("3 - посмотрим содержимое файла");
         log.info("exit - вернемся в главное меню");
+        String input;
         while (true) {
             try {
                 input = console.nextLine();
@@ -56,7 +60,7 @@ public class JsonService {
 
     private void savePersonsToFile() {
         log.info("введи exit для выхода или название файла, в который будем сохранять:");
-        String fileName = console.nextLine().trim();
+        fileName = console.nextLine().trim();
         if (fileName.equalsIgnoreCase("exit")) {
             menuStack.removeLast();
             return;
@@ -89,17 +93,63 @@ public class JsonService {
             log.info("файл {} успешно сохранен", fullFileName);
         } catch (IOException e) {
             log.error("Ошибка при сохранении JSON-файла", e);
+            log.info("пойдем в начало");
+            return;
         }
+        ExitsUtils.informingBack();
     }
 
     private void loadPersonsFromFile() {
-
-
+        log.info("введи exit или имя файла, из которого будем брать (без '.json'):");
+        fileName = console.nextLine().trim();
+        if (fileName.equalsIgnoreCase("exit")) {
+            menuStack.removeLast();
+            return;
+        }
+        if (fileName.isEmpty()) {
+            log.warn("введено пустое имя файла, начнем сначала");
+            return;
+        }
+        String fullFileName = fileName.endsWith(".json") ? fileName : fileName + ".json";
+        File file = new File(fullFileName);
+        if (!file.exists()) {
+            log.warn("файл {} не найден, идем в начало", fullFileName);
+            return;
+        }
+        Map<String, Person> loadedPersonsFromJson;
+        try {
+            loadedPersonsFromJson = mapper.readValue(file, new TypeReference<>() {
+            });
+        } catch (IOException e) {
+            log.error("ошибка при чтении из JSON", e);
+            log.info("давай попробуем снова");
+            return;
+        }
+        for (Map.Entry<String, Person> entry : loadedPersonsFromJson.entrySet()) {
+            String key = entry.getKey();
+            Person person = entry.getValue();
+            PersonHolder.personHolder.put(key, person);
+        }
     }
 
     private void showJsonContent() {
-
-
+        log.info("давай имя файла, содержимое которого будем смотреть (без.json):");
+        fileName = console.nextLine().trim();
+        if (fileName.equalsIgnoreCase("exit")) {
+            menuStack.removeLast();
+            return;
+        }
+        if (fileName.isEmpty()) {
+            log.warn("ты ввел пустое имя, идем по новой");
+            return;
+        }
+        String fullFileName = fileName.endsWith(".json") ? fileName : fileName + ".json";
+        File file = new File(fullFileName);
+        if (!file.exists()) {
+            log.warn("не обнаружено файла {}, пошли в начало", fullFileName);
+            return;
+        }
+        //как посмотреть?
     }
 
 }
