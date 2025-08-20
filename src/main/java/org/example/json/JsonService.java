@@ -90,7 +90,7 @@ public class JsonService {
         }
         try {
             mapper.writeValue(file, PersonHolder.personHolder);
-            log.info("файл {} успешно сохранен", fullFileName);
+            log.info("файл {} успешно сохранен ({} людей)", fullFileName, PersonHolder.personHolder.size());
         } catch (IOException e) {
             log.error("Ошибка при сохранении JSON-файла", e);
             log.info("пойдем в начало");
@@ -118,7 +118,7 @@ public class JsonService {
         }
         Map<String, Person> loadedPersonsFromJson;
         try {
-            loadedPersonsFromJson = mapper.readValue(file, new TypeReference<>() {
+            loadedPersonsFromJson = mapper.readValue(file, new TypeReference<Map<String, Person>>() {
             });
         } catch (IOException e) {
             log.error("ошибка при чтении из JSON", e);
@@ -151,7 +151,15 @@ public class JsonService {
             log.warn("не обнаружено файла {}, пошли в начало", fullFileName);
             return;
         }
-        //как посмотреть?
+        try {
+            String json = mapper.writeValueAsString(file);
+            log.info("содержимое файла: {}", json);
+        } catch (IOException e) {
+            log.error("проблема при работе с JSON", e);
+            log.info("попробуем снова");
+            return;
+        }
+        ExitsUtils.informingBack();
     }
 
 }
