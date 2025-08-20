@@ -1,6 +1,7 @@
 package org.example.json;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
@@ -74,10 +75,10 @@ public class JsonService {
         if (file.exists()) {
             log.warn("файл {} уже существует - перезаписать? (1 - да, 0 - нет)", fullFileName);
             while (true) {
-                String choiceActionWithFile = console.nextLine();
+                String choiceActionWithFile = console.nextLine().trim();
                 try {
                     Validators.yesNo.validate(choiceActionWithFile);
-                    if (!choiceActionWithFile.equals("1")) {
+                    if (!"1".equals(choiceActionWithFile)) {
                         log.warn("отмена записи в файл - идем в начало");
                         return;
                     }
@@ -125,11 +126,7 @@ public class JsonService {
             log.info("давай попробуем снова");
             return;
         }
-        for (Map.Entry<String, Person> entry : loadedPersonsFromJson.entrySet()) {
-            String key = entry.getKey();
-            Person person = entry.getValue();
-            PersonHolder.personHolder.put(key, person);
-        }
+        PersonHolder.personHolder.putAll(loadedPersonsFromJson);
         log.info("из файла в хранилище успешно загружено {} человек", loadedPersonsFromJson.size());
         ExitsUtils.informingBack();
     }
@@ -152,8 +149,9 @@ public class JsonService {
             return;
         }
         try {
-            String json = mapper.writeValueAsString(file);
-            log.info("содержимое файла: {}", json);
+            JsonNode tree = mapper.readTree(file);
+            String showJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(tree);
+            log.info("содержимое файла: \n{}", showJson);
         } catch (IOException e) {
             log.error("проблема при работе с JSON", e);
             log.info("попробуем снова");
@@ -161,5 +159,4 @@ public class JsonService {
         }
         ExitsUtils.informingBack();
     }
-
 }
