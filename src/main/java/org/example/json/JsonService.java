@@ -130,6 +130,8 @@ public class JsonService {
             Person person = entry.getValue();
             PersonHolder.personHolder.put(key, person);
         }
+        log.info("из файла в хранилище успешно загружено {} человек", loadedPersonsFromJson.size());
+        ExitsUtils.informingBack();
     }
 
     private void showJsonContent() {
