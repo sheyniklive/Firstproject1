@@ -17,7 +17,7 @@ public class CalculatorService {
 
     public void calculate() {
         log.info("Привет, введи первое число (или выйди в главное меню с помощью 'exit': ");
-        input = console.nextLine();
+        input = console.nextLine().trim();
         if (input.equals("exit")) {
             menuStack.removeLast();
             return;
@@ -26,7 +26,7 @@ public class CalculatorService {
 
         while (!isExit()) {
             log.info("введи +, -, * или / (или для выхода введи 'exit'):");
-            input = console.nextLine();
+            input = console.nextLine().trim();
             if (input.equals("exit")) {
                 menuStack.removeLast();
                 return;
@@ -34,7 +34,7 @@ public class CalculatorService {
             operator = getOperator();
 
             log.info("введи второе число (или для выхода введи 'exit'):");
-            input = console.nextLine();
+            input = console.nextLine().trim();
             if (input.equals("exit")) {
                 menuStack.removeLast();
                 return;
@@ -70,7 +70,7 @@ public class CalculatorService {
     private String getOperator() {
         while (!input.equals("+") && !input.equals("-") && !input.equals("*") && !input.equals("/")) {
             log.warn("нужно только +, -, *,  / или exit - введено что-то другое, введи еще раз");
-            input = console.nextLine();
+            input = console.nextLine().trim();
         }
         return input;
     }
@@ -78,7 +78,7 @@ public class CalculatorService {
     private double getOperand() {
         while (!Validators.isNumeric.validate(input)) {
             log.warn("введено не число, введи еще раз");
-            input = console.nextLine();
+            input = console.nextLine().trim();
         }
         return Double.parseDouble(input);
     }
