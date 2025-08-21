@@ -21,8 +21,14 @@ import static org.example.Main.menuStack;
 @Slf4j
 public class JsonService {
     private final Scanner console = new Scanner(System.in);
+    private File file;
+    private String input;
+    private String fullFileName;
+    private boolean needReturn;
+
+    private enum FileActionVariety {SAVE, LOAD, SHOW}
+
     private final ObjectMapper mapper = new ObjectMapper();
-    private String fileName;
 
     {
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -40,7 +46,6 @@ public class JsonService {
         log.info("2 - выгрузим из файла");
         log.info("3 - посмотрим содержимое файла");
         log.info("exit - вернемся в главное меню");
-        String input;
         while (true) {
             try {
                 input = console.nextLine();
@@ -60,34 +65,10 @@ public class JsonService {
     }
 
     private void savePersonsToFile() {
-        log.info("введи exit для выхода или название файла, в который будем сохранять:");
-        fileName = console.nextLine().trim();
-        if (fileName.equalsIgnoreCase("exit")) {
-            menuStack.removeLast();
+        needReturn = false;
+        beginActionJson("введи exit для выхода или название файла, в который будем сохранять:", FileActionVariety.SAVE);
+        if (needReturn) {
             return;
-        }
-        if (fileName.isEmpty()) {
-            log.warn("пустое имя файла, начнем сначала");
-            return;
-        }
-        String fullFileName = fileName.endsWith(".json") ? fileName : fileName + ".json";
-        File file = new File(fullFileName);
-        if (file.exists()) {
-            log.warn("файл {} уже существует - перезаписать? (1 - да, 0 - нет)", fullFileName);
-            while (true) {
-                String choiceActionWithFile = console.nextLine().trim();
-                try {
-                    Validators.yesNo.validate(choiceActionWithFile);
-                    if (!"1".equals(choiceActionWithFile)) {
-                        log.warn("отмена записи в файл - идем в начало");
-                        return;
-                    }
-                    break;
-                } catch (InvalidMenuChoiceException e) {
-                    log.error("неверный ввод действия", e);
-                    log.info("повтори 1 или 0");
-                }
-            }
         }
         try {
             mapper.writeValue(file, PersonHolder.personHolder);
@@ -101,20 +82,9 @@ public class JsonService {
     }
 
     private void loadPersonsFromFile() {
-        log.info("введи exit или имя файла, из которого будем брать (без '.json'):");
-        fileName = console.nextLine().trim();
-        if (fileName.equalsIgnoreCase("exit")) {
-            menuStack.removeLast();
-            return;
-        }
-        if (fileName.isEmpty()) {
-            log.warn("введено пустое имя файла, начнем сначала");
-            return;
-        }
-        String fullFileName = fileName.endsWith(".json") ? fileName : fileName + ".json";
-        File file = new File(fullFileName);
-        if (!file.exists()) {
-            log.warn("файл {} не найден, идем в начало", fullFileName);
+        needReturn = false;
+        beginActionJson("введи exit или имя файла, из которого будем брать (без '.json'):", FileActionVariety.LOAD);
+        if (needReturn) {
             return;
         }
         Map<String, Person> loadedPersonsFromJson;
@@ -127,31 +97,20 @@ public class JsonService {
             return;
         }
         PersonHolder.personHolder.putAll(loadedPersonsFromJson);
-        log.info("из файла в хранилище успешно загружено {} человек", loadedPersonsFromJson.size());
+        log.info("из файла {} в хранилище успешно загружено {} человек", fullFileName, loadedPersonsFromJson.size());
         ExitsUtils.informingBack();
     }
 
     private void showJsonContent() {
-        log.info("давай имя файла, содержимое которого будем смотреть (без.json):");
-        fileName = console.nextLine().trim();
-        if (fileName.equalsIgnoreCase("exit")) {
-            menuStack.removeLast();
-            return;
-        }
-        if (fileName.isEmpty()) {
-            log.warn("ты ввел пустое имя, идем по новой");
-            return;
-        }
-        String fullFileName = fileName.endsWith(".json") ? fileName : fileName + ".json";
-        File file = new File(fullFileName);
-        if (!file.exists()) {
-            log.warn("не обнаружено файла {}, пошли в начало", fullFileName);
+        needReturn = false;
+        beginActionJson("давай имя файла, содержимое которого будем смотреть (без.json):", FileActionVariety.SHOW);
+        if (needReturn) {
             return;
         }
         try {
             JsonNode tree = mapper.readTree(file);
-            String showJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(tree);
-            log.info("содержимое файла: \n{}", showJson);
+            String showJson = mapper.writeValueAsString(tree);
+            log.info("содержимое файла {}: \n{}", fullFileName, showJson);
         } catch (IOException e) {
             log.error("проблема при работе с JSON", e);
             log.info("попробуем снова");
@@ -159,4 +118,59 @@ public class JsonService {
         }
         ExitsUtils.informingBack();
     }
+
+    private void beginActionJson(String ask, FileActionVariety variant) {
+        log.info(ask);
+        input = console.nextLine().trim();
+        if (ifExitOrEmpty(input)) {
+            needReturn = true;
+            return;
+        }
+        fullFileName = input.endsWith(".json") ? input : input + ".json";
+        File intermediateFile = new File(fullFileName);
+        if (variant == FileActionVariety.SAVE) {
+            if (intermediateFile.exists()) {
+                log.warn("файл {} уже существует - перезаписать? (1 - да, 0 - нет)", fullFileName);
+                confirmOverwrite();
+                if (needReturn) {
+                    return;
+                }
+            }
+        } else {
+            if (!intermediateFile.exists()) {
+                log.warn("файл {} не найден, идем в начало", fullFileName);
+            }
+        }
+        file = intermediateFile;
+    }
+
+    private void confirmOverwrite() {
+        while (true) {
+            String choiceConfirmFile = console.nextLine().trim();
+            try {
+                Validators.yesNo.validate(choiceConfirmFile);
+                if (!"1".equals(choiceConfirmFile)) {
+                    log.warn("отмена записи в файл - идем в начало");
+                    needReturn = true;
+                }
+                break;
+            } catch (InvalidMenuChoiceException e) {
+                log.error("неверный ввод действия", e);
+                log.info("повтори 1 или 0");
+            }
+        }
+    }
+
+    private boolean ifExitOrEmpty(String input) {
+        if (input.equalsIgnoreCase("exit")) {
+            menuStack.removeLast();
+            return true;
+        }
+        if (input.isEmpty()) {
+            log.warn("пустое имя файла, начнем сначала");
+            return true;
+        }
+        return false;
+    }
+
 }
