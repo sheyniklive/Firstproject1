@@ -1,9 +1,7 @@
 package org.example.pet;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,17 +14,22 @@ import lombok.extern.slf4j.Slf4j;
 public interface Pet {
     String getName();
 
+    @JsonIgnore
     String getType();
 
     void makeSound();
 }
 
-@RequiredArgsConstructor
 @Getter
 @Slf4j
 @ToString
 class Cat implements Pet {
     private final String name;
+
+    @JsonCreator
+    public Cat(@JsonProperty("name") String name) {
+        this.name = name;
+    }
 
     @Override
     public String getType() {
@@ -39,12 +42,16 @@ class Cat implements Pet {
     }
 }
 
-@RequiredArgsConstructor
 @Getter
 @Slf4j
 @ToString
 class Dog implements Pet {
     private final String name;
+
+    @JsonCreator
+    public Dog(@JsonProperty("name") String name) {
+        this.name = name;
+    }
 
     @Override
     public String getType() {
@@ -57,12 +64,16 @@ class Dog implements Pet {
     }
 }
 
-@RequiredArgsConstructor
 @Getter
 @Slf4j
 @ToString
 class Goose implements Pet {
     private final String name;
+
+    @JsonCreator
+    public Goose(@JsonProperty("name") String name) {
+        this.name = name;
+    }
 
     @Override
     public String getType() {
