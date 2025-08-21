@@ -167,7 +167,7 @@ public class JsonService {
             return true;
         }
         if (input.isEmpty()) {
-            log.warn("пустое имя файла, начнем сначала");
+            log.warn("введено пустое имя файла, начнем сначала");
             return true;
         }
         return false;
