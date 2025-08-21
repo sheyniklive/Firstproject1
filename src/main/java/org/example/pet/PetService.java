@@ -48,7 +48,7 @@ public class PetService {
         log.info("или 'exit' для возврата");
         while (true) {
             try {
-                input = console.nextLine();
+                input = console.nextLine().trim();
                 Validators.choiceMenuOf2.validate(input);
                 break;
             } catch (InvalidMenuChoiceException e) {
@@ -74,15 +74,15 @@ public class PetService {
         whatPersonWant();
         do {
             log.info("поехали: как питомца зовут?");
-            petName = console.nextLine();
+            petName = console.nextLine().trim();
             log.info("кто это:");
             log.info("1 - кошка");
             log.info("2 - собака");
             log.info("3 - гусь");
-            input = console.nextLine();
+            input = console.nextLine().trim();
             while (!choiceAddPets.containsKey(input)) {
                 log.warn("только 1, 2 или 3 - повтори");
-                input = console.nextLine();
+                input = console.nextLine().trim();
             }
             Runnable addCertainPet = choiceAddPets.get(input);
             addCertainPet.run();
@@ -91,7 +91,7 @@ public class PetService {
             log.info("0 - закончим");
             while (true) {
                 try {
-                    input = console.nextLine();
+                    input = console.nextLine().trim();
                     Validators.yesNo.validate(input);
                     break;
                 } catch (InvalidMenuChoiceException e) {
@@ -125,7 +125,7 @@ public class PetService {
         log.info("'exit' для возврата");
         while (true) {
             try {
-                input = console.nextLine();
+                input = console.nextLine().trim();
                 Validators.choiceMenuOf2.validate(input);
                 break;
             } catch (InvalidMenuChoiceException e) {
@@ -145,7 +145,7 @@ public class PetService {
         while (true) {
             log.info(PersonHolder.personHolder.keySet().toString());
             try {
-                wantPerson = console.nextLine();
+                wantPerson = console.nextLine().trim();
                 if (PersonHolder.personHolder.containsKey(wantPerson)) {
                     break;
                 } else {

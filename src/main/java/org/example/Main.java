@@ -50,7 +50,7 @@ public class Main {
         String input;
         while (true) {
             try {
-                input = console.nextLine();
+                input = console.nextLine().trim();
                 Validators.choiceMenuOf4.validate(input);
                 break;
             } catch (InvalidMenuChoiceException e) {
