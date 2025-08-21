@@ -13,6 +13,9 @@ import org.example.validator.Validators;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -34,6 +37,8 @@ public class JsonService {
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
+    private final Path directory = Paths.get("data", "json");
+
     private final Map<String, Runnable> choiceJsonServiceMenu = Map.of(
             "1", this::savePersonsToFile,
             "2", this::loadPersonsFromFile,
@@ -48,7 +53,7 @@ public class JsonService {
         log.info("exit - вернемся в главное меню");
         while (true) {
             try {
-                input = console.nextLine();
+                input = console.nextLine().trim();
                 Validators.choiceMenuOf3.validate(input);
                 break;
             } catch (InvalidMenuChoiceException e) {
@@ -72,7 +77,7 @@ public class JsonService {
         }
         try {
             mapper.writeValue(file, PersonHolder.personHolder);
-            log.info("файл {} успешно сохранен ({} людей)", fullFileName, PersonHolder.personHolder.size());
+            log.info("файл {} успешно сохранен ({} персон), путь: {}", fullFileName, PersonHolder.personHolder.size(), file.getAbsolutePath());
         } catch (IOException e) {
             log.error("Ошибка при сохранении JSON-файла", e);
             log.info("пойдем в начало");
@@ -97,7 +102,7 @@ public class JsonService {
             return;
         }
         PersonHolder.personHolder.putAll(loadedPersonsFromJson);
-        log.info("из файла {} в хранилище успешно загружено {} человек", fullFileName, loadedPersonsFromJson.size());
+        log.info("из файла {} в хранилище успешно загружено {} персон, путь: {}", fullFileName, loadedPersonsFromJson.size(), file.getAbsolutePath());
         ExitsUtils.informingBack();
     }
 
@@ -110,7 +115,7 @@ public class JsonService {
         try {
             JsonNode tree = mapper.readTree(file);
             String showJson = mapper.writeValueAsString(tree);
-            log.info("содержимое файла {}: \n{}", fullFileName, showJson);
+            log.info("содержимое файла {} (путь: {}): \n{}", fullFileName, file.getAbsolutePath(), showJson);
         } catch (IOException e) {
             log.error("проблема при работе с JSON", e);
             log.info("попробуем снова");
@@ -126,22 +131,29 @@ public class JsonService {
             needReturn = true;
             return;
         }
-        fullFileName = input.endsWith(".json") ? input : input + ".json";
-        File intermediateFile = new File(fullFileName);
-        if (variant == FileActionVariety.SAVE) {
-            if (intermediateFile.exists()) {
-                log.warn("файл {} уже существует - перезаписать? (1 - да, 0 - нет)", fullFileName);
-                confirmOverwrite();
-                if (needReturn) {
+        try {
+            Path path = pathToJson(input);
+            fullFileName = path.getFileName().toString();
+            if (variant == FileActionVariety.SAVE) {
+                if (Files.exists(path)) {
+                    log.warn("файл {} уже существует - перезаписать? (1 - да, 0 - нет)", fullFileName);
+                    confirmOverwrite();
+                    if (needReturn) {
+                        return;
+                    }
+                }
+            } else {
+                if (Files.notExists(path)) {
+                    log.warn("файл {} не найден, идем в начало", fullFileName);
+                    needReturn = true;
                     return;
                 }
             }
-        } else {
-            if (!intermediateFile.exists()) {
-                log.warn("файл {} не найден, идем в начало", fullFileName);
-            }
+            file = path.toFile();
+        } catch (IOException e) {
+            log.error("ошибка при создании пути к файлу - начнем вновь", e);
+            needReturn = true;
         }
-        file = intermediateFile;
     }
 
     private void confirmOverwrite() {
@@ -173,4 +185,20 @@ public class JsonService {
         return false;
     }
 
+    private Path pathToJson(String input) throws IOException {
+        checkDirectory();
+        String name = sanitise(input);
+        String fileName = name.endsWith(".json") ? name : name + ".json";
+        return directory.resolve(fileName);
+    }
+
+    private void checkDirectory() throws IOException {
+        if (Files.notExists(directory)) {
+            Files.createDirectories(directory);
+        }
+    }
+
+    private String sanitise(String input) {
+        return input.replaceAll("[\\\\/:*?\"<>|]", "_").trim();
+    }
 }
