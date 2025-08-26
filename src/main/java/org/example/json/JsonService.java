@@ -24,9 +24,6 @@ import static org.example.Main.menuStack;
 @Slf4j
 public class JsonService {
     private final Scanner console = new Scanner(System.in);
-    private File file;
-    private String input;
-    private String fullFileName;
     private boolean needReturn;
 
     private enum FileActionVariety {SAVE, LOAD, SHOW}
@@ -51,9 +48,10 @@ public class JsonService {
         log.info("2 - выгрузим из файла");
         log.info("3 - посмотрим содержимое файла");
         log.info("exit - вернемся в главное меню");
+        String input;
         while (true) {
+            input = console.nextLine().trim();
             try {
-                input = console.nextLine().trim();
                 Validators.choiceMenuOf3.validate(input);
                 break;
             } catch (InvalidMenuChoiceException e) {
@@ -71,13 +69,13 @@ public class JsonService {
 
     private void savePersonsToFile() {
         needReturn = false;
-        beginActionJson("введи exit для выхода или название файла, в который будем сохранять:", FileActionVariety.SAVE);
-        if (needReturn) {
+        File jsonFile = createFileForJson("введи exit для выхода или название файла, в который будем сохранять:", FileActionVariety.SAVE);
+        if (needReturn || jsonFile == null) {
             return;
         }
         try {
-            mapper.writeValue(file, PersonHolder.personHolder);
-            log.info("файл {} успешно сохранен ({} персон), путь: {}", fullFileName, PersonHolder.personHolder.size(), file.getAbsolutePath());
+            mapper.writeValue(jsonFile, PersonHolder.personHolder);
+            log.info("файл успешно сохранен ({} персон), путь: {}", PersonHolder.personHolder.size(), jsonFile.getAbsolutePath());
         } catch (IOException e) {
             log.error("Ошибка при сохранении JSON-файла", e);
             log.info("пойдем в начало");
@@ -88,13 +86,13 @@ public class JsonService {
 
     private void loadPersonsFromFile() {
         needReturn = false;
-        beginActionJson("введи exit или имя файла, из которого будем брать (без '.json'):", FileActionVariety.LOAD);
-        if (needReturn) {
+        File jsonFile = createFileForJson("введи exit или имя файла, из которого будем брать (без '.json'):", FileActionVariety.LOAD);
+        if (needReturn || jsonFile == null) {
             return;
         }
         Map<String, Person> loadedPersonsFromJson;
         try {
-            loadedPersonsFromJson = mapper.readValue(file, new TypeReference<Map<String, Person>>() {
+            loadedPersonsFromJson = mapper.readValue(jsonFile, new TypeReference<Map<String, Person>>() {
             });
         } catch (IOException e) {
             log.error("ошибка при чтении из JSON", e);
@@ -102,20 +100,20 @@ public class JsonService {
             return;
         }
         PersonHolder.personHolder.putAll(loadedPersonsFromJson);
-        log.info("из файла {} в хранилище успешно загружено {} персон, путь: {}", fullFileName, loadedPersonsFromJson.size(), file.getAbsolutePath());
+        log.info("из файла в хранилище успешно загружено {} персон, путь: {}", loadedPersonsFromJson.size(), jsonFile.getAbsolutePath());
         ExitsUtils.informingBack();
     }
 
     private void showJsonContent() {
         needReturn = false;
-        beginActionJson("давай имя файла, содержимое которого будем смотреть (без.json):", FileActionVariety.SHOW);
-        if (needReturn) {
+        File jsonFile = createFileForJson("давай имя файла, содержимое которого будем смотреть (без.json):", FileActionVariety.SHOW);
+        if (needReturn || jsonFile == null) {
             return;
         }
         try {
-            JsonNode tree = mapper.readTree(file);
+            JsonNode tree = mapper.readTree(jsonFile);
             String showJson = mapper.writeValueAsString(tree);
-            log.info("содержимое файла {} (путь: {}): \n{}", fullFileName, file.getAbsolutePath(), showJson);
+            log.info("содержимое файла (путь: {}): \n{}", jsonFile.getAbsolutePath(), showJson);
         } catch (IOException e) {
             log.error("проблема при работе с JSON", e);
             log.info("попробуем снова");
@@ -124,36 +122,40 @@ public class JsonService {
         ExitsUtils.informingBack();
     }
 
-    private void beginActionJson(String ask, FileActionVariety variant) {
+    private File createFileForJson(String ask, FileActionVariety variant) {
         log.info(ask);
-        input = console.nextLine().trim();
+        String input = console.nextLine().trim();
         if (ifExitOrEmpty(input)) {
             needReturn = true;
-            return;
+            return null;
         }
+        File file;
+        Path path;
         try {
-            Path path = pathToJson(input);
-            fullFileName = path.getFileName().toString();
+            path = pathToJson(input);
+            String fullFileName = path.getFileName().toString();
             if (variant == FileActionVariety.SAVE) {
                 if (Files.exists(path)) {
                     log.warn("файл {} уже существует - перезаписать? (1 - да, 0 - нет)", fullFileName);
                     confirmOverwrite();
                     if (needReturn) {
-                        return;
+                        return null;
                     }
                 }
             } else {
                 if (Files.notExists(path)) {
                     log.warn("файл {} не найден, идем в начало", fullFileName);
                     needReturn = true;
-                    return;
+                    return null;
                 }
             }
             file = path.toFile();
         } catch (IOException e) {
             log.error("ошибка при создании пути к файлу - начнем вновь", e);
             needReturn = true;
+            return null;
         }
+        return file;
     }
 
     private void confirmOverwrite() {
@@ -186,13 +188,13 @@ public class JsonService {
     }
 
     private Path pathToJson(String input) throws IOException {
-        checkDirectory();
+        createDirectoryIfNotExist();
         String name = sanitise(input);
         String fileName = name.endsWith(".json") ? name : name + ".json";
         return directory.resolve(fileName);
     }
 
-    private void checkDirectory() throws IOException {
+    private void createDirectoryIfNotExist() throws IOException {
         if (Files.notExists(directory)) {
             Files.createDirectories(directory);
         }
