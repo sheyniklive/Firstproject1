@@ -64,7 +64,7 @@ public class JsonService {
 
     private void savePersonsToFile() {
         needReturn = false;
-        File jsonFile = createFileForJson("введи exit для выхода или название файла, в который будем сохранять:", FileActionVariety.SAVE);
+        File jsonFile = prepareJsonFile("введи exit для выхода или название файла, в который будем сохранять:", FileActionVariety.SAVE);
         if (needReturn || jsonFile == null) {
             return;
         }
@@ -81,7 +81,7 @@ public class JsonService {
 
     private void loadPersonsFromFile() {
         needReturn = false;
-        File jsonFile = createFileForJson("введи exit или имя файла, из которого будем брать (без '.json'):", FileActionVariety.LOAD);
+        File jsonFile = prepareJsonFile("введи exit или имя файла, из которого будем брать (без '.json'):", FileActionVariety.LOAD);
         if (needReturn || jsonFile == null) {
             return;
         }
@@ -101,7 +101,7 @@ public class JsonService {
 
     private void showJsonContent() {
         needReturn = false;
-        File jsonFile = createFileForJson("давай имя файла, содержимое которого будем смотреть (без.json):", FileActionVariety.SHOW);
+        File jsonFile = prepareJsonFile("давай имя файла, содержимое которого будем смотреть (без.json):", FileActionVariety.SHOW);
         if (needReturn || jsonFile == null) {
             return;
         }
@@ -117,10 +117,10 @@ public class JsonService {
         ExitsUtils.informingBack();
     }
 
-    private File createFileForJson(String ask, FileActionVariety variant) {
+    private File prepareJsonFile(String ask, FileActionVariety variant) {
         log.info(ask);
         String input = console.nextLine().trim();
-        if (ifExitOrEmpty(input)) {
+        if (ifExitOrEmptyInput(input)) {
             needReturn = true;
             return null;
         }
@@ -170,7 +170,7 @@ public class JsonService {
         }
     }
 
-    private boolean ifExitOrEmpty(String input) {
+    private boolean ifExitOrEmptyInput(String input) {
         if (input.equalsIgnoreCase("exit")) {
             menuStack.removeLast();
             return true;
