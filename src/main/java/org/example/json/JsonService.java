@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exception.InvalidMenuChoiceException;
+import org.example.json.enums.FileActionVariety;
 import org.example.person.Person;
 import org.example.person.PersonHolder;
 import org.example.util.ExitsUtils;
@@ -26,13 +27,7 @@ public class JsonService {
     private final Scanner console = new Scanner(System.in);
     private boolean needReturn;
 
-    private enum FileActionVariety {SAVE, LOAD, SHOW}
-
-    private final ObjectMapper mapper = new ObjectMapper();
-
-    {
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
-    }
+    private final ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT, SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
 
     private final Path directory = Paths.get("data", "json");
 
