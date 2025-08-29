@@ -1,7 +1,6 @@
 package org.example.json;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
@@ -106,8 +105,7 @@ public class JsonService {
             return;
         }
         try {
-            JsonNode tree = mapper.readTree(jsonFile);
-            String showJson = mapper.writeValueAsString(tree);
+            String showJson = mapper.readTree(jsonFile).toPrettyString();
             log.info("содержимое файла (путь: {}): \n{}", jsonFile.getAbsolutePath(), showJson);
         } catch (IOException e) {
             log.error("проблема при работе с JSON", e);
