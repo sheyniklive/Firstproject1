@@ -100,7 +100,7 @@ public class JsonService {
 
     private void showJsonContent() {
         needReturn = false;
-        File jsonFile = prepareJsonFile("давай имя файла, содержимое которого будем смотреть (без.json):", FileActionVariety.SHOW);
+        File jsonFile = prepareJsonFile("давай имя файла, содержимое которого будем смотреть (без.json): ", FileActionVariety.SHOW);
         if (needReturn || jsonFile == null) {
             return;
         }
