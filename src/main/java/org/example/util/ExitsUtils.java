@@ -32,8 +32,8 @@ public class ExitsUtils {
         log.info("exit - вообще выйдем");
         while (true) {
             try {
-                input = console.nextLine();
-                Validators.choiceServicesMenu.validate(input);
+                input = console.nextLine().trim();
+                Validators.choiceMenuOf2.validate(input);
                 break;
             } catch (InvalidMenuChoiceException e) {
                 log.error("Ошибка выбора меню в ExitUtils`е", e);
@@ -47,16 +47,16 @@ public class ExitsUtils {
         if (input.equals("1")) {
             do {
                 log.info("давай ключ: ");
-                String key = console.nextLine();
+                String key = console.nextLine().trim();
                 log.info("теперь фразу,которую ты получишь при выходе: ");
-                String value = console.nextLine();
+                String value = console.nextLine().trim();
                 mapExits.put(key, value);
                 log.info("хочешь добавить новую:");
                 log.info("1 - да,");
                 log.info("0 - пойдем в программу");
                 while (true) {
                     try {
-                        input = console.nextLine();
+                        input = console.nextLine().trim();
                         Validators.yesNo.validate(input);
                         break;
                     } catch (InvalidMenuChoiceException e) {
@@ -72,10 +72,10 @@ public class ExitsUtils {
         String chooseExit;
         log.info("как с тобой попрощаться - пиши вариант из списка:");
         log.info(mapExits.keySet().toString());
-        chooseExit = console.nextLine();
+        chooseExit = console.nextLine().trim();
         while (!mapExits.containsKey(chooseExit)) {
             log.warn("только ключ из списка - повтори ввод");
-            chooseExit = console.nextLine();
+            chooseExit = console.nextLine().trim();
         }
         log.info(mapExits.get(chooseExit));
         System.exit(0);
@@ -83,10 +83,10 @@ public class ExitsUtils {
 
     public static void informingBack() {
         log.info("теперь можешь вернуться в прошлое меню через exit");
-        String input = console.nextLine();
+        String input = console.nextLine().trim();
         while (!input.equals("exit")) {
             log.warn("пытаешься ввести что-то другое, попробуй еще");
-            input = console.nextLine();
+            input = console.nextLine().trim();
         }
         menuStack.removeLast();
     }

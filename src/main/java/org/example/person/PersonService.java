@@ -27,8 +27,8 @@ public class PersonService {
         log.info("или выйти в прошлое меню через exit");
         while (true) {
             try {
-                input = console.nextLine();
-                Validators.choiceServicesMenu.validate(input);
+                input = console.nextLine().trim();
+                Validators.choiceMenuOf2.validate(input);
                 break;
             } catch (InvalidMenuChoiceException e) {
                 log.error("Ошибка выбора меню в PersonService`е", e);
@@ -46,13 +46,13 @@ public class PersonService {
 
     private void addPersons() {
         log.info("введи имя:");
-        String name = console.nextLine();
+        String name = console.nextLine().trim();
         log.info("фамилию:");
-        String surname = console.nextLine();
+        String surname = console.nextLine().trim();
         log.info("возраст");
         while (true) {
             try {
-                input = console.nextLine();
+                input = console.nextLine().trim();
                 Validators.isValidAge.validate(input);
                 break;
             } catch (InvalidAgeException e) {
@@ -94,9 +94,9 @@ public class PersonService {
 
     private void manuallyNameFamilyMenu() {
         log.info("братищщка, чекни имя: ");
-        String yourName = console.nextLine();
+        String yourName = console.nextLine().trim();
         log.info("Теперича - как род ваш именуют сударь: ");
-        String yourSecName = console.nextLine();
+        String yourSecName = console.nextLine().trim();
         log.info("Тебя зовут - {} {}", yourName, yourSecName);
         ExitsUtils.informingBack();
     }
@@ -107,7 +107,7 @@ public class PersonService {
         log.info("0 - нет");
         while (true) {
             try {
-                input = console.nextLine();
+                input = console.nextLine().trim();
                 Validators.yesNo.validate(input);
                 break;
             } catch (InvalidMenuChoiceException e) {
@@ -123,7 +123,7 @@ public class PersonService {
                 log.info("0 - продолжим");
                 while (true) {
                     try {
-                        input = console.nextLine();
+                        input = console.nextLine().trim();
                         Validators.yesNo.validate(input);
                         break;
                     } catch (InvalidMenuChoiceException e) {
