@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Person {
+    private Long id;
     private String name;
     private String surname;
     private Integer age;
