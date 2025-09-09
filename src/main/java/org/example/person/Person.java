@@ -17,7 +17,4 @@ public class Person {
     private Integer age;
     private List<Pet> pets;
 
-    Person(String name, String surname, Integer age, List<Pet> pets) {
-        this(null, name, surname, age, pets);
-    }
 }
