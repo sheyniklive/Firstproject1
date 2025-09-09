@@ -10,8 +10,8 @@ import java.util.Optional;
 
 @AllArgsConstructor
 public class PersonRepository {
-  /*
-    private String url;
+/*
+    private String url = "jdbc:postgresql://как подтянуть из env";
     private String user;
     private String password;
 
