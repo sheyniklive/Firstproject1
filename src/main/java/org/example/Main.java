@@ -2,10 +2,12 @@ package org.example;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.calculator.CalculatorService;
+import org.example.config.DbConfig;
 import org.example.exception.InvalidMenuChoiceException;
 import org.example.json.JsonService;
 import org.example.person.PersonService;
 import org.example.pet.PetService;
+import org.example.repository.PersonRepository;
 import org.example.util.ExitsUtils;
 import org.example.validator.Validators;
 
@@ -21,6 +23,8 @@ public class Main {
     public static final PetService petService = new PetService();
     public static final CalculatorService calculatorService = new CalculatorService();
     public static final JsonService jsonService = new JsonService();
+    public static final DbConfig dbConfiguration = new DbConfig();
+    public static final PersonRepository personRepository = new PersonRepository(dbConfiguration);
     public static final Scanner console = new Scanner(System.in);
     public final Map<String, Runnable> choiceMainMenu = Map.of(
             "1", personService::processPersonMenu,
