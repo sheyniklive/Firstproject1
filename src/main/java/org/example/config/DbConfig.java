@@ -43,4 +43,7 @@ public class DbConfig {
         return prop.getProperty("db.password", "postgres");
     }
 
+    public String getDbUrl() {
+        return "jdbc:postgresql://" + getHost() + ":" + getPort() + "/" + getDbName();
+    }
 }
