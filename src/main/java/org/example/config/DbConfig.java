@@ -23,27 +23,16 @@ public class DbConfig {
 
     }
 
-    public String getHost() {
-        return prop.getProperty("db.host", "localhost");
-    }
-
-    public int getPort() {
-        return Integer.parseInt(prop.getProperty("db.port", "5432"));
-    }
-
-    public String getDbName() {
-        return prop.getProperty("db.name", "mydb");
-    }
 
     public String getUser() {
-        return prop.getProperty("db.user", "postgres");
+        return prop.getProperty("db.user");
     }
 
     public String getPassword() {
-        return prop.getProperty("db.password", "postgres");
+        return prop.getProperty("db.password");
     }
 
     public String getDbUrl() {
-        return "jdbc:postgresql://" + getHost() + ":" + getPort() + "/" + getDbName();
+        return prop.getProperty("db.url");
     }
 }
