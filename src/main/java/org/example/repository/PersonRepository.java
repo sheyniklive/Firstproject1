@@ -1,5 +1,6 @@
 package org.example.repository;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.config.DbConfig;
@@ -16,7 +17,6 @@ public class PersonRepository() {
     private final DbConfig dbConfig;
 
     public void save(Person person) {
-
         String sqlSelect = "SELECT 1 FROM persons WHERE name = ? FOR UPDATE";
         String sqlUpdate = "UPDATE persons SET surname = ?, age = ?, pets = ? WHERE name = ?";
         String sqlInsert = "INSERT INTO persons (name, surname, age, pets) VALUES (?, ?, ?, ?)";
@@ -103,3 +103,11 @@ public class PersonRepository() {
 
 
 }
+
+ObjectMapper mapper = new ObjectMapper();
+
+try {
+String jsonPets = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(person.getPets());
+                        } catch (Exception e) {
+        log.error("Error while trying to save pets into persons table", e);
+                        }
