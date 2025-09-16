@@ -15,8 +15,16 @@ import java.util.Optional;
 public class PersonRepository() {
 
     private final DbConfig dbConfig;
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public void save(Person person) {
+        String jsonPets = null;
+        try {
+            jsonPets = mapper.writeValueAsString(person.getPets());
+        } catch (Exception e) {
+            log.error("Ошибка при подготовке питомцев в JSON - в БД пойдет пустой", e);
+        }
+
         String sqlSelect = "SELECT 1 FROM persons WHERE name = ? FOR UPDATE";
         String sqlUpdate = "UPDATE persons SET surname = ?, age = ?, pets = ? WHERE name = ?";
         String sqlInsert = "INSERT INTO persons (name, surname, age, pets) VALUES (?, ?, ?, ?)";
@@ -37,7 +45,7 @@ public class PersonRepository() {
                     try (PreparedStatement ps = conn.prepareStatement(sqlUpdate)) {
                         ps.setString(1, person.getSurname());
                         ps.setInt(2, person.getAge());
-                        ps.setString(3, person.getPets());// подумать с objectmapper`ом
+                        ps.setString(3, jsonPets);
                         ps.setString(4, person.getName());
                         ps.executeUpdate();
                     }
@@ -47,7 +55,7 @@ public class PersonRepository() {
                         ps.setString(1, person.getName());
                         ps.setString(2, person.getSurname());
                         ps.setInt(3, person.getAge());
-                        ps.setString(4, person.getPets());  // подумать как сразу давать после маппера
+                        ps.setString(4, jsonPets);
                         ps.executeUpdate();
                     } catch (SQLException e) {
                         if ("23505".equals(e.getSQLState())) {
@@ -55,7 +63,7 @@ public class PersonRepository() {
                             try (PreparedStatement ps = conn.prepareStatement(sqlUpdate)) {
                                 ps.setString(1, person.getSurname());
                                 ps.setInt(2, person.getAge());
-                                ps.setString(3, person.getPets());// подумать с objectmapper`ом
+                                ps.setString(3, jsonPets);
                                 ps.setString(4, person.getName());
                                 ps.executeUpdate();
                             }
@@ -104,10 +112,5 @@ public class PersonRepository() {
 
 }
 
-ObjectMapper mapper = new ObjectMapper();
 
-try {
-String jsonPets = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(person.getPets());
-                        } catch (Exception e) {
-        log.error("Error while trying to save pets into persons table", e);
-                        }
+
