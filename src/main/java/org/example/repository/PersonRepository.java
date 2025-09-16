@@ -18,7 +18,7 @@ public class PersonRepository() {
     private final ObjectMapper mapper = new ObjectMapper();
 
     public void save(Person person) {
-        String jsonPets = null;
+        String jsonPets = "[]";
         try {
             jsonPets = mapper.writeValueAsString(person.getPets());
         } catch (Exception e) {
