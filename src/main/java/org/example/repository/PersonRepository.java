@@ -23,77 +23,83 @@ public class PersonRepository() {
 
         try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword())) {
             conn.setAutoCommit(false);
-            boolean exists;
 
-            try (PreparedStatement ps = conn.prepareStatement(sqlSelect)) {
-                ps.setString(1, person.getName());
-                try (ResultSet rs = ps.executeQuery()) {
-                    exists = rs.next();
-                }
-            }
-            if (exists) {
-                try (PreparedStatement ps = conn.prepareStatement(sqlUpdate)) {
-                    ps.setString(1, person.getSurname());
-                    ps.setInt(2, person.getAge());
-                    ps.setString(3, person.getPets());// подумать с objectmapper`ом
-                    ps.setString(4, person.getName());
-                    ps.executeUpdate();
-                }
-            } else {
-                Savepoint savepoint = conn.setSavepoint();
-                try (PreparedStatement ps = conn.prepareStatement(sqlInsert)) {
+            try {
+                boolean exists;
+                try (PreparedStatement ps = conn.prepareStatement(sqlSelect)) {
                     ps.setString(1, person.getName());
-                    ps.setString(2, person.getSurname());
-                    ps.setInt(3, person.getAge());
-                    ps.setString(4, person.getPets());  // подумать как сразу давать после маппера
-                    ps.executeUpdate();
-                    if ("23505".equals(e.getSQLState())) {
-                        conn.rollback(savepoint);
-                        try (PreparedStatement ps = conn.prepareStatement(sqlUpdate)) {
-                            ps.setString(1, person.getSurname());
-                            ps.setInt(2, person.getAge());
-                            ps.setString(3, person.getPets());// подумать с objectmapper`ом
-                            ps.setString(4, person.getName());
-                            ps.executeUpdate();
-                        }
-                    } else {
-                        throw e;
+                    try (ResultSet rs = ps.executeQuery()) {
+                        exists = rs.next();
                     }
+                }
 
-
-                    conn.commit();
-                } catch (
-                        SQLException ex) {
-                    try {
-                        conn.rollback();
-                    } catch (SQLException rbEx) {
-                        log.error("Не удалось откатить транзакцию", rbEx);
+                if (exists) {
+                    try (PreparedStatement ps = conn.prepareStatement(sqlUpdate)) {
+                        ps.setString(1, person.getSurname());
+                        ps.setInt(2, person.getAge());
+                        ps.setString(3, person.getPets());// подумать с objectmapper`ом
+                        ps.setString(4, person.getName());
+                        ps.executeUpdate();
                     }
-                    throw new RuntimeException("Ошибка при сохранении персона", ex);
-                } finally {
-                    try {
-                        conn.setAutoCommit(true);
+                } else {
+                    Savepoint savepoint = conn.setSavepoint();
+                    try (PreparedStatement ps = conn.prepareStatement(sqlInsert)) {
+                        ps.setString(1, person.getName());
+                        ps.setString(2, person.getSurname());
+                        ps.setInt(3, person.getAge());
+                        ps.setString(4, person.getPets());  // подумать как сразу давать после маппера
+                        ps.executeUpdate();
                     } catch (SQLException e) {
-                        log.error("Ошибка при сохранении персона в БД", e);
-                    }
-                }
-
-
-                public Optional<Person> findByName (String name){
-                    String sqlSelect = "SELECT id, name, surname, age, pets FROM persons WHERE name = ?";
-
-                    try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword()) {
-                        try (PreparedStatement ps) {
-
+                        if ("23505".equals(e.getSQLState())) {
+                            conn.rollback(savepoint);
+                            try (PreparedStatement ps = conn.prepareStatement(sqlUpdate)) {
+                                ps.setString(1, person.getSurname());
+                                ps.setInt(2, person.getAge());
+                                ps.setString(3, person.getPets());// подумать с objectmapper`ом
+                                ps.setString(4, person.getName());
+                                ps.executeUpdate();
+                            }
+                        } else {
+                            throw e;
                         }
-
                     }
                 }
-
-
-                public List<Person> findAll () {
-
+                conn.commit();
+            } catch (SQLException connEx) {
+                try {
+                    conn.rollback();
+                } catch (SQLException rbEx) {
+                    log.error("Не удалось откатить транзакцию", rbEx);
                 }
+                throw connEx;
+            } finally {
+                try {
+                    conn.setAutoCommit(true);
+                } catch (SQLException autoCommitEx) {
+                    log.warn("Не удалось вернуть auto-commit", autoCommitEx);
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Ошибка при сохранении персона в БД", e);
+        }
+    }
 
+
+    public Optional<Person> findByName(String name) {
+        String sqlSelect = "SELECT id, name, surname, age, pets FROM persons WHERE name = ?";
+
+        try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword()) {
+            try (PreparedStatement ps) {
 
             }
+
+        }
+    }
+
+
+    public List<Person> findAll() {
+
+    }
+
+
+}
