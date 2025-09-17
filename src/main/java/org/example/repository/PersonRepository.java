@@ -11,6 +11,7 @@ import org.example.pet.Pet;
 import java.sql.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @AllArgsConstructor
 @Slf4j
@@ -27,9 +28,9 @@ public class PersonRepository() {
             log.error("Ошибка при подготовке питомцев в JSON - в БД пойдет пустой", e);
         }
 
-        String sqlSelect = "SELECT 1 FROM persons WHERE name = ? FOR UPDATE";
-        String sqlUpdate = "UPDATE persons SET surname = ?, age = ?, pets = ? WHERE name = ?";
-        String sqlInsert = "INSERT INTO persons (name, surname, age, pets) VALUES (?, ?, ?, ?)";
+        String sqlSelect = "SELECT 1 FROM persons WHERE id = ? FOR UPDATE";
+        String sqlUpdate = "UPDATE persons SET name = ?, surname = ?, age = ?, pets = ? WHERE id = ?";
+        String sqlInsert = "INSERT INTO persons (id, name, surname, age, pets) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword())) {
             conn.setAutoCommit(false);
@@ -37,7 +38,7 @@ public class PersonRepository() {
             try {
                 boolean exists;
                 try (PreparedStatement ps = conn.prepareStatement(sqlSelect)) {
-                    ps.setString(1, person.getName());
+                    ps.setString(1, String.valueOf(person.getId()));
                     try (ResultSet rs = ps.executeQuery()) {
                         exists = rs.next();
                     }
@@ -45,18 +46,20 @@ public class PersonRepository() {
 
                 if (exists) {
                     try (PreparedStatement ps = conn.prepareStatement(sqlUpdate)) {
-                        ps.setString(1, person.getSurname());
-                        ps.setInt(2, person.getAge());
-                        ps.setString(3, jsonPets);
-                        ps.setString(4, person.getName());
-                        ps.executeUpdate();
-                    }
-                } else {
-                    try (PreparedStatement ps = conn.prepareStatement(sqlInsert)) {
                         ps.setString(1, person.getName());
                         ps.setString(2, person.getSurname());
                         ps.setInt(3, person.getAge());
                         ps.setString(4, jsonPets);
+                        ps.setString(5, String.valueOf(person.getId()));
+                        ps.executeUpdate();
+                    }
+                } else {
+                    try (PreparedStatement ps = conn.prepareStatement(sqlInsert)) {
+                        ps.setString(1, String.valueOf(person.getId()));
+                        ps.setString(2, person.getName());
+                        ps.setString(3, person.getSurname());
+                        ps.setInt(4, person.getAge());
+                        ps.setString(5, jsonPets);
                         ps.executeUpdate();
                     }
                 }
@@ -80,6 +83,7 @@ public class PersonRepository() {
         }
     }
 
+
     public Optional<Person> findByName(String name) {
         String sqlSelect = "SELECT id, name, surname, age, pets FROM persons WHERE name = ?";
 
@@ -89,24 +93,26 @@ public class PersonRepository() {
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         Person person = new Person();
-                        person.setId(rs.getLong("id")); // poka chto
+                        person.setId(UUID.fromString(rs.getString("id")));
                         person.setName(rs.getString("name"));
                         person.setSurname(rs.getString("surname"));
                         person.setAge(rs.getInt("age"));
                         try {
                             person.setPets(mapper.readValue(rs.getString("pets"), new TypeReference<List<Pet>>() {
                             }));
+                            return Optional.of(person);
                         } catch (Exception e) {
-                            log.error("Ошибка при внесении персону питомцев", e);
+                            log.error("Ошибка при сборке персона", e);
                         }
                     }
-                }// poka tak
-
+                }
             }
 
         } catch (SQLException e) {
-
+            log.error("Ошибка при выгрузке персона из БД", e);
+            return Optional.empty();
         }
+        return Optional.empty();
     }
 
 
