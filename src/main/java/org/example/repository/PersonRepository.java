@@ -9,6 +9,7 @@ import org.example.person.Person;
 import org.example.pet.Pet;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -92,25 +93,12 @@ public class PersonRepository() {
                 ps.setString(1, name);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        Person person = new Person();
-                        person.setId(UUID.fromString(rs.getString("id")));
-                        person.setName(rs.getString("name"));
-                        person.setSurname(rs.getString("surname"));
-                        person.setAge(rs.getInt("age"));
-                        try {
-                            person.setPets(mapper.readValue(rs.getString("pets"), new TypeReference<List<Pet>>() {
-                            }));
-                            return Optional.of(person);
-                        } catch (Exception e) {
-                            log.error("Ошибка при сборке персона", e);
-                        }
+                        return Optional.of(mapResultSetToPerson(rs));
                     }
                 }
             }
-
         } catch (SQLException e) {
             log.error("Ошибка при выгрузке персона из БД", e);
-            return Optional.empty();
         }
         return Optional.empty();
     }
@@ -120,7 +108,27 @@ public class PersonRepository() {
 
     }
 
-
+    private Person mapResultSetToPerson(ResultSet rs) throws SQLException {
+        Person person = new Person();
+        person.setId(UUID.fromString(rs.getString("id")));
+        person.setName(rs.getString("name"));
+        person.setSurname(rs.getString("surname"));
+        person.setAge(rs.getInt("age"));
+        String petsJson = rs.getString("pets");
+        if (petsJson != null && !petsJson.isEmpty()) {
+            try {
+                List<Pet> pets = mapper.readValue(petsJson, new TypeReference<>() {
+                });
+                person.setPets(pets);
+            } catch (Exception e) {
+                log.error("Ошибка при сборке персона", e);
+                person.setPets(new ArrayList<>());
+            }
+        } else {
+            person.setPets(new ArrayList<>());
+        }
+        return person;
+    }
 }
 
 
