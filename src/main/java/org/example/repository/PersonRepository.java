@@ -1,33 +1,26 @@
 package org.example.repository;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.config.DbConfig;
 import org.example.person.Person;
-import org.example.pet.Pet;
+import org.example.repository.mapper.PersonMapper;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+
+import static org.example.repository.mapper.PersonMapper.mapper;
 
 @AllArgsConstructor
 @Slf4j
 public class PersonRepository() {
 
     private final DbConfig dbConfig;
-    private final ObjectMapper mapper = new ObjectMapper();
 
     public void save(Person person) {
-        String jsonPets = "[]";
-        try {
-            jsonPets = mapper.writeValueAsString(person.getPets());
-        } catch (Exception e) {
-            log.error("Ошибка при подготовке питомцев в JSON - в БД пойдет пустой", e);
-        }
+
+        String jsonPets = prepareJsonPets(person);
 
         String sqlSelect = "SELECT 1 FROM persons WHERE id = ? FOR UPDATE";
         String sqlUpdate = "UPDATE persons SET name = ?, surname = ?, age = ?, pets = ? WHERE id = ?";
@@ -84,7 +77,6 @@ public class PersonRepository() {
         }
     }
 
-
     public Optional<Person> findByName(String name) {
         String sqlSelect = "SELECT id, name, surname, age, pets FROM persons WHERE name = ?";
 
@@ -93,7 +85,7 @@ public class PersonRepository() {
                 ps.setString(1, name);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        return Optional.of(mapResultSetToPerson(rs));
+                        return Optional.of(PersonMapper.mapPerson(rs));
                     }
                 }
             }
@@ -108,27 +100,16 @@ public class PersonRepository() {
 
     }
 
-    private Person mapResultSetToPerson(ResultSet rs) throws SQLException {
-        Person person = new Person();
-        person.setId(UUID.fromString(rs.getString("id")));
-        person.setName(rs.getString("name"));
-        person.setSurname(rs.getString("surname"));
-        person.setAge(rs.getInt("age"));
-        String petsJson = rs.getString("pets");
-        if (petsJson != null && !petsJson.isEmpty()) {
-            try {
-                List<Pet> pets = mapper.readValue(petsJson, new TypeReference<>() {
-                });
-                person.setPets(pets);
-            } catch (Exception e) {
-                log.error("Ошибка при сборке персона", e);
-                person.setPets(new ArrayList<>());
-            }
-        } else {
-            person.setPets(new ArrayList<>());
+    private String prepareJsonPets(Person person) {
+        String jsonPets = "[]";
+        try {
+            jsonPets = mapper.writeValueAsString(person.getPets());
+        } catch (Exception e) {
+            log.error("Ошибка при подготовке питомцев в JSON - в БД пойдет пустой", e);
         }
-        return person;
+        return jsonPets;
     }
+
 }
 
 
