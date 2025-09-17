@@ -1,10 +1,12 @@
 package org.example.repository;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.config.DbConfig;
 import org.example.person.Person;
+import org.example.pet.Pet;
 
 import java.sql.*;
 import java.util.List;
@@ -96,10 +98,27 @@ public class PersonRepository() {
     public Optional<Person> findByName(String name) {
         String sqlSelect = "SELECT id, name, surname, age, pets FROM persons WHERE name = ?";
 
-        try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword()) {
-            try (PreparedStatement ps) {
+        try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword())) {
+            try (PreparedStatement ps = conn.prepareStatement(sqlSelect)) {
+                ps.setString(1, name);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        Person person = new Person();
+                        person.setId(rs.getLong("id")); // poka chto
+                        person.setName(rs.getString("name"));
+                        person.setSurname(rs.getString("surname"));
+                        person.setAge(rs.getInt("age"));
+                        try {
+                            person.setPets(mapper.readValue(rs.getString("pets"), new TypeReference<List<Pet>>() {}));
+                        } catch (Exception e) {
+                            log.error("Ошибка при внесении персону питомцев", e);
+                        }
+                    }
+                }// poka tak
 
             }
+
+        } catch (SQLException e) {
 
         }
     }
