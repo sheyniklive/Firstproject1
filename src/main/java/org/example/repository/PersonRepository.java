@@ -52,26 +52,12 @@ public class PersonRepository() {
                         ps.executeUpdate();
                     }
                 } else {
-                    Savepoint savepoint = conn.setSavepoint();
                     try (PreparedStatement ps = conn.prepareStatement(sqlInsert)) {
                         ps.setString(1, person.getName());
                         ps.setString(2, person.getSurname());
                         ps.setInt(3, person.getAge());
                         ps.setString(4, jsonPets);
                         ps.executeUpdate();
-                    } catch (SQLException e) {
-                        if ("23505".equals(e.getSQLState())) {
-                            conn.rollback(savepoint);
-                            try (PreparedStatement ps = conn.prepareStatement(sqlUpdate)) {
-                                ps.setString(1, person.getSurname());
-                                ps.setInt(2, person.getAge());
-                                ps.setString(3, jsonPets);
-                                ps.setString(4, person.getName());
-                                ps.executeUpdate();
-                            }
-                        } else {
-                            throw e;
-                        }
                     }
                 }
                 conn.commit();
@@ -94,7 +80,6 @@ public class PersonRepository() {
         }
     }
 
-
     public Optional<Person> findByName(String name) {
         String sqlSelect = "SELECT id, name, surname, age, pets FROM persons WHERE name = ?";
 
@@ -109,7 +94,8 @@ public class PersonRepository() {
                         person.setSurname(rs.getString("surname"));
                         person.setAge(rs.getInt("age"));
                         try {
-                            person.setPets(mapper.readValue(rs.getString("pets"), new TypeReference<List<Pet>>() {}));
+                            person.setPets(mapper.readValue(rs.getString("pets"), new TypeReference<List<Pet>>() {
+                            }));
                         } catch (Exception e) {
                             log.error("Ошибка при внесении персону питомцев", e);
                         }
