@@ -7,14 +7,14 @@ import org.example.person.Person;
 import org.example.repository.mapper.PersonMapper;
 
 import java.sql.*;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+import static org.example.repository.mapper.PersonMapper.mapPerson;
 import static org.example.repository.mapper.PersonMapper.mapper;
 
 @AllArgsConstructor
 @Slf4j
-public class PersonRepository() {
+public class PersonRepository {
 
     private final DbConfig dbConfig;
 
@@ -77,6 +77,7 @@ public class PersonRepository() {
         }
     }
 
+    // поиск по name, как в ТЗ, но с появлением UUID, он уже не уникальный
     public Optional<Person> findByName(String name) {
         String sqlSelect = "SELECT id, name, surname, age, pets FROM persons WHERE name = ?";
 
@@ -84,20 +85,49 @@ public class PersonRepository() {
             try (PreparedStatement ps = conn.prepareStatement(sqlSelect)) {
                 ps.setString(1, name);
                 try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        return Optional.of(PersonMapper.mapPerson(rs));
-                    }
+                    return rs.next() ? Optional.of(PersonMapper.mapPerson(rs)) : Optional.empty();
                 }
             }
         } catch (SQLException e) {
             log.error("Ошибка при выгрузке персона из БД", e);
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
+    // поэтому добавил поиск по UUID
+    public Optional<Person> findById(UUID id) {
+        String sqlSelect = "SELECT id, name, surname, age, pets FROM persons WHERE id = ?";
+
+        try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword())) {
+            try (PreparedStatement ps = conn.prepareStatement(sqlSelect)) {
+                ps.setString(1, String.valueOf(id));
+                try (ResultSet rs = ps.executeQuery()) {
+                    return rs.next() ? Optional.of(PersonMapper.mapPerson(rs)) : Optional.empty();
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Ошибка при выгрузке персона из БД", e);
+            return Optional.empty();
+
+        }
+    }
 
     public List<Person> findAll() {
+        String sqlSelect = "SELECT id, name, surname, age, pets FROM persons";
 
+        try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword());
+             PreparedStatement ps = conn.prepareStatement(sqlSelect);
+             ResultSet rs = ps.executeQuery()) {
+            List<Person> persons = new ArrayList<>();
+            while (rs.next()) {
+                persons.add(mapPerson(rs));
+            }
+            return persons;
+
+        } catch (SQLException e) {
+            log.error("Ошибка при выгрузке персонов из БД, будет выведен пустой список", e);
+            return Collections.emptyList();
+        }
     }
 
     private String prepareJsonPets(Person person) {
@@ -111,6 +141,7 @@ public class PersonRepository() {
     }
 
 }
+
 
 
 
