@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.exception.InvalidMenuChoiceException;
 import org.example.json.enums.FileActionVariety;
 import org.example.person.Person;
-import org.example.person.PersonHolder;
+import org.example.repository.PersonRepository;
 import org.example.util.ExitsUtils;
 import org.example.validator.Validators;
 
@@ -35,6 +35,12 @@ public class JsonService {
             "2", this::loadPersonsFromFile,
             "3", this::showJsonContent
     );
+
+    private final PersonRepository repo;
+
+    public JsonService(PersonRepository personRepository) {
+        this.repo = personRepository;
+    }
 
     public void processJsonService() {
         log.info("выбери, как будем взаимодействовать с Json`ом:");
@@ -68,8 +74,8 @@ public class JsonService {
             return;
         }
         try {
-            mapper.writeValue(jsonFile, PersonHolder.personHolder);
-            log.info("файл успешно сохранен ({} персон), путь: {}", PersonHolder.personHolder.size(), jsonFile.getAbsolutePath());
+            mapper.writeValue(jsonFile, repo.findAll());
+            log.info("файл '{}' успешно сохранен ({} персон)", jsonFile.getAbsolutePath(), repo.findAll().size());
         } catch (IOException e) {
             log.error("Ошибка при сохранении JSON-файла", e);
             log.info("пойдем в начало");
@@ -86,15 +92,17 @@ public class JsonService {
         }
         Map<String, Person> loadedPersonsFromJson;
         try {
-            loadedPersonsFromJson = mapper.readValue(jsonFile, new TypeReference<Map<String, Person>>() {
+            loadedPersonsFromJson = mapper.readValue(jsonFile, new TypeReference<>() {
             });
         } catch (IOException e) {
             log.error("ошибка при чтении из JSON", e);
             log.info("давай попробуем снова");
             return;
         }
-        PersonHolder.personHolder.putAll(loadedPersonsFromJson);
-        log.info("из файла в хранилище успешно загружено {} персон, путь: {}", loadedPersonsFromJson.size(), jsonFile.getAbsolutePath());
+        for (Person person : loadedPersonsFromJson.values()) {
+            repo.save(person);
+        }
+        log.info("из файла '{}' в БД успешно загружено {} персон", jsonFile.getAbsolutePath(), loadedPersonsFromJson.size());
         ExitsUtils.informingBack();
     }
 

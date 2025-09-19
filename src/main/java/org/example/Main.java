@@ -19,12 +19,12 @@ import java.util.Scanner;
 @Slf4j
 public class Main {
     public static final Deque<Runnable> menuStack = new ArrayDeque<>();
-    public static final PersonService personService = new PersonService();
-    public static final PetService petService = new PetService();
-    public static final CalculatorService calculatorService = new CalculatorService();
-    public static final JsonService jsonService = new JsonService();
     public static final DbConfig dbConfiguration = new DbConfig();
     public static final PersonRepository personRepository = new PersonRepository(dbConfiguration);
+    public static final PersonService personService = new PersonService();
+    public static final PetService petService = new PetService();
+    public static final JsonService jsonService = new JsonService(personRepository);
+    public static final CalculatorService calculatorService = new CalculatorService();
     public static final Scanner console = new Scanner(System.in);
     public final Map<String, Runnable> choiceMainMenu = Map.of(
             "1", personService::processPersonMenu,
