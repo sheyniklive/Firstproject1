@@ -75,7 +75,7 @@ public class JsonService {
         }
         try {
             mapper.writeValue(jsonFile, repo.findAll());
-            log.info("файл '{}' успешно сохранен ({} персон)", jsonFile.getAbsolutePath(), repo.findAll().size());
+            log.info("в файл '{}' из БД успешно сохранено {} персон", jsonFile.getAbsolutePath(), repo.findAll().size());
         } catch (IOException e) {
             log.error("Ошибка при сохранении JSON-файла", e);
             log.info("пойдем в начало");

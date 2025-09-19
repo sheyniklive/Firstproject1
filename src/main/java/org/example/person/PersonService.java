@@ -3,12 +3,11 @@ package org.example.person;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exception.InvalidAgeException;
 import org.example.exception.InvalidMenuChoiceException;
+import org.example.repository.PersonRepository;
 import org.example.util.ExitsUtils;
 import org.example.validator.Validators;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.example.Main.*;
 
@@ -20,6 +19,12 @@ public class PersonService {
     private final Map<String, Runnable> choicePersonMenu = Map.of(
             "1", this::manuallyNameFamilyMenu,
             "2", this::addPersons);
+
+    private final PersonRepository repo;
+
+    public PersonService(PersonRepository personRepository) {
+        this.repo = personRepository;
+    }
 
     public void processPersonMenu() {
         log.info("1 - ты хочешь вручную ввести свои Ф-И,");
@@ -65,23 +70,24 @@ public class PersonService {
         int n = console.nextInt();
         console.nextLine();
         if (n == 1) {
-            PersonHolder.personHolder.put(name, new Person(name, surname, age, new ArrayList<>()));
-            askToAddPets();
-            log.info("создан: {}", PersonHolder.personHolder.get(name).toString());
+            Person person = new Person(name, surname, age, new ArrayList<>());
+            askToAddPets();// посмотрится дальше, должен брать персона и сетить петсов
+            repo.save(person);
+            log.info("персон создан и загружен в БД: {}", repo.findById((person.getId())).toString());// ради одного лога ТАКАЯ движуха конечно с тратой ресурсов..))
             ExitsUtils.informingBack();
         } else {
             if (n > 0) {
-                List<String> tempPersons = new ArrayList<>();
+                List<UUID> tempPersonsId = new ArrayList<>();
                 for (int i = 0; i < n; i++) {
                     Person person = new Person(name + "_" + i, surname + "_" + i, age, new ArrayList<>());
-                    PersonHolder.personHolder.put(person.getName(), person);
-                    tempPersons.add(person.getName());
+                    askToAddPets();// посмотрится дальше, должен брать персона и сетить петсов
+                    repo.save(person);
+                    tempPersonsId.add(person.getId());
                 }
-                askToAddPets();
-                log.info("созданы:");
-                for (String tempName : tempPersons) {
-                    Person tempPerson = PersonHolder.personHolder.get(tempName);
-                    log.info("{}", tempPerson.toString());
+                log.info("созданы и загружены в БД:");
+                for (UUID tempId : tempPersonsId) {
+                    Optional<Person> tempPerson = repo.findById(tempId);
+                    log.info("{}", tempPerson.toString());// ради одного лога ТАКАЯ движуха конечно с тратой ресурсов..))
                 }
                 ExitsUtils.informingBack();
             } else {
@@ -101,7 +107,7 @@ public class PersonService {
         ExitsUtils.informingBack();
     }
 
-    private void askToAddPets() {
+    private void askToAddPets() {//должен брать персона и сетить петсов
         log.info("хочешь добавить питомца (ев)?");
         log.info("1- да,");
         log.info("0 - нет");

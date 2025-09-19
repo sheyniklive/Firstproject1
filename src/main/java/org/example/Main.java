@@ -21,7 +21,7 @@ public class Main {
     public static final Deque<Runnable> menuStack = new ArrayDeque<>();
     public static final DbConfig dbConfiguration = new DbConfig();
     public static final PersonRepository personRepository = new PersonRepository(dbConfiguration);
-    public static final PersonService personService = new PersonService();
+    public static final PersonService personService = new PersonService(personRepository);
     public static final PetService petService = new PetService();
     public static final JsonService jsonService = new JsonService(personRepository);
     public static final CalculatorService calculatorService = new CalculatorService();
