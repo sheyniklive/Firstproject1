@@ -138,11 +138,11 @@ public class PersonRepository {
              ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 return rs.getBoolean(1);
-            }
+            } else return false;
         } catch (SQLException e) {
             log.error("Не получилось сделать запрос о наличии содержимого в БД", e);
+            return false;
         }
-        return false;
     }
 
 
