@@ -130,6 +130,22 @@ public class PersonRepository {
         }
     }
 
+    public boolean isExistDbData() {
+        String sqlCheckSelect = "SELECT EXISTS(SELECT 1 FROM persons LIMIT 1)";
+
+        try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword());
+             PreparedStatement ps = conn.prepareStatement(sqlCheckSelect);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getBoolean(1);
+            }
+        } catch (SQLException e) {
+            log.error("Не получилось сделать запрос о наличии содержимого в БД", e);
+        }
+        return false;
+    }
+
+
     private String prepareJsonPets(Person person) {
         String jsonPets = "[]";
         try {

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.exception.InvalidMenuChoiceException;
 import org.example.exception.PersonNotFoundException;
 import org.example.person.PersonHolder;
+import org.example.repository.PersonRepository;
 import org.example.util.ExitsUtils;
 import org.example.validator.Validators;
 
@@ -41,6 +42,12 @@ public class PetService {
                 ExitsUtils.informingBack();
             });
 
+    private final PersonRepository repo;
+
+    public PetService(PersonRepository personRepository) {
+        this.repo = personRepository;
+    }
+
     public void processPetServiceMenu() {
         log.info("выбирай:");
         log.info("1 - пойдем к чьим-то питомцам,");
@@ -64,12 +71,13 @@ public class PetService {
         menuStack.addLast(next);
     }
 
-    public void addPets(boolean needInformingBack) {
-        if (PersonHolder.personHolder.isEmpty()) {
+    public void addPets(boolean needInformingBack/*, Person person*/) {
+        boolean hasAnyDbData = repo.isExistDbData();
+        if (!hasAnyDbData) {
             log.warn("пока не добавлено ни одного человека");
             menuStack.removeLast();
             return;
-        }
+        }// продолжаем тут
         log.info("кому из людей ты хочешь пристроить животное?");
         whatPersonWant();
         do {
