@@ -3,13 +3,14 @@ package org.example.pet;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exception.InvalidMenuChoiceException;
 import org.example.exception.PersonNotFoundException;
-import org.example.person.PersonHolder;
+import org.example.person.Person;
 import org.example.repository.PersonRepository;
 import org.example.util.ExitsUtils;
 import org.example.validator.Validators;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.example.Main.console;
 import static org.example.Main.menuStack;
@@ -17,27 +18,27 @@ import static org.example.Main.menuStack;
 @Slf4j
 public class PetService {
     private String input;
-    private String wantPerson;
     private String petName;
+    private Person currentPerson;
 
     private final Map<String, Runnable> choiceProcessPetServiceMenu = Map.of(
             "1", this::getPersonPets,
             "2", () -> addPets(true));
 
     private final Map<String, Runnable> choiceAddPets = Map.of(
-            "1", () -> PersonHolder.personHolder.get(wantPerson).getPets().add(new Cat(petName)),
-            "2", () -> PersonHolder.personHolder.get(wantPerson).getPets().add(new Dog(petName)),
-            "3", () -> PersonHolder.personHolder.get(wantPerson).getPets().add(new Goose(petName)));
+            "1", () -> currentPerson.getPets().add(new Cat(petName)),
+            "2", () -> currentPerson.getPets().add(new Dog(petName)),
+            "3", () -> currentPerson.getPets().add(new Goose(petName)));
 
     private final Map<String, Runnable> choiceGetPersonPets = Map.of(
             "1", () -> {
-                for (Pet pet : PersonHolder.personHolder.get(wantPerson).getPets()) {
+                for (Pet pet : currentPerson.getPets()) {
                     log.info("{}({})", pet.getName(), pet.getType());
                 }
                 ExitsUtils.informingBack();
             },
             "2", () -> {
-                for (Pet pet : PersonHolder.personHolder.get(wantPerson).getPets()) {
+                for (Pet pet : currentPerson.getPets()) {
                     pet.makeSound();
                 }
                 ExitsUtils.informingBack();
@@ -72,7 +73,7 @@ public class PetService {
         menuStack.addLast(next);
     }
 
-    public void addPets(boolean needInformingBack/*, Person person*/) {
+    public void addPets(boolean needInformingBack) {
         boolean hasAnyDbData = repo.isExistDbData();
         if (!hasAnyDbData) {
             log.warn("пока не добавлено ни одного человека");
@@ -93,7 +94,7 @@ public class PetService {
                 log.warn("только 1, 2 или 3 - повтори");
                 input = console.nextLine().trim();
             }
-            Runnable addCertainPet = choiceAddPets.get(input);// дальше мапу обмозговать
+            Runnable addCertainPet = choiceAddPets.get(input);
             addCertainPet.run();
             log.info("хочешь добавить нового:");
             log.info("1 - да,");
@@ -109,25 +110,27 @@ public class PetService {
                 }
             }
         } while (input.equals("1"));
+        repo.save(currentPerson);
         if (needInformingBack) {
             ExitsUtils.informingBack();
         }
     }
 
     private void getPersonPets() {
-        if (PersonHolder.personHolder.isEmpty()) {
+        boolean hasAnyDbData = repo.isExistDbData();
+        if (!hasAnyDbData) {
             log.warn("пока нет ни одного человека");
             menuStack.removeLast();
             return;
         }
         log.info("с чьими животными ты хочешь взаимодействовать?");
         whatPersonWant();
-        if (PersonHolder.personHolder.get(wantPerson).getPets().isEmpty()) {
+        if (currentPerson.getPets().isEmpty()) {
             log.warn("к сожалению, у этого человека пока нет животных");
             menuStack.removeLast();
             return;
         }
-        log.info("вот список его(ее) питомцев: {}", PersonHolder.personHolder.get(wantPerson).getPets().toString());
+        log.info("вот список его(ее) питомцев: {}", currentPerson.getPets());
         log.info("твой выбор:");
         log.info("1 - получить их кличку и вид");
         log.info("2 - они издадут звук (кто умеет)");
@@ -152,11 +155,13 @@ public class PetService {
 
     private void whatPersonWant() {
         List<String> existsPersonsNames = repo.findAllNames();
-        while (true) {
+        while (!existsPersonsNames.isEmpty()) {
             log.info(existsPersonsNames.toString());
             try {
-                wantPerson = console.nextLine().trim();
+                String wantPerson = console.nextLine().trim();
                 if (existsPersonsNames.contains(wantPerson)) {
+                    Optional<Person> foundedPerson = repo.findByName(wantPerson);
+                    foundedPerson.ifPresent(person -> currentPerson = person);
                     break;
                 } else {
                     throw new PersonNotFoundException(wantPerson);

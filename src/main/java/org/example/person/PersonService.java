@@ -71,23 +71,23 @@ public class PersonService {
         console.nextLine();
         if (n == 1) {
             Person person = new Person(name, surname, age, new ArrayList<>());
-            askToAddPets();// посмотрится дальше, должен брать персона и сетить петсов
             repo.save(person);
-            log.info("персон создан и загружен в БД: {}", repo.findById((person.getId())).toString());// ради одного лога ТАКАЯ движуха конечно с тратой ресурсов..))
+            askToAddPets();
+            log.info("персон создан и загружен в БД: {}", repo.findById((person.getId())).toString());
             ExitsUtils.informingBack();
         } else {
             if (n > 0) {
                 List<UUID> tempPersonsId = new ArrayList<>();
                 for (int i = 0; i < n; i++) {
                     Person person = new Person(name + "_" + i, surname + "_" + i, age, new ArrayList<>());
-                    askToAddPets();// посмотрится дальше, должен брать персона и сетить петсов
                     repo.save(person);
                     tempPersonsId.add(person.getId());
                 }
+                askToAddPets();
                 log.info("созданы и загружены в БД:");
                 for (UUID tempId : tempPersonsId) {
                     Optional<Person> tempPerson = repo.findById(tempId);
-                    log.info("{}", tempPerson.toString());// ради одного лога ТАКАЯ движуха конечно с тратой ресурсов..))
+                    log.info("{}", tempPerson.toString());
                 }
                 ExitsUtils.informingBack();
             } else {
@@ -107,7 +107,7 @@ public class PersonService {
         ExitsUtils.informingBack();
     }
 
-    private void askToAddPets() {//должен брать персона и сетить петсов
+    private void askToAddPets() {
         log.info("хочешь добавить питомца (ев)?");
         log.info("1- да,");
         log.info("0 - нет");
