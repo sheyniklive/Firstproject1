@@ -8,6 +8,7 @@ import org.example.repository.PersonRepository;
 import org.example.util.ExitsUtils;
 import org.example.validator.Validators;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.example.Main.console;
@@ -77,7 +78,7 @@ public class PetService {
             log.warn("пока не добавлено ни одного человека");
             menuStack.removeLast();
             return;
-        }// продолжаем тут
+        }
         log.info("кому из людей ты хочешь пристроить животное?");
         whatPersonWant();
         do {
@@ -92,7 +93,7 @@ public class PetService {
                 log.warn("только 1, 2 или 3 - повтори");
                 input = console.nextLine().trim();
             }
-            Runnable addCertainPet = choiceAddPets.get(input);
+            Runnable addCertainPet = choiceAddPets.get(input);// дальше мапу обмозговать
             addCertainPet.run();
             log.info("хочешь добавить нового:");
             log.info("1 - да,");
@@ -150,11 +151,12 @@ public class PetService {
     }
 
     private void whatPersonWant() {
+        List<String> existsPersonsNames = repo.findAllNames();
         while (true) {
-            log.info(PersonHolder.personHolder.keySet().toString());
+            log.info(existsPersonsNames.toString());
             try {
                 wantPerson = console.nextLine().trim();
-                if (PersonHolder.personHolder.containsKey(wantPerson)) {
+                if (existsPersonsNames.contains(wantPerson)) {
                     break;
                 } else {
                     throw new PersonNotFoundException(wantPerson);

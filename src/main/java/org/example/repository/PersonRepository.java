@@ -130,6 +130,22 @@ public class PersonRepository {
         }
     }
 
+    public List<String> findAllNames() {
+        String sqlSelectAllNames = "SELECT name FROM persons";
+        try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword());
+             PreparedStatement ps = conn.prepareStatement(sqlSelectAllNames);
+             ResultSet rs = ps.executeQuery()) {
+            List<String> names = new ArrayList<>();
+            while (rs.next()) {
+                names.add(rs.getString(1));
+            }
+            return names;
+        } catch (SQLException e) {
+            log.error("Ошибка при выгрузке имен из БД", e);
+            return Collections.emptyList();
+        }
+    }
+
     public boolean isExistDbData() {
         String sqlCheckSelect = "SELECT EXISTS(SELECT 1 FROM persons LIMIT 1)";
 
@@ -144,7 +160,6 @@ public class PersonRepository {
             return false;
         }
     }
-
 
     private String prepareJsonPets(Person person) {
         String jsonPets = "[]";
