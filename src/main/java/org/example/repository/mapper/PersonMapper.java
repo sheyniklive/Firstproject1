@@ -25,7 +25,7 @@ public class PersonMapper {
         person.setSurname(rs.getString("surname"));
         person.setAge(rs.getInt("age"));
         String petsJson = rs.getString("pets");
-        if (petsJson != null && !petsJson.isEmpty()) {
+        if (petsJson != null && !petsJson.isEmpty() && !petsJson.equals("[]")) {
             try {
                 List<Pet> pets = mapper.readValue(petsJson, new TypeReference<>() {
                 });

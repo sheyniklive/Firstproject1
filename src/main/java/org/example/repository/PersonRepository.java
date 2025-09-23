@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.config.DbConfig;
 import org.example.person.Person;
+import org.example.pet.Pet;
 import org.example.repository.mapper.PersonMapper;
 
 import java.sql.*;
@@ -164,7 +165,9 @@ public class PersonRepository {
     private String prepareJsonPets(Person person) {
         String jsonPets = "[]";
         try {
-            jsonPets = mapper.writeValueAsString(person.getPets());
+            List<Pet> pets = person.getPets();
+            jsonPets = mapper.writeValueAsString(pets);
+            log.info("положили персону json в питомцев{}", jsonPets);
         } catch (Exception e) {
             log.error("Ошибка при подготовке питомцев в JSON - в БД пойдет пустой", e);
         }

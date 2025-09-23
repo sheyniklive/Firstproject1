@@ -96,6 +96,7 @@ public class PetService {
             }
             Runnable addCertainPet = choiceAddPets.get(input);
             addCertainPet.run();
+            log.info("данные персона обновлены: {}", currentPerson.getPets());
             log.info("хочешь добавить нового:");
             log.info("1 - да,");
             log.info("0 - закончим");
