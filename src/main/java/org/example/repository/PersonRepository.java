@@ -126,7 +126,7 @@ public class PersonRepository {
             return persons;
 
         } catch (SQLException e) {
-            log.error("Ошибка при выгрузке персонов из БД, будет выведен пустой список", e);
+            log.error("Ошибка при выгрузке персон из БД, будет выведен пустой список", e);
             return Collections.emptyList();
         }
     }
