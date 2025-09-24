@@ -155,7 +155,7 @@ public class PetService {
     }
 
     private void whatPersonWant() {
-        List<String> existsPersonsNames = repo.findAllNames();
+        List<String> existsPersonsNames = repo.showAllNames();
         while (!existsPersonsNames.isEmpty()) {
             log.info(existsPersonsNames.toString());
             try {

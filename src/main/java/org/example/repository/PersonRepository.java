@@ -131,7 +131,7 @@ public class PersonRepository {
         }
     }
 
-    public List<String> findAllNames() {
+    public List<String> showAllNames() {
         String sqlSelectAllNames = "SELECT name FROM persons";
         try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword());
              PreparedStatement ps = conn.prepareStatement(sqlSelectAllNames);
