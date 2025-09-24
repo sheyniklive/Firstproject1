@@ -1,5 +1,6 @@
 package org.example.repository;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.config.DbConfig;
@@ -78,7 +79,6 @@ public class PersonRepository {
         }
     }
 
-    // поиск по name, как в ТЗ, но с появлением UUID, он уже не уникальный
     public Optional<Person> findByName(String name) {
         String sqlSelect = "SELECT id, name, surname, age, pets FROM persons WHERE name = ?";
 
@@ -95,7 +95,6 @@ public class PersonRepository {
         }
     }
 
-    // поэтому добавил поиск по UUID
     public Optional<Person> findById(UUID id) {
         String sqlSelect = "SELECT id, name, surname, age, pets FROM persons WHERE id = ?";
 
@@ -166,7 +165,9 @@ public class PersonRepository {
         String jsonPets = "[]";
         try {
             List<Pet> pets = person.getPets();
-            jsonPets = mapper.writeValueAsString(pets);
+            jsonPets = mapper.writerFor(new TypeReference<List<Pet>>() {
+                    })
+                    .writeValueAsString(pets);
             log.info("положили персону json в питомцев{}", jsonPets);
         } catch (Exception e) {
             log.error("Ошибка при подготовке питомцев в JSON - в БД пойдет пустой", e);
