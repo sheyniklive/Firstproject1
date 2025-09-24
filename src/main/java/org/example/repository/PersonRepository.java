@@ -74,6 +74,7 @@ public class PersonRepository {
                     log.warn("Не удалось вернуть auto-commit", autoCommitEx);
                 }
             }
+            log.info("в БД успешно отправлен персон: {}", person);
         } catch (SQLException e) {
             log.error("Ошибка при сохранении персона в БД", e);
         }
@@ -168,7 +169,7 @@ public class PersonRepository {
             jsonPets = mapper.writerFor(new TypeReference<List<Pet>>() {
                     })
                     .writeValueAsString(pets);
-            log.info("положили персону json в питомцев{}", jsonPets);
+            log.info("перед отправкой в БД подготовили персону по имени '{}' json-строку в поле питомцев: {}", person.getName(), jsonPets);
         } catch (Exception e) {
             log.error("Ошибка при подготовке питомцев в JSON - в БД пойдет пустой", e);
         }

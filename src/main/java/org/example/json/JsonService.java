@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -90,16 +91,16 @@ public class JsonService {
         if (needReturn || jsonFile == null) {
             return;
         }
-        Map<String, Person> loadedPersonsFromJson;
+        List<Person> loadedPersonsFromJson;
         try {
-            loadedPersonsFromJson = mapper.readValue(jsonFile, new TypeReference<>() {
+            loadedPersonsFromJson = mapper.readValue(jsonFile, new TypeReference<List<Person>>() {
             });
         } catch (IOException e) {
             log.error("ошибка при чтении из JSON", e);
             log.info("давай попробуем снова");
             return;
         }
-        for (Person person : loadedPersonsFromJson.values()) {
+        for (Person person : loadedPersonsFromJson) {
             repo.save(person);
         }
         log.info("из файла '{}' в БД успешно загружено {} персон", jsonFile.getAbsolutePath(), loadedPersonsFromJson.size());
