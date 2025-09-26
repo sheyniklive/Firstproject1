@@ -29,49 +29,30 @@ public class PersonRepository {
         String sqlInsert = "INSERT INTO persons (id, name, surname, age, pets) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword())) {
-            conn.setAutoCommit(false);
-
-            try {
-                boolean exists;
-                try (PreparedStatement ps = conn.prepareStatement(sqlSelect)) {
-                    ps.setString(1, String.valueOf(person.getId()));
-                    try (ResultSet rs = ps.executeQuery()) {
-                        exists = rs.next();
-                    }
+            boolean exists;
+            try (PreparedStatement psSelect = conn.prepareStatement(sqlSelect)) {
+                psSelect.setString(1, String.valueOf(person.getId()));
+                try (ResultSet rs = psSelect.executeQuery()) {
+                    exists = rs.next();
                 }
-
-                if (exists) {
-                    try (PreparedStatement ps = conn.prepareStatement(sqlUpdate)) {
-                        ps.setString(1, person.getName());
-                        ps.setString(2, person.getSurname());
-                        ps.setInt(3, person.getAge());
-                        ps.setString(4, jsonPets);
-                        ps.setString(5, String.valueOf(person.getId()));
-                        ps.executeUpdate();
-                    }
-                } else {
-                    try (PreparedStatement ps = conn.prepareStatement(sqlInsert)) {
-                        ps.setString(1, String.valueOf(person.getId()));
-                        ps.setString(2, person.getName());
-                        ps.setString(3, person.getSurname());
-                        ps.setInt(4, person.getAge());
-                        ps.setString(5, jsonPets);
-                        ps.executeUpdate();
-                    }
+            }
+            if (exists) {
+                try (PreparedStatement psUpdate = conn.prepareStatement(sqlUpdate)) {
+                    psUpdate.setString(1, person.getName());
+                    psUpdate.setString(2, person.getSurname());
+                    psUpdate.setInt(3, person.getAge());
+                    psUpdate.setString(4, jsonPets);
+                    psUpdate.setString(5, String.valueOf(person.getId()));
+                    psUpdate.executeUpdate();
                 }
-                conn.commit();
-            } catch (SQLException connEx) {
-                try {
-                    conn.rollback();
-                } catch (SQLException rbEx) {
-                    log.error("Не удалось откатить транзакцию", rbEx);
-                }
-                throw connEx;
-            } finally {
-                try {
-                    conn.setAutoCommit(true);
-                } catch (SQLException autoCommitEx) {
-                    log.warn("Не удалось вернуть auto-commit", autoCommitEx);
+            } else {
+                try (PreparedStatement psInsert = conn.prepareStatement(sqlInsert)) {
+                    psInsert.setString(1, String.valueOf(person.getId()));
+                    psInsert.setString(2, person.getName());
+                    psInsert.setString(3, person.getSurname());
+                    psInsert.setInt(4, person.getAge());
+                    psInsert.setString(5, jsonPets);
+                    psInsert.executeUpdate();
                 }
             }
             log.info("в БД успешно отправлен персон: {}", person);
