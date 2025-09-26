@@ -70,7 +70,7 @@ public class PersonService {
         int n = console.nextInt();
         console.nextLine();
         if (n == 1) {
-            Person person = new Person(name, surname, age, new ArrayList<>());
+            Person person = new Person(UUID.randomUUID(), name, surname, age, new ArrayList<>());
             repo.save(person);
             askToAddPets();
             log.info("персон создан и загружен в БД: {}", repo.findById((person.getId())).toString());
@@ -79,7 +79,7 @@ public class PersonService {
             if (n > 0) {
                 List<UUID> tempPersonsId = new ArrayList<>();
                 for (int i = 0; i < n; i++) {
-                    Person person = new Person(name + "_" + i, surname + "_" + i, age, new ArrayList<>());
+                    Person person = new Person(UUID.randomUUID(), name + "_" + i, surname + "_" + i, age, new ArrayList<>());
                     repo.save(person);
                     tempPersonsId.add(person.getId());
                 }

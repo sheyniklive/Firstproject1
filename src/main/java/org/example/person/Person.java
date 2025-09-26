@@ -15,15 +15,4 @@ public class Person {
     private String surname;
     private Integer age;
     private List<Pet> pets;
-
-    public Person(String name, String surname, Integer age, List<Pet> pets) {
-        this.id = UUID.randomUUID();
-        this.name = name;
-        this.surname = surname;
-        this.age = age;
-        this.pets = pets;
-    }
-    public Person() {
-        this.id = UUID.randomUUID();
-    }
 }

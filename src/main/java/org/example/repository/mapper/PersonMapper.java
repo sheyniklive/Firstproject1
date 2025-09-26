@@ -19,24 +19,20 @@ public class PersonMapper {
     public static final ObjectMapper mapper = new ObjectMapper();
 
     public static Person mapPerson(ResultSet rs) throws SQLException {
-        Person person = new Person();
-        person.setId(UUID.fromString(rs.getString("id")));
-        person.setName(rs.getString("name"));
-        person.setSurname(rs.getString("surname"));
-        person.setAge(rs.getInt("age"));
+        UUID uuid = UUID.fromString(rs.getString("id"));
+        String name = rs.getString("name");
+        String surname = rs.getString("surname");
+        Integer age = rs.getInt("age");
         String petsJson = rs.getString("pets");
+        List<Pet> pets = new ArrayList<>();
         if (petsJson != null && !petsJson.isEmpty() && !petsJson.equals("[]")) {
             try {
-                List<Pet> pets = mapper.readValue(petsJson, new TypeReference<List<Pet>>() {
+                pets = mapper.readValue(petsJson, new TypeReference<List<Pet>>() {
                 });
-                person.setPets(pets);
             } catch (Exception e) {
-                log.error("Ошибка при сборке персона", e);
-                person.setPets(new ArrayList<>());
+                log.error("Ошибка при десериализации питомцев при сборке персона", e);
             }
-        } else {
-            person.setPets(new ArrayList<>());
         }
-        return person;
+        return new Person(uuid, name, surname, age, pets);
     }
 }
