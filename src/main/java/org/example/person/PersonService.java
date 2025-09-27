@@ -67,11 +67,12 @@ public class PersonService {
         log.info("сколько таких ты хочешь?");
         int n = console.nextInt();
         console.nextLine();
+        /* разобраться с адпетсом, раз убираем вызов готового персона с петами
         if (n == 1) {
             Person person = new Person(UUID.randomUUID(), name, surname, age, new ArrayList<>());
             repo.save(person);
             askToAddPets();
-            log.info("персон создан и загружен в БД: {}", repo.findById((person.getId())).toString());
+            log.info("персон создан и загружен в БД: {}", person);
             ExitsUtils.informingBack();
         } else {
             if (n > 0) {
@@ -87,7 +88,7 @@ public class PersonService {
                     Optional<Person> tempPerson = repo.findById(tempId);
                     log.info("{}", tempPerson.toString());
                 }
-                ExitsUtils.informingBack();
+                ExitsUtils.informingBack();*/
             } else {
                 log.error("введено недопустимое число персонов - 0");
                 log.info("не сильно-то и хочешь, возвращаемся назад");
