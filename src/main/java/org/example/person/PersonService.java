@@ -1,5 +1,6 @@
 package org.example.person;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exception.InvalidAgeException;
 import org.example.exception.InvalidMenuChoiceException;
@@ -13,6 +14,7 @@ import static org.example.Main.*;
 
 
 @Slf4j
+@RequiredArgsConstructor
 public class PersonService {
     private String input;
 
@@ -21,10 +23,6 @@ public class PersonService {
             "2", this::addPersons);
 
     private final PersonRepository repo;
-
-    public PersonService(PersonRepository personRepository) {
-        this.repo = personRepository;
-    }
 
     public void processPersonMenu() {
         log.info("1 - ты хочешь вручную ввести свои Ф-И,");

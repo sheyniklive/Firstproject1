@@ -3,6 +3,7 @@ package org.example.json;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exception.InvalidMenuChoiceException;
 import org.example.json.enums.FileActionVariety;
@@ -23,6 +24,7 @@ import java.util.Scanner;
 import static org.example.Main.menuStack;
 
 @Slf4j
+@RequiredArgsConstructor
 public class JsonService {
     private final Scanner console = new Scanner(System.in);
     private boolean needReturn;
@@ -38,10 +40,6 @@ public class JsonService {
     );
 
     private final PersonRepository repo;
-
-    public JsonService(PersonRepository personRepository) {
-        this.repo = personRepository;
-    }
 
     public void processJsonService() {
         log.info("выбери, как будем взаимодействовать с Json`ом:");

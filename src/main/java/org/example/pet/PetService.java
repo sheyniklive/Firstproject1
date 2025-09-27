@@ -1,5 +1,6 @@
 package org.example.pet;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exception.InvalidMenuChoiceException;
 import org.example.exception.PersonNotFoundException;
@@ -16,6 +17,7 @@ import static org.example.Main.console;
 import static org.example.Main.menuStack;
 
 @Slf4j
+@RequiredArgsConstructor
 public class PetService {
     private String input;
     private String petName;
@@ -45,11 +47,6 @@ public class PetService {
             });
 
     private final PersonRepository repo;
-
-    public PetService(PersonRepository personRepository) {
-        this.repo = personRepository;
-    }
-
     public void processPetServiceMenu() {
         log.info("выбирай:");
         log.info("1 - пойдем к чьим-то питомцам,");
