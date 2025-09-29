@@ -112,19 +112,19 @@ public class PersonRepository {
         }
     }
 
-    public List<String> showAllNames() {
-        String sqlSelectAllNames = "SELECT name FROM persons";
+    public Map<String, String> showAllNames() {
+        String sqlSelectAllNamesAndId = "SELECT id, name FROM persons";
         try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword());
-             PreparedStatement ps = conn.prepareStatement(sqlSelectAllNames);
+             PreparedStatement ps = conn.prepareStatement(sqlSelectAllNamesAndId);
              ResultSet rs = ps.executeQuery()) {
-            List<String> names = new ArrayList<>();
+            Map<String, String> namesAndId = new HashMap<>();
             while (rs.next()) {
-                names.add(rs.getString(1));
+                namesAndId.put(rs.getString("name"), rs.getString("id"));
             }
-            return names;
+            return namesAndId;
         } catch (SQLException e) {
             log.error("Ошибка при выгрузке имен из БД", e);
-            return Collections.emptyList();
+            return Collections.emptyMap();
         }
     }
 

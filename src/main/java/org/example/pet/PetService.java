@@ -9,9 +9,9 @@ import org.example.repository.PersonRepository;
 import org.example.util.ExitsUtils;
 import org.example.validator.Validators;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.example.Main.console;
 import static org.example.Main.menuStack;
@@ -47,6 +47,7 @@ public class PetService {
             });
 
     private final PersonRepository repo;
+
     public void processPetServiceMenu() {
         log.info("выбирай:");
         log.info("1 - пойдем к чьим-то питомцам,");
@@ -152,13 +153,13 @@ public class PetService {
     }
 
     private void whatPersonWant() {
-        List<String> existsPersonsNames = repo.showAllNames();
-        while (!existsPersonsNames.isEmpty()) {
-            log.info(existsPersonsNames.toString());
+        Map<String, String> existsPersonsNamesAndId = repo.showAllNames();
+        while (!existsPersonsNamesAndId.isEmpty()) {
+            log.info(existsPersonsNamesAndId.keySet().toString());
             try {
                 String wantPerson = console.nextLine().trim();
-                if (existsPersonsNames.contains(wantPerson)) {
-                    Optional<Person> foundedPerson = repo.findByName(wantPerson);
+                if (existsPersonsNamesAndId.containsKey(wantPerson)) {
+                    Optional<Person> foundedPerson = repo.findById(UUID.fromString(existsPersonsNamesAndId.get(wantPerson)));
                     foundedPerson.ifPresent(person -> currentPerson = person);
                     break;
                 } else {
