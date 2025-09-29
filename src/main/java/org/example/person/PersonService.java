@@ -67,7 +67,6 @@ public class PersonService {
         log.info("сколько таких ты хочешь?");
         int n = console.nextInt();
         console.nextLine();
-        /* разобраться с адпетсом, раз убираем вызов готового персона с петами
         if (n == 1) {
             Person person = new Person(UUID.randomUUID(), name, surname, age, new ArrayList<>());
             repo.save(person);
@@ -76,19 +75,14 @@ public class PersonService {
             ExitsUtils.informingBack();
         } else {
             if (n > 0) {
-                List<UUID> tempPersonsId = new ArrayList<>();
+                log.info("попытка создания и загрузки персон в БД:");
                 for (int i = 0; i < n; i++) {
                     Person person = new Person(UUID.randomUUID(), name + "_" + i, surname + "_" + i, age, new ArrayList<>());
                     repo.save(person);
-                    tempPersonsId.add(person.getId());
+                    log.info("успешно: {}", person);
                 }
                 askToAddPets();
-                log.info("созданы и загружены в БД:");
-                for (UUID tempId : tempPersonsId) {
-                    Optional<Person> tempPerson = repo.findById(tempId);
-                    log.info("{}", tempPerson.toString());
-                }
-                ExitsUtils.informingBack();*/
+                ExitsUtils.informingBack();
             } else {
                 log.error("введено недопустимое число персонов - 0");
                 log.info("не сильно-то и хочешь, возвращаемся назад");
