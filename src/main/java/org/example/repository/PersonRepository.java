@@ -117,7 +117,7 @@ public class PersonRepository {
         try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword());
              PreparedStatement ps = conn.prepareStatement(sqlSelectAllNamesAndId);
              ResultSet rs = ps.executeQuery()) {
-            Map<String, String> namesAndId = new HashMap<>();
+            Map<String, String> namesAndId = new TreeMap<>();
             while (rs.next()) {
                 namesAndId.put(rs.getString("name"), rs.getString("id"));
             }
