@@ -10,7 +10,6 @@ import org.example.util.ExitsUtils;
 import org.example.validator.Validators;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.example.Main.console;
@@ -79,7 +78,12 @@ public class PetService {
             return;
         }
         log.info("кому из людей ты хочешь пристроить животное?");
-        whatPersonWant();
+        try {
+            Person person = whatPersonWant();
+        } catch (PersonNotFoundException e) {
+            log.warn("Ошибка при поиске персона и доступе к нему", e);
+            log.info("повтори");
+        }
         do {
             log.info("поехали: как питомца зовут?");
             petName = console.nextLine().trim();
@@ -152,23 +156,25 @@ public class PetService {
         actionWithPets.run();
     }
 
-    private void whatPersonWant() {
+    private Person whatPersonWant() {
         Map<String, String> existsPersonsNamesAndId = repo.showAllNames();
+
         while (!existsPersonsNamesAndId.isEmpty()) {
             log.info(existsPersonsNamesAndId.keySet().toString());
+            String wantPerson = console.nextLine().trim();
+
             try {
-                String wantPerson = console.nextLine().trim();
                 if (existsPersonsNamesAndId.containsKey(wantPerson)) {
-                    Optional<Person> foundedPerson = repo.findById(UUID.fromString(existsPersonsNamesAndId.get(wantPerson)));
-                    foundedPerson.ifPresent(person -> currentPerson = person);
-                    break;
+                    return repo.findById(UUID.fromString(existsPersonsNamesAndId.get(wantPerson)))
+                            .orElseThrow(() -> new PersonNotFoundException(wantPerson));
                 } else {
                     throw new PersonNotFoundException(wantPerson);
                 }
             } catch (PersonNotFoundException e) {
-                log.error("Ошибка ввода имени", e);
+                log.error("Ошибка при поиске и загрузке персона (не найден)", e);
                 log.info("попробуй еще");
             }
         }
+        throw new PersonNotFoundException("Нет доступных персонов для выбора");
     }
 }
