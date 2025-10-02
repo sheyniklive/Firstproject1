@@ -3,11 +3,12 @@ package org.example.json;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exception.InvalidMenuChoiceException;
 import org.example.json.enums.FileActionVariety;
 import org.example.person.Person;
-import org.example.person.PersonHolder;
+import org.example.repository.PersonRepository;
 import org.example.util.ExitsUtils;
 import org.example.validator.Validators;
 
@@ -16,12 +17,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 import static org.example.Main.menuStack;
 
 @Slf4j
+@RequiredArgsConstructor
 public class JsonService {
     private final Scanner console = new Scanner(System.in);
     private boolean needReturn;
@@ -35,6 +38,8 @@ public class JsonService {
             "2", this::loadPersonsFromFile,
             "3", this::showJsonContent
     );
+
+    private final PersonRepository repo;
 
     public void processJsonService() {
         log.info("выбери, как будем взаимодействовать с Json`ом:");
@@ -68,8 +73,9 @@ public class JsonService {
             return;
         }
         try {
-            mapper.writeValue(jsonFile, PersonHolder.personHolder);
-            log.info("файл успешно сохранен ({} персон), путь: {}", PersonHolder.personHolder.size(), jsonFile.getAbsolutePath());
+            List<Person> foundedPersons = repo.findAll();
+            mapper.writeValue(jsonFile, foundedPersons);
+            log.info("в файл '{}' из БД успешно сохранено {} персон", jsonFile.getAbsolutePath(), foundedPersons.size());
         } catch (IOException e) {
             log.error("Ошибка при сохранении JSON-файла", e);
             log.info("пойдем в начало");
@@ -84,17 +90,19 @@ public class JsonService {
         if (needReturn || jsonFile == null) {
             return;
         }
-        Map<String, Person> loadedPersonsFromJson;
+        List<Person> loadedPersonsFromJson;
         try {
-            loadedPersonsFromJson = mapper.readValue(jsonFile, new TypeReference<Map<String, Person>>() {
+            loadedPersonsFromJson = mapper.readValue(jsonFile, new TypeReference<List<Person>>() {
             });
         } catch (IOException e) {
             log.error("ошибка при чтении из JSON", e);
             log.info("давай попробуем снова");
             return;
         }
-        PersonHolder.personHolder.putAll(loadedPersonsFromJson);
-        log.info("из файла в хранилище успешно загружено {} персон, путь: {}", loadedPersonsFromJson.size(), jsonFile.getAbsolutePath());
+        for (Person person : loadedPersonsFromJson) {
+            repo.save(person);
+        }
+        log.info("из файла '{}' в БД успешно загружено {} персон", jsonFile.getAbsolutePath(), loadedPersonsFromJson.size());
         ExitsUtils.informingBack();
     }
 

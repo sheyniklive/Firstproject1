@@ -1,25 +1,28 @@
 package org.example.person;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exception.InvalidAgeException;
 import org.example.exception.InvalidMenuChoiceException;
+import org.example.repository.PersonRepository;
 import org.example.util.ExitsUtils;
 import org.example.validator.Validators;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.example.Main.*;
 
 
 @Slf4j
+@RequiredArgsConstructor
 public class PersonService {
     private String input;
 
     private final Map<String, Runnable> choicePersonMenu = Map.of(
             "1", this::manuallyNameFamilyMenu,
             "2", this::addPersons);
+
+    private final PersonRepository repo;
 
     public void processPersonMenu() {
         log.info("1 - ты хочешь вручную ввести свои Ф-И,");
@@ -65,24 +68,20 @@ public class PersonService {
         int n = console.nextInt();
         console.nextLine();
         if (n == 1) {
-            PersonHolder.personHolder.put(name, new Person(name, surname, age, new ArrayList<>()));
+            Person person = new Person(UUID.randomUUID(), name, surname, age, new ArrayList<>());
+            repo.save(person);
             askToAddPets();
-            log.info("создан: {}", PersonHolder.personHolder.get(name).toString());
+            log.info("персон создан и загружен в БД: {}", person);
             ExitsUtils.informingBack();
         } else {
             if (n > 0) {
-                List<String> tempPersons = new ArrayList<>();
+                log.info("попытка создания и загрузки персон в БД:");
                 for (int i = 0; i < n; i++) {
-                    Person person = new Person(name + "_" + i, surname + "_" + i, age, new ArrayList<>());
-                    PersonHolder.personHolder.put(person.getName(), person);
-                    tempPersons.add(person.getName());
+                    Person person = new Person(UUID.randomUUID(), name + "_" + i, surname + "_" + i, age, new ArrayList<>());
+                    repo.save(person);
+                    log.info("успешно: {}", person);
                 }
                 askToAddPets();
-                log.info("созданы:");
-                for (String tempName : tempPersons) {
-                    Person tempPerson = PersonHolder.personHolder.get(tempName);
-                    log.info("{}", tempPerson.toString());
-                }
                 ExitsUtils.informingBack();
             } else {
                 log.error("введено недопустимое число персонов - 0");
