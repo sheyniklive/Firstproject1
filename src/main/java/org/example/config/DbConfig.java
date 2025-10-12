@@ -5,9 +5,9 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+@Component
 @Getter
 @Setter
-@Component
 @ConfigurationProperties(prefix = "spring.datasource")
 public class DbConfig {
     private String dbUrl;

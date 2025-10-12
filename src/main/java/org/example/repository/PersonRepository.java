@@ -7,6 +7,7 @@ import org.example.config.DbConfig;
 import org.example.person.Person;
 import org.example.pet.Pet;
 import org.example.repository.mapper.PersonMapper;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.*;
@@ -14,6 +15,7 @@ import java.util.*;
 import static org.example.repository.mapper.PersonMapper.mapPerson;
 import static org.example.repository.mapper.PersonMapper.mapper;
 
+@Repository
 @AllArgsConstructor
 @Slf4j
 public class PersonRepository {
@@ -61,19 +63,25 @@ public class PersonRepository {
         }
     }
 
-    public Optional<Person> findByName(String name) {
-        String sqlSelect = "SELECT id, name, surname, age, pets FROM persons WHERE name = ?";
+    public boolean deleteById(UUID id) {
+        String sqlDelete = "DELETE FROM persons WHERE id = ?";
 
-        try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword())) {
-            try (PreparedStatement ps = conn.prepareStatement(sqlSelect)) {
-                ps.setString(1, name);
-                try (ResultSet rs = ps.executeQuery()) {
-                    return rs.next() ? Optional.of(PersonMapper.mapPerson(rs)) : Optional.empty();
-                }
+        try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword());
+             PreparedStatement ps = conn.prepareStatement(sqlDelete)) {
+
+            ps.setString(1, String.valueOf(id));
+            int rowAffected = ps.executeUpdate();
+
+            if (rowAffected > 0) {
+                log.info("Успешно удален из БД персон с id: {}", id);
+                return true;
+            } else {
+                log.warn("Не удалось удалить из БД персона с id: {}", id);
+                return false;
             }
         } catch (SQLException e) {
-            log.error("Ошибка при выгрузке персона из БД", e);
-            return Optional.empty();
+            log.error("Ошибка при удалении персона с id({}) из БД", id, e);
+            return false;
         }
     }
 
