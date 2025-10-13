@@ -27,8 +27,9 @@ public class PersonController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PersonResponseDto> getById(@PathVariable UUID id) {
-        PersonResponseDto person = service.getPersonById(id);
-        return ResponseEntity.ok(person);
+        return service.getPersonById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
@@ -52,11 +53,8 @@ public class PersonController {
 
     @PutMapping("/{id}")
     public ResponseEntity<PersonResponseDto> put(@PathVariable UUID id, @RequestBody PersonCreateDto dto) {
-        PersonResponseDto updatedPerson = service.fullUpdatePerson(id, dto);
-        if (updatedPerson == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok(updatedPerson);
-        }
+        return service.fullUpdatePerson(id, dto)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

@@ -4,15 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.PersonCreateDto;
 import org.example.dto.PersonResponseDto;
-import org.example.exception.PersonNotFoundException;
 import org.example.person.Person;
 import org.example.repository.PersonRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -33,33 +32,27 @@ public class PersonServiceV2 {
         return new PersonResponseDto(person);
     }
 
-    public PersonResponseDto getPersonById(UUID id) {
-        Person person = repo.findById(id)
-                .orElseThrow(() -> new PersonNotFoundException(String.valueOf(id)));
-        return new PersonResponseDto(person);
+    public Optional<PersonResponseDto> getPersonById(UUID id) {
+        return repo.findById(id)
+                .map(PersonResponseDto::new);
     }
 
     public List<PersonResponseDto> getAllPersons() {
-        List<Person> persons = repo.findAll();
-        return persons.stream()
+        return repo.findAll().stream()
                 .map(PersonResponseDto::new)
-                .collect(Collectors.toList());
+                .toList();
     }
 
-    public PersonResponseDto fullUpdatePerson(UUID id, PersonCreateDto dto) {
-        try {
-            Person person = repo.findById(id)
-                    .orElseThrow(() -> new PersonNotFoundException(String.valueOf(id)));
-            person.setName(dto.getName());
-            person.setSurname(dto.getSurname());
-            person.setAge(dto.getAge());
-            person.setPets(new ArrayList<>());
-            repo.save(person);
-            return new PersonResponseDto(person);
-        } catch (PersonNotFoundException e) {
-            log.warn("Не надено персонов для замены с таким id: {}", id, e);
-            return new PersonResponseDto();
-        }
+    public Optional<PersonResponseDto> fullUpdatePerson(UUID id, PersonCreateDto dto) {
+        return repo.findById(id)
+                .map(person -> {
+                    person.setName(dto.getName());
+                    person.setSurname(dto.getSurname());
+                    person.setAge(dto.getAge());
+                    person.setPets(new ArrayList<>());
+                    repo.save(person);
+                    return new PersonResponseDto(person);
+                });
     }
 
     public boolean deletePersonById(UUID id) {
