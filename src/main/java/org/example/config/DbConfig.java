@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 @ConfigurationProperties(prefix = "spring.datasource")
 public class DbConfig {
-    private String dbUrl;
-    private String user;
+    private String url;
+    private String username;
     private String password;
 }

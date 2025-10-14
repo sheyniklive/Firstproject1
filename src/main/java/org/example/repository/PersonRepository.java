@@ -30,7 +30,7 @@ public class PersonRepository {
         String sqlUpdate = "UPDATE persons SET name = ?, surname = ?, age = ?, pets = ? WHERE id = ?";
         String sqlInsert = "INSERT INTO persons (id, name, surname, age, pets) VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword())) {
+        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword())) {
             boolean exists;
             try (PreparedStatement psSelect = conn.prepareStatement(sqlSelect)) {
                 psSelect.setString(1, String.valueOf(person.getId()));
@@ -66,7 +66,7 @@ public class PersonRepository {
     public boolean deleteById(UUID id) {
         String sqlDelete = "DELETE FROM persons WHERE id = ?";
 
-        try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword());
+        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword());
              PreparedStatement ps = conn.prepareStatement(sqlDelete)) {
 
             ps.setString(1, String.valueOf(id));
@@ -88,7 +88,7 @@ public class PersonRepository {
     public Optional<Person> findById(UUID id) {
         String sqlSelect = "SELECT id, name, surname, age, pets FROM persons WHERE id = ?";
 
-        try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword())) {
+        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword())) {
             try (PreparedStatement ps = conn.prepareStatement(sqlSelect)) {
                 ps.setString(1, String.valueOf(id));
                 try (ResultSet rs = ps.executeQuery()) {
@@ -105,7 +105,7 @@ public class PersonRepository {
     public List<Person> findAll() {
         String sqlSelect = "SELECT id, name, surname, age, pets FROM persons";
 
-        try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword());
+        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword());
              PreparedStatement ps = conn.prepareStatement(sqlSelect);
              ResultSet rs = ps.executeQuery()) {
             List<Person> persons = new ArrayList<>();
@@ -122,7 +122,7 @@ public class PersonRepository {
 
     public Map<String, String> showAllNames() {
         String sqlSelectAllNamesAndId = "SELECT id, name FROM persons";
-        try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword());
+        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword());
              PreparedStatement ps = conn.prepareStatement(sqlSelectAllNamesAndId);
              ResultSet rs = ps.executeQuery()) {
             Map<String, String> namesAndId = new TreeMap<>();
@@ -139,7 +139,7 @@ public class PersonRepository {
     public boolean isExistDbData() {
         String sqlCheckSelect = "SELECT EXISTS(SELECT 1 FROM persons LIMIT 1)";
 
-        try (Connection conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getUser(), dbConfig.getPassword());
+        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword());
              PreparedStatement ps = conn.prepareStatement(sqlCheckSelect);
              ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
