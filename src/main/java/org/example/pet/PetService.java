@@ -144,9 +144,9 @@ public class PetService {
             try {
                 if (existsPersonsNamesAndId.containsKey(wantPerson)) {
                     return repo.findById(UUID.fromString(existsPersonsNamesAndId.get(wantPerson)))
-                            .orElseThrow(() -> new PersonNotFoundException(wantPerson));
+                            .orElseThrow(() -> new PersonNotFoundException(String.valueOf(existsPersonsNamesAndId.get(wantPerson))));
                 } else {
-                    throw new PersonNotFoundException(wantPerson);
+                    throw new PersonNotFoundException(String.valueOf(existsPersonsNamesAndId.get(wantPerson)));
                 }
             } catch (PersonNotFoundException e) {
                 log.error("Ошибка при поиске и загрузке персона (не найден)", e);

@@ -1,17 +1,15 @@
 package org.example.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.example.pet.Pet;
+import lombok.Setter;
 
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 public class PetDto {
     private String name;
     private String type;
-
-    public PetDto(Pet pet) {
-        this.name = pet.getName();
-        this.type = pet.getType();
-    }
 }

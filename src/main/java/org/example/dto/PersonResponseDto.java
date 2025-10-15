@@ -1,12 +1,13 @@
 package org.example.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.example.person.Person;
 
 import java.util.List;
 import java.util.UUID;
 
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 public class PersonResponseDto {
@@ -15,14 +16,4 @@ public class PersonResponseDto {
     private String surname;
     private Integer age;
     private List<PetDto> pets;
-
-    public PersonResponseDto(Person person) {
-        this.id = person.getId();
-        this.name = person.getName();
-        this.surname = person.getSurname();
-        this.age = person.getAge();
-        this.pets = person.getPets().stream()
-                .map(PetDto::new)
-                .toList();
-    }
 }

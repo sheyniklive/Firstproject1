@@ -6,9 +6,7 @@ import org.example.dto.PersonResponseDto;
 import org.example.service.PersonServiceV2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,13 +34,7 @@ public class PersonController {
     public ResponseEntity<PersonResponseDto> post(@RequestBody PersonCreateDto dto) {
         PersonResponseDto createdPerson = service.createPerson(dto);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(createdPerson.getId())
-                .toUri();
-
-        return ResponseEntity.created(location).body(createdPerson);
+        return ResponseEntity.ok(createdPerson);
     }
 
     @DeleteMapping("/{id}")
