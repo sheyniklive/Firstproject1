@@ -150,7 +150,7 @@ public class PetService {
                 }
             } catch (PersonNotFoundException e) {
                 log.error("Ошибка при поиске и загрузке персона", e);
-                log.info("попробуй еще");
+                log.info("Попробуй еще");
             }
         }
     }
