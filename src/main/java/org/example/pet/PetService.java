@@ -136,7 +136,7 @@ public class PetService {
         Map<String, String> existsPersonsNamesAndId = repo.showAllNames();
 
         if (existsPersonsNamesAndId.isEmpty()) {
-            throw new PersonNotFoundException("пока не нашлось ни одного доступного персона");
+            throw new PersonNotFoundException();
         }
         while (true) {
             log.info(existsPersonsNamesAndId.keySet().toString());
@@ -144,12 +144,12 @@ public class PetService {
             try {
                 if (existsPersonsNamesAndId.containsKey(wantPerson)) {
                     return repo.findById(UUID.fromString(existsPersonsNamesAndId.get(wantPerson)))
-                            .orElseThrow(() -> new PersonNotFoundException(String.valueOf(existsPersonsNamesAndId.get(wantPerson))));
+                            .orElseThrow(() -> new PersonNotFoundException(UUID.fromString(existsPersonsNamesAndId.get(wantPerson))));
                 } else {
-                    throw new PersonNotFoundException(String.valueOf(existsPersonsNamesAndId.get(wantPerson)));
+                    throw new PersonNotFoundException(UUID.fromString(existsPersonsNamesAndId.get(wantPerson)));
                 }
             } catch (PersonNotFoundException e) {
-                log.error("Ошибка при поиске и загрузке персона (не найден)", e);
+                log.error("Ошибка при поиске и загрузке персона", e);
                 log.info("попробуй еще");
             }
         }
