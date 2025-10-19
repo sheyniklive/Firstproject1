@@ -45,6 +45,12 @@
             <version>42.7.7</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>3.5.6</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -60,6 +66,7 @@
                             <version>1.18.30</version>
                         </path>
                     </annotationProcessorPaths>
+                    <parameters>true</parameters>
                 </configuration>
             </plugin>
         </plugins>
