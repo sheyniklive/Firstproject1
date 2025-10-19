@@ -9,8 +9,18 @@ import org.example.pet.Pet;
 import org.example.repository.mapper.PersonMapper;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
+import java.util.UUID;
 
 import static org.example.repository.mapper.PersonMapper.mapPerson;
 import static org.example.repository.mapper.PersonMapper.mapper;

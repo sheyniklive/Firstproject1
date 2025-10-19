@@ -8,9 +8,13 @@ import org.example.repository.PersonRepository;
 import org.example.util.ExitsUtils;
 import org.example.validator.Validators;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.UUID;
 
-import static org.example.Main.*;
+import static org.example.Main.console;
+import static org.example.Main.menuStack;
+import static org.example.Main.petService;
 
 
 @Slf4j
