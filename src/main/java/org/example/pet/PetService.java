@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.exception.InvalidMenuChoiceException;
 import org.example.exception.PersonNotFoundException;
 import org.example.person.Person;
+import org.example.pet.enums.PetType;
 import org.example.repository.PersonRepository;
 import org.example.util.ExitsUtils;
 import org.example.validator.Validators;
@@ -56,24 +57,26 @@ public class PetService {
             return;
         }
         Person currentPerson = selectPerson();
+        String petName;
+        String choisePetType;
         String input;
         do {
             log.info("поехали: как питомца зовут?");
-            String petName = console.nextLine().trim();
+            petName = console.nextLine().trim();
             log.info("кто это:");
             log.info("1 - кошка");
             log.info("2 - собака");
             log.info("3 - гусь");
             while (true) {
-                input = console.nextLine().trim();
+                choisePetType = console.nextLine().trim();
                 try {
-                    Validators.choiceMenuOf3.validate(input);
+                    Validators.choiceMenuOf3.validate(choisePetType);
                     break;
                 } catch (InvalidMenuChoiceException e) {
                     log.warn("только 1, 2 или 3 - повтори");
                 }
             }
-            addCertainPet(currentPerson, petName, input);
+            addCertainPet(currentPerson, petName, choisePetType);
             log.info("питомцы персона '{}' обновлены: {}", currentPerson.getName(), currentPerson.getPets());
             log.info("хочешь добавить нового:");
             log.info("1 - да,");
@@ -155,11 +158,12 @@ public class PetService {
         }
     }
 
-    private void addCertainPet(Person person, String petName, String type) {
+    private void addCertainPet(Person person, String petName, String typeChoice) {
+        PetType type = PetType.fromMenuChoice(typeChoice);
         switch (type) {
-            case "1" -> person.getPets().add(new Cat(petName));
-            case "2" -> person.getPets().add(new Dog(petName));
-            case "3" -> person.getPets().add(new Goose(petName));
+            case CAT -> person.getPets().add(new Cat(petName));
+            case DOG -> person.getPets().add(new Dog(petName));
+            case GOOSE -> person.getPets().add(new Goose(petName));
             default -> log.warn("неизвестный тип питомца");
         }
     }
