@@ -11,7 +11,7 @@ public class PersonApiMapper {
 
     public static Person toDomain(PersonCreateDto dto) {
         return new Person(
-                UUID.randomUUID(),
+                UUID.randomUUID(),// null сделать
                 dto.getName(),
                 dto.getSurname(),
                 dto.getAge(),
