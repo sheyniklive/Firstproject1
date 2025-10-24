@@ -3,6 +3,8 @@ package org.example.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -11,8 +13,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
 @Entity
 @Table(name = "persons")
 @AllArgsConstructor
@@ -20,15 +24,16 @@ import java.util.UUID;
 @Getter
 @Setter
 public class PersonEntity {
-@Id
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-@Column
+    @Column(nullable = false, length = 100)
     private String name;
-@Column
+    @Column(nullable = false, length = 100)
     private String surname;
-@Column
+    @Column(nullable = false)
     private Integer age;
-@OneToMany(mappedBy = "person_id", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<PetEntity> pets;
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PetEntity> pets = new HashSet<>();
 
 }

@@ -22,20 +22,20 @@ public class PersonServiceV2 {
     private final PersonRepository repo;
 
     public PersonResponseDto createPerson(PersonCreateDto dto) {
-        Person person = PersonApiMapper.toDomain(dto);
+        Person person = PersonApiMapper.toDomainFromDto(dto);
         repo.save(person);
         log.info("Создан и загружен в БД персон: {}", person);
-        return PersonApiMapper.toResponse(person);
+        return PersonApiMapper.toResponseDtoFromDomain(person);
     }
 
     public Optional<PersonResponseDto> getPersonById(UUID id) {
         return repo.findById(id)
-                .map(PersonApiMapper::toResponse);
+                .map(PersonApiMapper::toResponseDtoFromDomain);
     }
 
     public List<PersonResponseDto> getAllPersons() {
         return repo.findAll().stream()
-                .map(PersonApiMapper::toResponse)
+                .map(PersonApiMapper::toResponseDtoFromDomain)
                 .toList();
     }
 
@@ -47,7 +47,7 @@ public class PersonServiceV2 {
                     person.setAge(dto.getAge());
                     person.setPets(new ArrayList<>());
                     repo.save(person);
-                    return PersonApiMapper.toResponse(person);
+                    return PersonApiMapper.toResponseDtoFromDomain(person);
                 });
     }
 
