@@ -10,14 +10,13 @@ import org.example.pet.PetApiMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class PersonApiMapper {
 
     public static Person toDomainFromDto(PersonCreateDto dto) {
         return new Person(
-                UUID.randomUUID(),// null сделать
+                null,
                 dto.getName(),
                 dto.getSurname(),
                 dto.getAge(),
@@ -36,19 +35,23 @@ public class PersonApiMapper {
     }
 
     public static PersonEntity toEntityFromDomain(Person person) {
+        if (person == null) {
+            return null;
+        }
         PersonEntity entity = new PersonEntity();
-        entity.setId(person.getId());
         entity.setName(person.getName());
         entity.setSurname(person.getSurname());
         entity.setAge(person.getAge());
-        Set<PetEntity> pets = person.getPets().stream()
-                .map(PetApiMapper::toEntityFromDomain)// FK от персона как добавить
-                .collect(Collectors.toSet());
-        entity.setPets(pets);
+        person.getPets().stream()
+                .map(PetApiMapper::toEntityFromDomain)
+                .forEach(entity::addPet);
+
         return entity;
     }
+
     public static Person toDomainFromEntity(PersonEntity entity) {
         Person person = new Person();
+        person.setId(entity.getId());
         person.setId(entity.getId());
         person.setName(entity.getName());
         person.setSurname(entity.getSurname());

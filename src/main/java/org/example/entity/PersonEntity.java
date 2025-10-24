@@ -8,10 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,6 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class PersonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -36,4 +34,12 @@ public class PersonEntity {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PetEntity> pets = new HashSet<>();
 
+    public void addPet(PetEntity pet) {
+        pets.add(pet);
+        pet.setOwner(this);
+    }
+    public void removePet(PetEntity pet) {
+        pets.remove(pet);
+        pet.setOwner(null);
+    }
 }
