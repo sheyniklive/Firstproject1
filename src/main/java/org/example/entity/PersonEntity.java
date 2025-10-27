@@ -34,9 +34,9 @@ public class PersonEntity {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PetEntity> pets = new HashSet<>();
 
-    public void addPet(PetEntity pet) {
-        pets.add(pet);
-        pet.setOwner(this);
+    public void addPet(PetEntity petEntity) {
+        pets.add(petEntity);
+        petEntity.setOwner(this);
     }
     public void removePet(PetEntity pet) {
         pets.remove(pet);
