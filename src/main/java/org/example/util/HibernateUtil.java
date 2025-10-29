@@ -1,0 +1,48 @@
+package org.example.util;
+
+import jakarta.annotation.PreDestroy;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
+import org.springframework.stereotype.Component;
+
+@Component
+@Slf4j
+public class HibernateUtil {
+
+    private static SessionFactory sessionFactory;
+
+    static {
+        try {
+            log.info("Инициализация Hibernate SessionFactory");
+            Configuration configuration = new Configuration()
+                    .configure("hibernate.cfg.xml");
+            log.info("Конфигрурация загружена");
+            ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+                    .applySettings(configuration.getProperties())
+                    .build();
+            sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+            log.info("SessionFactory создан");
+        } catch (Throwable ex) {
+            log.error("Ошибка при создании SessionFactory", ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+    }
+
+    public static SessionFactory getSessionFactory() {
+        if (sessionFactory == null) {
+            throw new IllegalStateException("SessionFactory не инициализирован");
+        }
+        return sessionFactory;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        if (sessionFactory != null) {
+            sessionFactory.close();
+            log.info("SessionFactory закрыт");
+        }
+    }
+}
