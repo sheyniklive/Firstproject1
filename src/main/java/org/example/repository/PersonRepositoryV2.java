@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -62,5 +63,14 @@ public class PersonRepositoryV2 {
             }
         }
     }
+
+    public List<Person> findAll() {
+        Session session = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+
+        }
+    }
+}
 
 }
