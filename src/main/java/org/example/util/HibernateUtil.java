@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class HibernateUtil {
 
-    private static SessionFactory sessionFactory;
+    private static final SessionFactory sessionFactory;
 
     static {
         try {
@@ -31,7 +31,7 @@ public class HibernateUtil {
         }
     }
 
-    public static SessionFactory getSessionFactory() {
+    public SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
             throw new IllegalStateException("SessionFactory не инициализирован");
         }

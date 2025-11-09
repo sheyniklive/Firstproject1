@@ -1,5 +1,6 @@
 package org.example.repository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.entity.PersonEntity;
 import org.example.person.Person;
@@ -10,12 +11,16 @@ import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
 @Repository
+@RequiredArgsConstructor
 @Slf4j
 public class PersonRepositoryV2 {
+
+    private final HibernateUtil hibernateUtil;
 
     public void save(Person person) {
         if (person == null) {
@@ -25,7 +30,7 @@ public class PersonRepositoryV2 {
         Session session = null;
         Transaction transaction = null;
         try {
-            session = HibernateUtil.getSessionFactory().openSession();
+            session = hibernateUtil.getSessionFactory().openSession();
             transaction = session.beginTransaction();
             PersonEntity merged = session.merge(entity);
             person.setId(merged.getId());
@@ -50,7 +55,7 @@ public class PersonRepositoryV2 {
         }
         Session session = null;
         try {
-            session = HibernateUtil.getSessionFactory().openSession();
+            session = hibernateUtil.getSessionFactory().openSession();
             PersonEntity entity = session.get(PersonEntity.class, id);
             return Optional.ofNullable(entity)
                     .map(PersonApiMapper::toDomainFromEntity);
@@ -67,10 +72,22 @@ public class PersonRepositoryV2 {
     public List<Person> findAll() {
         Session session = null;
         try {
-            session = HibernateUtil.getSessionFactory().openSession();
-
+            session = hibernateUtil.getSessionFactory().openSession();
+            var query = session.createNativeQuery("SELECT * FROM persons", PersonEntity.class);
+            return query.list().stream()
+                    .filter(Objects::nonNull)
+                    .map(PersonApiMapper::toDomainFromEntity)
+                    .toList();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
     }
-}
+
+
+
+
+
 
 }
