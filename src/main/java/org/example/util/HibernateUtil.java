@@ -3,9 +3,7 @@ package org.example.util;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,10 +18,7 @@ public class HibernateUtil {
             Configuration configuration = new Configuration()
                     .configure("hibernate.cfg.xml");
             log.info("Конфигрурация загружена");
-            ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-                    .applySettings(configuration.getProperties())
-                    .build();
-            sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+            sessionFactory = configuration.buildSessionFactory();
             log.info("SessionFactory создан");
         } catch (Throwable ex) {
             log.error("Ошибка при создании SessionFactory", ex);

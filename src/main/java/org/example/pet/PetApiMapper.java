@@ -10,9 +10,8 @@ public class PetApiMapper {
         if (petDto == null) {
             return null;
         }
-        PetType type = PetType.fromCode(petDto.getType());
         String name = petDto.getName();
-        return switch (type) {
+        return switch (petDto.getType()) {
             case CAT -> new Cat(name);
             case DOG -> new Dog(name);
             case GOOSE -> new Goose(name);
@@ -24,9 +23,8 @@ public class PetApiMapper {
             return null;
         }
         return new PetDto(
-                pet.getType().getCode(),
-                pet.getName()
-        );
+                pet.getName(),
+                pet.getType());
     }
 
     public static PetEntity toEntityFromDomain(Pet pet) {

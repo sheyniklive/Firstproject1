@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.pet.enums.PetType;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -11,5 +12,5 @@ import lombok.Setter;
 @Setter
 public class PetDto {
     private String name;
-    private String type;
+    private PetType type;
 }

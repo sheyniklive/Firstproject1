@@ -73,7 +73,7 @@ public class PersonRepositoryV2 {
         Session session = null;
         try {
             session = hibernateUtil.getSessionFactory().openSession();
-            var query = session.createNativeQuery("SELECT * FROM persons", PersonEntity.class);
+            var query = session.createQuery("SELECT DISTINCT p FROM PersonEntity p LEFT JOIN FETCH p.pets", PersonEntity.class);
             return query.list().stream()
                     .filter(Objects::nonNull)
                     .map(PersonApiMapper::toDomainFromEntity)
@@ -85,9 +85,25 @@ public class PersonRepositoryV2 {
         }
     }
 
-
-
-
+    public boolean deleteById(UUID id) {
+        Session session = null;
+        boolean deleted = false;
+        try {
+            session = hibernateUtil.getSessionFactory().openSession();
+            Transaction transaction = session.beginTransaction();
+            PersonEntity person = session.get(PersonEntity.class, id);
+            if (person != null) {
+                session.remove(person);
+                transaction.commit();
+                deleted = true;
+            }
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+        return deleted;
+    }
 
 
 }

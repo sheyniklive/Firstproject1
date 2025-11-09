@@ -11,10 +11,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.example.pet.enums.PetType;
-
-import java.math.BigInteger;
 
 @Entity
 @Table(name = "pets")
@@ -26,7 +28,7 @@ import java.math.BigInteger;
 public class PetEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private BigInteger id;
+    private Long id;
     @Column(nullable = false, length = 100)
     private String name;
     @Column(nullable = false, length = 10)
