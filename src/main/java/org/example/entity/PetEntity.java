@@ -29,9 +29,9 @@ public class PetEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, length = 100)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
-    @Column(nullable = false, length = 10)
+    @Column(name = "type", nullable = false, length = 10)
     @Enumerated(EnumType.STRING)
     private PetType type;
     @ManyToOne(fetch = FetchType.LAZY)

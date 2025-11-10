@@ -25,11 +25,11 @@ public class PersonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @Column(nullable = false, length = 100)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
-    @Column(nullable = false, length = 100)
+    @Column(name = "surname", nullable = false, length = 100)
     private String surname;
-    @Column(nullable = false)
+    @Column(name = "age", nullable = false)
     private Integer age;
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PetEntity> pets = new HashSet<>();
