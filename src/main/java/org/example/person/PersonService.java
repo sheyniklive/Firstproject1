@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exception.InvalidAgeException;
 import org.example.exception.InvalidMenuChoiceException;
-import org.example.repository.PersonRepository;
+import org.example.repository.PersonRepositoryV2;
 import org.example.util.ExitsUtils;
 import org.example.validator.Validators;
 
@@ -26,7 +26,7 @@ public class PersonService {
             "1", this::manuallyNameFamilyMenu,
             "2", this::addPersons);
 
-    private final PersonRepository repo;
+    private final PersonRepositoryV2 repoV2;
 
     public void processPersonMenu() {
         log.info("1 - ты хочешь вручную ввести свои Ф-И,");
@@ -73,7 +73,7 @@ public class PersonService {
         console.nextLine();
         if (n == 1) {
             Person person = new Person(UUID.randomUUID(), name, surname, age, new ArrayList<>());
-            repo.save(person);
+            repoV2.save(person);
             askToAddPets();
             log.info("персон создан и загружен в БД: {}", person);
             ExitsUtils.informingBack();
@@ -82,7 +82,7 @@ public class PersonService {
                 log.info("попытка создания и загрузки персон в БД:");
                 for (int i = 0; i < n; i++) {
                     Person person = new Person(UUID.randomUUID(), name + "_" + i, surname + "_" + i, age, new ArrayList<>());
-                    repo.save(person);
+                    repoV2.save(person);
                     log.info("успешно: {}", person);
                 }
                 askToAddPets();

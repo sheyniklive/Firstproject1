@@ -6,7 +6,7 @@ import org.example.exception.InvalidMenuChoiceException;
 import org.example.exception.PersonNotFoundException;
 import org.example.person.Person;
 import org.example.pet.enums.PetType;
-import org.example.repository.PersonRepository;
+import org.example.repository.PersonRepositoryV2;
 import org.example.util.ExitsUtils;
 import org.example.validator.Validators;
 
@@ -24,7 +24,7 @@ public class PetService {
             "1", this::getPersonPets,
             "2", () -> addPets(true));
 
-    private final PersonRepository repo;
+    private final PersonRepositoryV2 repoV2;
 
     public void processPetServiceMenu() {
         log.info("выбирай:");
@@ -51,7 +51,7 @@ public class PetService {
     }
 
     public void addPets(boolean needInformingBack) {
-        if (!repo.isExistDbData()) {
+        if (!repoV2.isExistDbData()) {
             log.warn("пока не добавлено ни одного человека");
             menuStack.removeLast();
             return;
@@ -93,14 +93,14 @@ public class PetService {
             }
         }
         while (input.equals("1"));
-        repo.save(currentPerson);
+        repoV2.save(currentPerson);
         if (needInformingBack) {
             ExitsUtils.informingBack();
         }
     }
 
     private void getPersonPets() {
-        boolean hasAnyDbData = repo.isExistDbData();
+        boolean hasAnyDbData = repoV2.isExistDbData();
         if (!hasAnyDbData) {
             log.warn("пока нет ни одного человека");
             menuStack.removeLast();
@@ -136,7 +136,7 @@ public class PetService {
     }
 
     private Person whatPersonWant() {
-        Map<String, String> existsPersonsNamesAndId = repo.showAllNames();
+        Map<String, String> existsPersonsNamesAndId = repoV2.showAllNames();
 
         if (existsPersonsNamesAndId.isEmpty()) {
             throw new PersonNotFoundException();
@@ -146,7 +146,7 @@ public class PetService {
             String wantPerson = console.nextLine().trim();
             try {
                 if (existsPersonsNamesAndId.containsKey(wantPerson)) {
-                    return repo.findById(UUID.fromString(existsPersonsNamesAndId.get(wantPerson)))
+                    return repoV2.findById(UUID.fromString(existsPersonsNamesAndId.get(wantPerson)))
                             .orElseThrow(() -> new PersonNotFoundException(UUID.fromString(existsPersonsNamesAndId.get(wantPerson))));
                 } else {
                     throw new PersonNotFoundException(UUID.fromString(existsPersonsNamesAndId.get(wantPerson)));

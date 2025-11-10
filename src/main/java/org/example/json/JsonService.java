@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.exception.InvalidMenuChoiceException;
 import org.example.json.enums.FileActionVariety;
 import org.example.person.Person;
-import org.example.repository.PersonRepository;
+import org.example.repository.PersonRepositoryV2;
 import org.example.util.ExitsUtils;
 import org.example.validator.Validators;
 
@@ -39,7 +39,7 @@ public class JsonService {
             "3", this::showJsonContent
     );
 
-    private final PersonRepository repo;
+    private final PersonRepositoryV2 repoV2;
 
     public void processJsonService() {
         log.info("выбери, как будем взаимодействовать с Json`ом:");
@@ -73,7 +73,7 @@ public class JsonService {
             return;
         }
         try {
-            List<Person> foundedPersons = repo.findAll();
+            List<Person> foundedPersons = repoV2.findAll();
             mapper.writeValue(jsonFile, foundedPersons);
             log.info("в файл '{}' из БД успешно сохранено {} персон", jsonFile.getAbsolutePath(), foundedPersons.size());
         } catch (IOException e) {
@@ -100,7 +100,7 @@ public class JsonService {
             return;
         }
         for (Person person : loadedPersonsFromJson) {
-            repo.save(person);
+            repoV2.save(person);
         }
         log.info("из файла '{}' в БД успешно загружено {} персон", jsonFile.getAbsolutePath(), loadedPersonsFromJson.size());
         ExitsUtils.informingBack();
