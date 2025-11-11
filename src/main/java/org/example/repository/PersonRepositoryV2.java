@@ -133,7 +133,7 @@ public class PersonRepositoryV2 {
             for (Object[] row : resultList) {
                 String id = String.valueOf(row[0]);
                 String name = String.valueOf(row[1]);
-                namesAndId.put(id, name);
+                namesAndId.put(name, id);
             }
             return namesAndId;
         } finally {

@@ -15,6 +15,6 @@ public class Person {
     private UUID id;
     private String name;
     private String surname;
-    private Integer age;
+    private int age;
     private List<Pet> pets;
 }

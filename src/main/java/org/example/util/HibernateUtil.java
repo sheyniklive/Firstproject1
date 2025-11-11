@@ -17,7 +17,7 @@ public class HibernateUtil {
             log.info("Инициализация Hibernate SessionFactory");
             Configuration configuration = new Configuration()
                     .configure("hibernate.cfg.xml");
-            log.info("Конфигрурация загружена");
+            log.info("Конфигурация загружена");
             sessionFactory = configuration.buildSessionFactory();
             log.info("SessionFactory создан");
         } catch (Throwable ex) {

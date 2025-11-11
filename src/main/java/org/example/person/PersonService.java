@@ -67,10 +67,10 @@ public class PersonService {
                 log.info("давай еще раз: должно быть от 0 до 150 лет");
             }
         }
-        Integer age = Integer.parseInt(input);
+        int age = Integer.parseInt(input);
         log.info("сколько таких ты хочешь?");
-        int n = console.nextInt();
-        console.nextLine();
+        input = console.nextLine().trim();
+        int n = Integer.parseInt(input);
         if (n == 1) {
             Person person = new Person(UUID.randomUUID(), name, surname, age, new ArrayList<>());
             repoV2.save(person);

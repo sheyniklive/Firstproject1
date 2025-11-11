@@ -75,7 +75,7 @@ public class JsonService {
         try {
             List<Person> foundedPersons = repoV2.findAll();
             mapper.writeValue(jsonFile, foundedPersons);
-            log.info("в файл '{}' из БД успешно сохранено {} персон", jsonFile.getAbsolutePath(), foundedPersons.size());
+            log.info("в файл '{}' из БД успешно сохранено {} персон", jsonFile.getAbsolutePath(), (Object) foundedPersons.size());
         } catch (IOException e) {
             log.error("Ошибка при сохранении JSON-файла", e);
             log.info("пойдем в начало");
@@ -102,7 +102,7 @@ public class JsonService {
         for (Person person : loadedPersonsFromJson) {
             repoV2.save(person);
         }
-        log.info("из файла '{}' в БД успешно загружено {} персон", jsonFile.getAbsolutePath(), loadedPersonsFromJson.size());
+        log.info("из файла '{}' в БД успешно загружено {} персон", jsonFile.getAbsolutePath(), (Object) loadedPersonsFromJson.size());
         ExitsUtils.informingBack();
     }
 
