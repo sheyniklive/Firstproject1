@@ -3,21 +3,16 @@ package org.example.repository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.entity.PersonEntity;
+import org.example.entity.View;
 import org.example.person.Person;
 import org.example.person.PersonEntityMapper;
 import org.example.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.NativeQuery;
-import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -127,13 +122,11 @@ public class PersonRepositoryV2 {
         Session session = null;
         try {
             session = hibernateUtil.getSessionFactory().openSession();
-            Query<Object[]> query = session.createQuery("SELECT p.id, p.name FROM PersonEntity p", Object[].class);
-            List<Object[]> resultList = query.list();
+            NativeQuery<View> query = session.createNativeQuery("SELECT id, name FROM persons", View.class);
+            List<View> viewsList = query.list();
             Map<String, String> namesAndId = new HashMap<>();
-            for (Object[] row : resultList) {
-                String id = String.valueOf(row[0]);
-                String name = String.valueOf(row[1]);
-                namesAndId.put(name, id);
+            for (View view : viewsList) {
+                namesAndId.put(view.getPersonEntityName(), String.valueOf(view.getPersonEntityId()));
             }
             return namesAndId;
         } finally {

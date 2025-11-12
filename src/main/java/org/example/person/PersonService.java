@@ -12,9 +12,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.example.Main.console;
-import static org.example.Main.menuStack;
-import static org.example.Main.petService;
+import static org.example.Main.*;
 
 
 @Slf4j
@@ -67,7 +65,7 @@ public class PersonService {
                 log.info("давай еще раз: должно быть от 0 до 150 лет");
             }
         }
-        int age = Integer.parseInt(input);
+        Integer age = Integer.parseInt(input);
         log.info("сколько таких ты хочешь?");
         input = console.nextLine().trim();
         int n = Integer.parseInt(input);

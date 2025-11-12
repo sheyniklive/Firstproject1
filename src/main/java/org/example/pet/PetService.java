@@ -196,7 +196,5 @@ public class PetService {
                 log.info("повтори");
             }
         }
-
-
     }
 }
