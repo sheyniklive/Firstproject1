@@ -2,13 +2,13 @@ package org.example;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.calculator.CalculatorService;
-import org.example.config.DbConfig;
 import org.example.exception.InvalidMenuChoiceException;
 import org.example.json.JsonService;
 import org.example.person.PersonService;
 import org.example.pet.PetService;
-import org.example.repository.PersonRepository;
+import org.example.repository.PersonRepositoryV2;
 import org.example.util.ExitsUtils;
+import org.example.util.HibernateUtil;
 import org.example.validator.Validators;
 
 import java.util.ArrayDeque;
@@ -19,11 +19,11 @@ import java.util.Scanner;
 @Slf4j
 public class Main {
     public static final Deque<Runnable> menuStack = new ArrayDeque<>();
-    public static final DbConfig dbConfiguration = new DbConfig();
-    public static final PersonRepository personRepository = new PersonRepository(dbConfiguration);
-    public static final PersonService personService = new PersonService(personRepository);
-    public static final PetService petService = new PetService(personRepository);
-    public static final JsonService jsonService = new JsonService(personRepository);
+    public static final HibernateUtil hibernateUtil = new HibernateUtil();
+    public static final PersonRepositoryV2 personRepositoryV2 = new PersonRepositoryV2(hibernateUtil);
+    public static final PersonService personService = new PersonService(personRepositoryV2);
+    public static final PetService petService = new PetService(personRepositoryV2);
+    public static final JsonService jsonService = new JsonService(personRepositoryV2);
     public static final CalculatorService calculatorService = new CalculatorService();
     public static final Scanner console = new Scanner(System.in);
     public final Map<String, Runnable> choiceMainMenu = Map.of(

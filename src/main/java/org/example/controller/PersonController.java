@@ -23,37 +23,37 @@ import java.util.UUID;
 @RequestMapping("/api/v1/persons")
 public class PersonController {
 
-    private final PersonServiceV2 service;
+    private final PersonServiceV2 serviceV2;
 
     @GetMapping
     public ResponseEntity<List<PersonResponseDto>> getAllPersons() {
-        List<PersonResponseDto> persons = service.getAllPersons();
+        List<PersonResponseDto> persons = serviceV2.getAllPersons();
         return ResponseEntity.ok(persons);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PersonResponseDto> getPersonById(@PathVariable UUID id) {
-        return service.getPersonById(id)
+        return serviceV2.getPersonById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public ResponseEntity<PersonResponseDto> createPerson(@RequestBody PersonCreateDto dto) {
-        PersonResponseDto createdPerson = service.createPerson(dto);
+        PersonResponseDto createdPerson = serviceV2.createPerson(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPerson);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePersonById(@PathVariable UUID id) {
-        boolean deleted = service.deletePersonById(id);
+        boolean deleted = serviceV2.deletePersonById(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<PersonResponseDto> putPerson(@PathVariable UUID id, @RequestBody PersonCreateDto dto) {
-        return service.fullUpdatePerson(id, dto)
+        return serviceV2.fullUpdatePerson(id, dto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

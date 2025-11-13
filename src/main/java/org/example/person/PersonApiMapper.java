@@ -5,13 +5,17 @@ import org.example.dto.PersonResponseDto;
 import org.example.pet.PetApiMapper;
 
 import java.util.ArrayList;
-import java.util.UUID;
+import java.util.Collections;
+import java.util.Optional;
 
 public class PersonApiMapper {
 
     public static Person toDomain(PersonCreateDto dto) {
+        if (dto == null) {
+            return null;
+        }
         return new Person(
-                UUID.randomUUID(),
+                null,
                 dto.getName(),
                 dto.getSurname(),
                 dto.getAge(),
@@ -19,12 +23,17 @@ public class PersonApiMapper {
     }
 
     public static PersonResponseDto toResponse(Person person) {
+        if (person == null) {
+            return null;
+        }
         return new PersonResponseDto(
                 person.getId(),
                 person.getName(),
                 person.getSurname(),
                 person.getAge(),
-                person.getPets().stream()
+                Optional.ofNullable(person.getPets())
+                        .orElse(Collections.emptyList())
+                        .stream()
                         .map(PetApiMapper::toResponse)
                         .toList());
     }

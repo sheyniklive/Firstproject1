@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.example.pet.enums.PetType;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
@@ -19,7 +20,7 @@ public interface Pet {
     String getName();
 
     @JsonIgnore
-    String getType();
+    PetType getType();
 
     void makeSound();
 }
@@ -36,13 +37,13 @@ class Cat implements Pet {
     }
 
     @Override
-    public String getType() {
-        return "Cat";
+    public PetType getType() {
+        return PetType.CAT;
     }
 
     @Override
     public void makeSound() {
-        log.info("{}({}) -> Meow", getName(), getType());
+        log.info("{}({}) -> Meow", getName(), getType().getTypeNameForUI());
     }
 }
 
@@ -58,13 +59,13 @@ class Dog implements Pet {
     }
 
     @Override
-    public String getType() {
-        return "Dog";
+    public PetType getType() {
+        return PetType.DOG;
     }
 
     @Override
     public void makeSound() {
-        log.info("{}({}) -> Wow", getName(), getType());
+        log.info("{}({}) -> Wow", getName(), getType().getTypeNameForUI());
     }
 }
 
@@ -80,12 +81,12 @@ class Goose implements Pet {
     }
 
     @Override
-    public String getType() {
-        return "Goose";
+    public PetType getType() {
+        return PetType.GOOSE;
     }
 
     public void makeSound() {
-        log.info("{}({}) -> GaGaGa", getName(), getType());
+        log.info("{}({}) -> GaGaGa", getName(), getType().getTypeNameForUI());
     }
 }
 

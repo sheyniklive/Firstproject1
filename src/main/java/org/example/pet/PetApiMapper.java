@@ -5,20 +5,25 @@ import org.example.dto.PetDto;
 public class PetApiMapper {
 
     public static Pet toDomain(PetDto petDto) {
-        String type = petDto.getType();
+        if (petDto == null) {
+            return null;
+        }
         String name = petDto.getName();
-        return switch (type) {
-            case "cat" -> new Cat(name);
-            case "dog" -> new Dog(name);
-            case "goose" -> new Goose(name);
-            default -> throw new IllegalArgumentException("Недопустимый тип питомца: " + type);
+        return switch (petDto.getType()) {
+            case CAT -> new Cat(name);
+            case DOG -> new Dog(name);
+            case GOOSE -> new Goose(name);
         };
     }
 
     public static PetDto toResponse(Pet pet) {
+        if (pet == null) {
+            return null;
+        }
         return new PetDto(
-                pet.getType(),
-                pet.getName()
-        );
+                pet.getName(),
+                pet.getType());
     }
+
+
 }

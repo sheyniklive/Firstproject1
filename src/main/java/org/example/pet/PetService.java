@@ -5,7 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.exception.InvalidMenuChoiceException;
 import org.example.exception.PersonNotFoundException;
 import org.example.person.Person;
-import org.example.repository.PersonRepository;
+import org.example.pet.enums.PetType;
+import org.example.repository.PersonRepositoryV2;
 import org.example.util.ExitsUtils;
 import org.example.validator.Validators;
 
@@ -23,7 +24,7 @@ public class PetService {
             "1", this::getPersonPets,
             "2", () -> addPets(true));
 
-    private final PersonRepository repo;
+    private final PersonRepositoryV2 repoV2;
 
     public void processPetServiceMenu() {
         log.info("выбирай:");
@@ -50,30 +51,32 @@ public class PetService {
     }
 
     public void addPets(boolean needInformingBack) {
-        if (!repo.isExistDbData()) {
+        if (!repoV2.isExistDbData()) {
             log.warn("пока не добавлено ни одного человека");
             menuStack.removeLast();
             return;
         }
         Person currentPerson = selectPerson();
+        String petName;
+        String choisePetType;
         String input;
         do {
             log.info("поехали: как питомца зовут?");
-            String petName = console.nextLine().trim();
+            petName = console.nextLine().trim();
             log.info("кто это:");
             log.info("1 - кошка");
             log.info("2 - собака");
             log.info("3 - гусь");
             while (true) {
-                input = console.nextLine().trim();
+                choisePetType = console.nextLine().trim();
                 try {
-                    Validators.choiceMenuOf3.validate(input);
+                    Validators.choiceMenuOf3.validate(choisePetType);
                     break;
                 } catch (InvalidMenuChoiceException e) {
                     log.warn("только 1, 2 или 3 - повтори");
                 }
             }
-            addCertainPet(currentPerson, petName, input);
+            addCertainPet(currentPerson, petName, choisePetType);
             log.info("питомцы персона '{}' обновлены: {}", currentPerson.getName(), currentPerson.getPets());
             log.info("хочешь добавить нового:");
             log.info("1 - да,");
@@ -90,14 +93,14 @@ public class PetService {
             }
         }
         while (input.equals("1"));
-        repo.save(currentPerson);
+        repoV2.save(currentPerson);
         if (needInformingBack) {
             ExitsUtils.informingBack();
         }
     }
 
     private void getPersonPets() {
-        boolean hasAnyDbData = repo.isExistDbData();
+        boolean hasAnyDbData = repoV2.isExistDbData();
         if (!hasAnyDbData) {
             log.warn("пока нет ни одного человека");
             menuStack.removeLast();
@@ -133,7 +136,7 @@ public class PetService {
     }
 
     private Person whatPersonWant() {
-        Map<String, String> existsPersonsNamesAndId = repo.showAllNames();
+        Map<String, String> existsPersonsNamesAndId = repoV2.showAllNames();
 
         if (existsPersonsNamesAndId.isEmpty()) {
             throw new PersonNotFoundException();
@@ -143,7 +146,7 @@ public class PetService {
             String wantPerson = console.nextLine().trim();
             try {
                 if (existsPersonsNamesAndId.containsKey(wantPerson)) {
-                    return repo.findById(UUID.fromString(existsPersonsNamesAndId.get(wantPerson)))
+                    return repoV2.findById(UUID.fromString(existsPersonsNamesAndId.get(wantPerson)))
                             .orElseThrow(() -> new PersonNotFoundException(UUID.fromString(existsPersonsNamesAndId.get(wantPerson))));
                 } else {
                     throw new PersonNotFoundException(UUID.fromString(existsPersonsNamesAndId.get(wantPerson)));
@@ -155,11 +158,12 @@ public class PetService {
         }
     }
 
-    private void addCertainPet(Person person, String petName, String type) {
+    private void addCertainPet(Person person, String petName, String typeChoice) {
+        PetType type = PetType.fromMenuChoice(typeChoice);
         switch (type) {
-            case "1" -> person.getPets().add(new Cat(petName));
-            case "2" -> person.getPets().add(new Dog(petName));
-            case "3" -> person.getPets().add(new Goose(petName));
+            case CAT -> person.getPets().add(new Cat(petName));
+            case DOG -> person.getPets().add(new Dog(petName));
+            case GOOSE -> person.getPets().add(new Goose(petName));
             default -> log.warn("неизвестный тип питомца");
         }
     }
@@ -192,7 +196,5 @@ public class PetService {
                 log.info("повтори");
             }
         }
-
-
     }
 }
