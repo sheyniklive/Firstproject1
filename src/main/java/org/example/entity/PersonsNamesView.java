@@ -11,7 +11,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
-public class View {
+public class PersonsNamesView {
     @Id
     @Column(name = "id")
     private UUID personEntityId;

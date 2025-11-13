@@ -3,7 +3,7 @@ package org.example.repository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.entity.PersonEntity;
-import org.example.entity.View;
+import org.example.entity.PersonsNamesView;
 import org.example.person.Person;
 import org.example.person.PersonEntityMapper;
 import org.example.util.HibernateUtil;
@@ -12,7 +12,12 @@ import org.hibernate.Transaction;
 import org.hibernate.query.NativeQuery;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -122,13 +127,13 @@ public class PersonRepositoryV2 {
         Session session = null;
         try {
             session = hibernateUtil.getSessionFactory().openSession();
-            NativeQuery<View> query = session.createNativeQuery("SELECT id, name FROM persons", View.class);
-            List<View> viewsList = query.list();
-            Map<String, String> namesAndId = new HashMap<>();
-            for (View view : viewsList) {
-                namesAndId.put(view.getPersonEntityName(), String.valueOf(view.getPersonEntityId()));
-            }
-            return namesAndId;
+            NativeQuery<PersonsNamesView> query = session.createNativeQuery("SELECT id, name FROM persons", PersonsNamesView.class);
+
+            return query.list().stream()
+                    .collect(Collectors.toMap(
+                            PersonsNamesView::getPersonEntityName,
+                            personsNamesView -> String.valueOf(personsNamesView.getPersonEntityId())
+                    ));
         } finally {
             if (session != null) {
                 session.close();
