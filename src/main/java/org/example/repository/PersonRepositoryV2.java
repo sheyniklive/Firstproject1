@@ -26,7 +26,7 @@ public class PersonRepositoryV2 {
 
     private final HibernateUtil hibernateUtil;
 
-    public void save(Person person) {
+    public PersonEntity save(Person person) {
         if (person == null) {
             throw new IllegalArgumentException("Персон не может быть пустым");
         }
@@ -37,9 +37,9 @@ public class PersonRepositoryV2 {
             session = hibernateUtil.getSessionFactory().openSession();
             transaction = session.beginTransaction();
             PersonEntity merged = session.merge(entity);
-            person.setId(merged.getId());
             transaction.commit();
-            log.info("Персон успешно сохранен, id: {}", person.getId());
+            log.info("Персон успешно сохранен, id: {}", merged.getId());
+            return merged;
         } catch (Exception e) {
             if (transaction != null && transaction.isActive()) {
                 transaction.rollback();

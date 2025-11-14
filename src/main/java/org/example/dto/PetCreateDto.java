@@ -4,16 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.UUID;
+import org.example.pet.enums.PetType;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class PersonResponseDto {
-    private UUID id;
+public class PetCreateDto {
     private String name;
-    private String surname;
-    private Integer age;
+    private PetType type;
 }
