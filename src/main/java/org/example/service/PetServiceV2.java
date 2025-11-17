@@ -41,5 +41,14 @@ public class PetServiceV2 {
             .toList();
     }
 
+    public List<PetResponseDto> getPets(UUID personId) {
+        if (!personRepoV2.isExistDbPerson(personId)) {
+            log.warn("Персона с id {} не найдено", personId);
+            throw new PersonNotFoundException(personId);
+        }
+
+
+
+    }
 
     }
