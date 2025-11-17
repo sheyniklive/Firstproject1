@@ -161,9 +161,9 @@ public class PetService {
     private void addCertainPet(Person person, String petName, String typeChoice) {
         PetType type = PetType.fromMenuChoice(typeChoice);
         switch (type) {
-            case CAT -> person.getPets().add(new Cat(petName));
-            case DOG -> person.getPets().add(new Dog(petName));
-            case GOOSE -> person.getPets().add(new Goose(petName));
+            case CAT -> person.getPets().add(new Cat(null, petName, person.getId()));
+            case DOG -> person.getPets().add(new Dog(null, petName, person.getId()));
+            case GOOSE -> person.getPets().add(new Goose(null, petName, person.getId()));
             default -> log.warn("неизвестный тип питомца");
         }
     }

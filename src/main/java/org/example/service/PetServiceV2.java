@@ -4,12 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.PetCreateDto;
 import org.example.dto.PetResponseDto;
-import org.example.entity.PersonEntity;
-import org.example.entity.PetEntity;
-import org.example.person.PersonEntityMapper;
+import org.example.exception.PersonNotFoundException;
+import org.example.pet.Pet;
 import org.example.pet.PetApiMapper;
-import org.example.pet.PetEntityMapper;
 import org.example.repository.PersonRepositoryV2;
+import org.example.repository.PetRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,20 +19,27 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PetServiceV2 {
 
-    private final PersonRepositoryV2 repoV2;
+    private final PersonRepositoryV2 personRepoV2;
+    private final PetRepository petRepo;
 
     public List<PetResponseDto> savePets(List<PetCreateDto> petCreateDtos, UUID personId) {
 
-        PersonEntity entity = PersonEntityMapper.toEntity(repoV2.findById(personId));
-        List<PetEntity> pets = petCreateDtos.stream()
+        if (!personRepoV2.isExistDbPerson(personId)) {
+            log.warn("Персон с id {} не найден", personId);
+            throw new PersonNotFoundException(personId);
+        }
+        List<Pet> pets = petCreateDtos.stream()
                 .map(PetApiMapper::toDomain)
-                .map(PetEntityMapper::toEntity)
                 .toList();
-        pets.forEach(entity::addPet);
-        PersonEntity savedEntity = repoV2.save(PersonEntityMapper.toDomain(entity));
-        return savedEntity.getPets().stream()
-                .map(PetApiMapper::toResponse)
-                .toList();
+        for (Pet pet : pets) {
+            pet.setOwnerId(personId);
+        }
+        List<Pet> savedPets = petRepo.saveAll(pets);
+
+    return savedPets.stream()
+            .map(PetApiMapper::toResponse)
+            .toList();
     }
 
-}
+
+    }

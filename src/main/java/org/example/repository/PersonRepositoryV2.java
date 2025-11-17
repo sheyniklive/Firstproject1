@@ -122,6 +122,20 @@ public class PersonRepositoryV2 {
             }
         }
     }
+    public boolean isExistDbPerson(UUID id) {
+        Session session = null;
+        try {
+            session = hibernateUtil.getSessionFactory().openSession();
+            NativeQuery<Integer> query = session.createNativeQuery("SELECT COUNT(*) from persons where id = :id", Integer.class);
+            query.setParameter("id", id);
+            Integer count = query.getSingleResult();
+            return count > 0;
+        }  finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
 
     public Map<String, String> showAllNames() {
         Session session = null;

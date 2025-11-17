@@ -2,7 +2,6 @@ package org.example.pet;
 
 import org.example.dto.PetCreateDto;
 import org.example.dto.PetResponseDto;
-import org.example.entity.PetEntity;
 
 public class PetApiMapper {
 
@@ -12,20 +11,20 @@ public class PetApiMapper {
         }
         String name = petCreateDto.getName();
         return switch (petCreateDto.getType()) {
-            case CAT -> new Cat(name);
-            case DOG -> new Dog(name);
-            case GOOSE -> new Goose(name);
+            case CAT -> new Cat(null, name, null);
+            case DOG -> new Dog(null, name, null);
+            case GOOSE -> new Goose(null, name, null);
         };
     }
 
-    public static PetResponseDto toResponse(PetEntity petEntity) {
-        if (petEntity == null) {
+    public static PetResponseDto toResponse(Pet pet) {
+        if (pet == null) {
             return null;
         }
         return new PetResponseDto(
-                petEntity.getId(),
-                petEntity.getName(),
-                petEntity.getType(),
-                petEntity.getOwner().getId());
+                pet.getId(),
+                pet.getName(),
+                pet.getType(),
+                pet.getOwnerId());
     }
 }

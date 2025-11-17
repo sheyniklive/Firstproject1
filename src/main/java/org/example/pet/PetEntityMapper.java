@@ -22,9 +22,9 @@ public class PetEntityMapper {
         PetType type = petEntity.getType();
         String name = petEntity.getName();
         return switch (type) {
-            case CAT -> new Cat(name);
-            case DOG -> new Dog(name);
-            case GOOSE -> new Goose(name);
+            case CAT -> new Cat(petEntity.getId(), name, petEntity.getOwner().getId());
+            case DOG -> new Dog(petEntity.getId(), name, petEntity.getOwner().getId());
+            case GOOSE -> new Goose(petEntity.getId(), name, petEntity.getOwner().getId());
         };
     }
 }
