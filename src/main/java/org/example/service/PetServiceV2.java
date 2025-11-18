@@ -11,6 +11,7 @@ import org.example.repository.PersonRepositoryV2;
 import org.example.repository.PetRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,6 +49,9 @@ public class PetServiceV2 {
             throw new PersonNotFoundException(personId);
         }
         List<Pet> pets = petRepo.getPets(personId);
+        if (pets.isEmpty()) {
+            return Collections.emptyList();
+        }
         return pets.stream()
                 .map(PetApiMapper::toResponse)
                 .toList();

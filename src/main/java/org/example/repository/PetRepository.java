@@ -12,6 +12,7 @@ import org.hibernate.query.NativeQuery;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,7 +61,7 @@ public class PetRepository {
             List<PetEntity> pets = query.getResultList();
             tx.commit();
             if (pets.isEmpty()) {
-                return new ArrayList<>();
+                return Collections.emptyList();
             } else {
                 return pets.stream()
                         .map(PetEntityMapper::toDomain)
