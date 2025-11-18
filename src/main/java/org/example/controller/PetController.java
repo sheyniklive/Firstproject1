@@ -20,7 +20,8 @@ public class PetController {
 
     @GetMapping
     public ResponseEntity<List<PetResponseDto>> getPets(@PathVariable("personId") UUID personId) {
-        List<PetResponseDto> pets =
+        List<PetResponseDto> pets = petServiceV2.getPets(personId);
+        return ResponseEntity.ok(pets);
     }
 
     @PostMapping

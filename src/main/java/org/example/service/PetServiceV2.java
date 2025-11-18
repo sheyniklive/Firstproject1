@@ -29,6 +29,7 @@ public class PetServiceV2 {
             throw new PersonNotFoundException(personId);
         }
         List<Pet> pets = petCreateDtos.stream()
+
                 .map(PetApiMapper::toDomain)
                 .toList();
         for (Pet pet : pets) {
@@ -36,9 +37,9 @@ public class PetServiceV2 {
         }
         List<Pet> savedPets = petRepo.saveAll(pets);
 
-    return savedPets.stream()
-            .map(PetApiMapper::toResponse)
-            .toList();
+        return savedPets.stream()
+                .map(PetApiMapper::toResponse)
+                .toList();
     }
 
     public List<PetResponseDto> getPets(UUID personId) {
@@ -46,9 +47,10 @@ public class PetServiceV2 {
             log.warn("Персона с id {} не найдено", personId);
             throw new PersonNotFoundException(personId);
         }
-
-
-
+        List<Pet> pets = petRepo.getPets(personId);
+        return pets.stream()
+                .map(PetApiMapper::toResponse)
+                .toList();
     }
 
-    }
+}
