@@ -1,5 +1,6 @@
 package org.example.pet;
 
+import org.example.entity.PersonEntity;
 import org.example.entity.PetEntity;
 import org.example.pet.enums.PetType;
 
@@ -12,6 +13,11 @@ public class PetEntityMapper {
         PetEntity petEntity = new PetEntity();
         petEntity.setName(pet.getName());
         petEntity.setType(pet.getType());
+        if (pet.getOwnerId() != null) {
+            PersonEntity owner = new PersonEntity();
+            owner.setId(pet.getOwnerId());
+            petEntity.setOwner(owner);
+        }
         return petEntity;
     }
 

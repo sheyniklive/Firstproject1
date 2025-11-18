@@ -6,13 +6,13 @@ import org.example.entity.PetEntity;
 import org.example.pet.Pet;
 import org.example.pet.PetEntityMapper;
 import org.example.util.HibernateUtil;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.NativeQuery;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,12 +33,12 @@ public class PetRepository {
             session = hibernateUtil.getSessionFactory().openSession();
             tx = session.beginTransaction();
             List<PetEntity> mergedPets = new ArrayList<>();
-            PetEntity mergedPet;
             for (Pet pet : pets) {
                 PetEntity petEntity = PetEntityMapper.toEntity(pet);
-                mergedPet = session.merge(petEntity);
+                PetEntity mergedPet = session.merge(petEntity);
                 mergedPets.add(mergedPet);
             }
+            mergedPets.forEach(petEntity -> Hibernate.initialize(petEntity.getOwner()));
             tx.commit();
             return mergedPets.stream()
                     .map(PetEntityMapper::toDomain)
@@ -56,17 +56,15 @@ public class PetRepository {
         try {
             session = hibernateUtil.getSessionFactory().openSession();
             tx = session.beginTransaction();
-            NativeQuery<PetEntity> query = session.createNativeQuery("select * from pets where person_id = :personId");
+            NativeQuery<PetEntity> query = session.createNativeQuery(
+                    "select pe.* from pets pe where pe.person_id = :personId", PetEntity.class);
             query.setParameter("personId", personId);
             List<PetEntity> pets = query.getResultList();
+            pets.forEach(petEntity -> Hibernate.initialize(petEntity.getOwner()));
             tx.commit();
-            if (pets.isEmpty()) {
-                return Collections.emptyList();
-            } else {
-                return pets.stream()
-                        .map(PetEntityMapper::toDomain)
-                        .toList();
-            }
+            return pets.stream()
+                    .map(PetEntityMapper::toDomain)
+                    .toList();
         } finally {
             if (session != null) {
                 session.close();

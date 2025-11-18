@@ -25,7 +25,8 @@ public class PetController {
     }
 
     @PostMapping
-    public ResponseEntity<List<PetResponseDto>> createPets(@PathVariable("personId") UUID personId, List<PetCreateDto> petCreateDtos) {
+    public ResponseEntity<List<PetResponseDto>> createPets(@PathVariable("personId") UUID personId,
+                                                           @RequestBody List<PetCreateDto> petCreateDtos) {
         List<PetResponseDto> savedPets = petServiceV2.savePets(petCreateDtos, personId);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPets);
     }
