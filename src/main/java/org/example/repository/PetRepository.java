@@ -72,5 +72,15 @@ public class PetRepository {
         }
     }
 
+    public boolean deleteAllPets(UUID personId) {
+        Session session = null;
+        Transaction tx = null;
+        try {
+            session = hibernateUtil.getSessionFactory().openSession();
+            tx = session.beginTransaction();
+
+        }
+    }
+
 
 }

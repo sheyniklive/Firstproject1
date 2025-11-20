@@ -50,4 +50,12 @@ public class PetServiceV2 {
                 .toList();
     }
 
+    public boolean deleteAllPets(UUID personId) {
+        if (!personRepoV2.isExistDbPerson(personId)) {
+            log.warn("Человек с id {} не найден", personId);
+            throw new PersonNotFoundException(personId);
+        }
+        return petRepo.deleteAllPets(personId);
+    }
+
 }
