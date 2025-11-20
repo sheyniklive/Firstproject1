@@ -71,17 +71,17 @@ public class PersonService {
         int n = Integer.parseInt(input);
         if (n == 1) {
             Person person = new Person(UUID.randomUUID(), name, surname, age, new ArrayList<>());
-            repoV2.save(person);
+            Person savedPerson = repoV2.save(person);
             askToAddPets();
-            log.info("персон создан и загружен в БД: {}", person);
+            log.info("персон создан и загружен в БД: {}", savedPerson);
             ExitsUtils.informingBack();
         } else {
             if (n > 0) {
                 log.info("попытка создания и загрузки персон в БД:");
                 for (int i = 0; i < n; i++) {
                     Person person = new Person(UUID.randomUUID(), name + "_" + i, surname + "_" + i, age, new ArrayList<>());
-                    repoV2.save(person);
-                    log.info("успешно: {}", person);
+                    Person savedPerson = repoV2.save(person);
+                    log.info("успешно: {}", savedPerson);
                 }
                 askToAddPets();
                 ExitsUtils.informingBack();

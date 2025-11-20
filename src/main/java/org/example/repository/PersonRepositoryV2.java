@@ -26,20 +26,20 @@ public class PersonRepositoryV2 {
 
     private final HibernateUtil hibernateUtil;
 
-    public PersonEntity save(Person person) {
+    public Person save(Person person) {
         if (person == null) {
             throw new IllegalArgumentException("Персон не может быть пустым");
         }
         PersonEntity entity = PersonEntityMapper.toEntity(person);
+        PersonEntity merged;
         Session session = null;
         Transaction transaction = null;
         try {
             session = hibernateUtil.getSessionFactory().openSession();
             transaction = session.beginTransaction();
-            PersonEntity merged = session.merge(entity);
+            merged = session.merge(entity);
             transaction.commit();
             log.info("Персон успешно сохранен, id: {}", merged.getId());
-            return merged;
         } catch (Exception e) {
             if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
@@ -51,6 +51,7 @@ public class PersonRepositoryV2 {
                 session.close();
             }
         }
+        return PersonEntityMapper.toDomain(merged);
     }
 
     public Optional<Person> findById(UUID id) {
@@ -98,9 +99,9 @@ public class PersonRepositoryV2 {
             PersonEntity person = session.get(PersonEntity.class, id);
             if (person != null) {
                 session.remove(person);
-                transaction.commit();
                 deleted = true;
             }
+            transaction.commit();
         } finally {
             if (session != null) {
                 session.close();

@@ -9,6 +9,7 @@ import org.example.util.HibernateUtil;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.MutationQuery;
 import org.hibernate.query.NativeQuery;
 import org.springframework.stereotype.Repository;
 
@@ -28,7 +29,7 @@ public class PetRepository {
             throw new IllegalArgumentException("Список питомцев пуст");
         }
         Session session = null;
-        Transaction tx = null;
+        Transaction tx;
         try {
             session = hibernateUtil.getSessionFactory().openSession();
             tx = session.beginTransaction();
@@ -52,7 +53,7 @@ public class PetRepository {
 
     public List<Pet> getPets(UUID personId) {
         Session session = null;
-        Transaction tx = null;
+        Transaction tx;
         try {
             session = hibernateUtil.getSessionFactory().openSession();
             tx = session.beginTransaction();
@@ -74,11 +75,19 @@ public class PetRepository {
 
     public boolean deleteAllPets(UUID personId) {
         Session session = null;
-        Transaction tx = null;
+        Transaction tx;
         try {
             session = hibernateUtil.getSessionFactory().openSession();
             tx = session.beginTransaction();
-
+            MutationQuery query = session.createNativeMutationQuery("DELETE from pets WHERE person_id = :personId");
+            query.setParameter("personId", personId);
+            int deletedLines = query.executeUpdate();
+            tx.commit();
+            return deletedLines > 0;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
     }
 

@@ -23,9 +23,9 @@ public class PersonServiceV2 {
 
     public PersonResponseDto createPerson(PersonCreateDto dto) {
         Person person = PersonApiMapper.toDomain(dto);
-        repoV2.save(person);
-        log.info("Создан и загружен в БД персон: {}", person);
-        return PersonApiMapper.toResponse(person);
+        Person savedPerson = repoV2.save(person);
+        log.info("Создан и загружен в БД персон: {}", savedPerson);
+        return PersonApiMapper.toResponse(savedPerson);
     }
 
     public Optional<PersonResponseDto> getPersonById(UUID id) {
