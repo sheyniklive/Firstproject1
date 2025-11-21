@@ -91,5 +91,23 @@ public class PetRepository {
         }
     }
 
+    public  boolean deletePetById(UUID personId, Long petId) {
+        Session session = null;
+        Transaction tx;
+        try {
+            session = hibernateUtil.getSessionFactory().openSession();
+            tx = session.beginTransaction();
+            MutationQuery query = session.createNativeMutationQuery("DELETE from pets WHERE person_id = :personId AND id = :petId");
+            query.setParameter("personId", personId);
+            query.setParameter("petId", petId);
+            int deletedLines = query.executeUpdate();
+            tx.commit();
+            return deletedLines > 0;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
 
 }

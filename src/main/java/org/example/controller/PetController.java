@@ -36,5 +36,11 @@ public class PetController {
         boolean deleted = petServiceV2.deleteAllPets(personId);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
+    @DeleteMapping("/{petId}")
+    public ResponseEntity<Void> deletePetById(@PathVariable("personId") UUID personId,
+                                        @PathVariable("petId") Long petId) {
+        boolean deleted = petServiceV2.deletePetById(personId, petId);
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
 
 }

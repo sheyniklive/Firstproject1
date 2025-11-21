@@ -58,4 +58,11 @@ public class PetServiceV2 {
         return petRepo.deleteAllPets(personId);
     }
 
+    public boolean deletePetById(UUID personId, Long petId) {
+        if (!personRepoV2.isExistDbPerson(personId)) {
+            log.warn("Человека с id {} не найдено", personId);
+            throw new PersonNotFoundException(personId);
+        }
+        return petRepo.deletePetById(personId, petId);
+    }
 }
