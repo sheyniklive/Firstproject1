@@ -91,7 +91,7 @@ public class PetRepository {
         }
     }
 
-    public  boolean deletePetById(UUID personId, Long petId) {
+    public boolean deletePetById(UUID personId, Long petId) {
         Session session = null;
         Transaction tx;
         try {
@@ -103,6 +103,48 @@ public class PetRepository {
             int deletedLines = query.executeUpdate();
             tx.commit();
             return deletedLines > 0;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    public boolean isExistDbPet(UUID personId, Long petId) {
+        Session session = null;
+        Transaction tx;
+        try {
+            session = hibernateUtil.getSessionFactory().openSession();
+            tx = session.beginTransaction();
+            NativeQuery<Integer> query = session.createNativeQuery("SELECT COUNT(*) FROM pets WHERE person_id = :personId AND id = :petId", Integer.class);
+            query.setParameter("personId", personId);
+            query.setParameter("petId", petId);
+            Integer count = query.uniqueResult();
+            tx.commit();
+            return count > 0;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    public boolean isValidOwnership(UUID personId, Long petId) {
+        Session session = null;
+        Transaction tx;
+        try {
+            session = hibernateUtil.getSessionFactory().openSession();
+            tx = session.beginTransaction();
+            NativeQuery<Integer> query = session.createNativeQuery(
+                    "SELECT COUNT(*) FROM pets pe JOIN persons p " +
+                            "ON pe.person_id = p.id " +
+                            "WHERE pe.id = :petId AND p.id = :personId",
+                    Integer.class);
+            query.setParameter("petId", petId);
+            query.setParameter("personId", personId);
+            Integer count = query.uniqueResult();
+            tx.commit();
+            return count > 0;
         } finally {
             if (session != null) {
                 session.close();

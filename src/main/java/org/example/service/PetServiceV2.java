@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.PetCreateDto;
 import org.example.dto.PetResponseDto;
+import org.example.exception.InvalidOwnershipException;
 import org.example.exception.PersonNotFoundException;
+import org.example.exception.PetNotFoundException;
 import org.example.pet.Pet;
 import org.example.pet.PetApiMapper;
 import org.example.repository.PersonRepositoryV2;
@@ -62,6 +64,14 @@ public class PetServiceV2 {
         if (!personRepoV2.isExistDbPerson(personId)) {
             log.warn("Человека с id {} не найдено", personId);
             throw new PersonNotFoundException(personId);
+        }
+        if (!petRepo.isExistDbPet(personId, petId)) {
+            log.warn("Не найдено питомца с id: {}", petId);
+            throw new PetNotFoundException(petId);
+        }
+        if (!petRepo.isValidOwnership(personId, petId)) {
+            log.warn("Питомец с id '{}' не принадлежит персону с id '{}'", petId, personId);
+            throw new InvalidOwnershipException(petId, personId);
         }
         return petRepo.deletePetById(personId, petId);
     }
