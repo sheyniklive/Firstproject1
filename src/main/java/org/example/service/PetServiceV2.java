@@ -35,6 +35,7 @@ public class PetServiceV2 {
                 .toList();
         pets.forEach(pet -> pet.setOwnerId(personId));
         List<Pet> savedPets = petRepo.saveAll(pets);
+        log.info("Персону с id {} успешно добавлены питомцы: {}", personId, savedPets);
 
         return savedPets.stream()
                 .map(PetApiMapper::toResponse)
@@ -47,6 +48,7 @@ public class PetServiceV2 {
             throw new PersonNotFoundException(personId);
         }
         List<Pet> pets = petRepo.getPets(personId);
+        log.info("Из БД успешно загружены питомцы персона с id {}", personId);
         return pets.stream()
                 .map(PetApiMapper::toResponse)
                 .toList();

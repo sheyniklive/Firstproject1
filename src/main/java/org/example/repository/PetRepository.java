@@ -63,6 +63,7 @@ public class PetRepository {
             List<PetEntity> pets = query.getResultList();
             pets.forEach(petEntity -> Hibernate.initialize(petEntity.getOwner()));
             tx.commit();
+            log.info("Питомцы персон с  id {} загружены", personId);
             return pets.stream()
                     .map(PetEntityMapper::toDomain)
                     .toList();
@@ -83,7 +84,13 @@ public class PetRepository {
             query.setParameter("personId", personId);
             int deletedLines = query.executeUpdate();
             tx.commit();
-            return deletedLines > 0;
+            if (deletedLines > 0) {
+                log.info("Все питомцы персона с id {} удалены", personId);
+                return  true;
+            } else {
+                log.warn("Не удалось удалить питомцев");
+                return false;
+            }
         } finally {
             if (session != null) {
                 session.close();
@@ -102,7 +109,13 @@ public class PetRepository {
             query.setParameter("petId", petId);
             int deletedLines = query.executeUpdate();
             tx.commit();
-            return deletedLines > 0;
+            if (deletedLines > 0) {
+                log.info("У персона с id {} удален питомец с id {}", personId, petId);
+            return true;
+            } else {
+                log.warn("Удаление питомца сорвалось");
+                return false;
+            }
         } finally {
             if (session != null) {
                 session.close();
