@@ -84,13 +84,7 @@ public class PetRepository {
             query.setParameter("personId", personId);
             int deletedLines = query.executeUpdate();
             tx.commit();
-            if (deletedLines > 0) {
-                log.info("Все питомцы персона с id {} удалены", personId);
-                return  true;
-            } else {
-                log.warn("Не удалось удалить питомцев");
-                return false;
-            }
+            return deletedLines > 0;
         } finally {
             if (session != null) {
                 session.close();
@@ -109,13 +103,7 @@ public class PetRepository {
             query.setParameter("petId", petId);
             int deletedLines = query.executeUpdate();
             tx.commit();
-            if (deletedLines > 0) {
-                log.info("У персона с id {} удален питомец с id {}", personId, petId);
-            return true;
-            } else {
-                log.warn("Удаление питомца сорвалось");
-                return false;
-            }
+            return deletedLines > 0;
         } finally {
             if (session != null) {
                 session.close();
@@ -123,14 +111,13 @@ public class PetRepository {
         }
     }
 
-    public boolean isExistDbPet(UUID personId, Long petId) {
+    public boolean isExistDbPet(Long petId) {
         Session session = null;
         Transaction tx;
         try {
             session = hibernateUtil.getSessionFactory().openSession();
             tx = session.beginTransaction();
-            NativeQuery<Integer> query = session.createNativeQuery("SELECT COUNT(*) FROM pets WHERE person_id = :personId AND id = :petId", Integer.class);
-            query.setParameter("personId", personId);
+            NativeQuery<Integer> query = session.createNativeQuery("SELECT COUNT(*) FROM pets WHERE id = :petId", Integer.class);
             query.setParameter("petId", petId);
             Integer count = query.uniqueResult();
             tx.commit();

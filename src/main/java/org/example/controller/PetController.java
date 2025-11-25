@@ -5,8 +5,14 @@ import org.example.dto.PetCreateDto;
 import org.example.dto.PetResponseDto;
 import org.example.service.PetServiceV2;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,28 +25,28 @@ public class PetController {
     private final PetServiceV2 petServiceV2;
 
     @GetMapping
-    public ResponseEntity<List<PetResponseDto>> getPets(@PathVariable("personId") UUID personId) {
-        List<PetResponseDto> pets = petServiceV2.getPets(personId);
-        return ResponseEntity.ok(pets);
+    @ResponseStatus(HttpStatus.OK)
+    public List<PetResponseDto> getPets(@PathVariable("personId") UUID personId) {
+        return petServiceV2.getPets(personId);
     }
 
     @PostMapping
-    public ResponseEntity<List<PetResponseDto>> createPets(@PathVariable("personId") UUID personId,
-                                                           @RequestBody List<PetCreateDto> petCreateDtos) {
-        List<PetResponseDto> savedPets = petServiceV2.savePets(petCreateDtos, personId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedPets);
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<PetResponseDto> createPets(@PathVariable("personId") UUID personId,
+                                           @RequestBody List<PetCreateDto> petCreateDtos) {
+        return petServiceV2.savePets(petCreateDtos, personId);
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteAllPets(@PathVariable("personId") UUID personId) {
-        boolean deleted = petServiceV2.deleteAllPets(personId);
-        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
-    }
-    @DeleteMapping("/{petId}")
-    public ResponseEntity<Void> deletePetById(@PathVariable("personId") UUID personId,
-                                        @PathVariable("petId") Long petId) {
-        boolean deleted = petServiceV2.deletePetById(personId, petId);
-        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAllPets(@PathVariable("personId") UUID personId) {
+        petServiceV2.deleteAllPets(personId);
     }
 
+    @DeleteMapping("/{petId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePetById(@PathVariable("personId") UUID personId,
+                              @PathVariable("petId") Long petId) {
+        petServiceV2.deletePetById(personId, petId);
+    }
 }

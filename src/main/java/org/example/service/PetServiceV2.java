@@ -54,20 +54,25 @@ public class PetServiceV2 {
                 .toList();
     }
 
-    public boolean deleteAllPets(UUID personId) {
+    public void deleteAllPets(UUID personId) {
         if (!personRepoV2.isExistDbPerson(personId)) {
             log.warn("Человек с id {} не найден", personId);
             throw new PersonNotFoundException(personId);
         }
-        return petRepo.deleteAllPets(personId);
+        boolean deleted = petRepo.deleteAllPets(personId);
+        if (deleted) {
+            log.info("Все питомцы персона с id {} удалены", personId);
+        } else {
+            log.warn("Не удалось удалить питомцев");
+        }
     }
 
-    public boolean deletePetById(UUID personId, Long petId) {
+    public void deletePetById(UUID personId, Long petId) {
         if (!personRepoV2.isExistDbPerson(personId)) {
             log.warn("Человека с id {} не найдено", personId);
             throw new PersonNotFoundException(personId);
         }
-        if (!petRepo.isExistDbPet(personId, petId)) {
+        if (!petRepo.isExistDbPet(petId)) {
             log.warn("Не найдено питомца с id: {}", petId);
             throw new PetNotFoundException(petId);
         }
@@ -75,6 +80,11 @@ public class PetServiceV2 {
             log.warn("Питомец с id '{}' не принадлежит персону с id '{}'", petId, personId);
             throw new InvalidOwnershipException(petId, personId);
         }
-        return petRepo.deletePetById(personId, petId);
+        boolean deleted = petRepo.deletePetById(personId, petId);
+        if (deleted) {
+            log.info("У персона с id {} удален питомец с id {}", personId, petId);
+        } else {
+            log.warn("Удаление питомца сорвалось");
+        }
     }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.entity.PersonEntity;
 import org.example.entity.PersonsNamesView;
+import org.example.exception.PersonNotFoundException;
 import org.example.person.Person;
 import org.example.person.PersonEntityMapper;
 import org.example.util.HibernateUtil;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -27,9 +27,7 @@ public class PersonRepositoryV2 {
     private final HibernateUtil hibernateUtil;
 
     public Person save(Person person) {
-        if (person == null) {
-            throw new IllegalArgumentException("Персон не может быть пустым");
-        }
+
         PersonEntity entity = PersonEntityMapper.toEntity(person);
         PersonEntity merged;
         Session session = null;
@@ -54,7 +52,7 @@ public class PersonRepositoryV2 {
         return PersonEntityMapper.toDomain(merged);
     }
 
-    public Optional<Person> findById(UUID id) {
+    public Person findById(UUID id) {
         if (id == null) {
             throw new IllegalArgumentException("Id не может быть null");
         }
@@ -62,8 +60,7 @@ public class PersonRepositoryV2 {
         try {
             session = hibernateUtil.getSessionFactory().openSession();
             PersonEntity entity = session.get(PersonEntity.class, id);
-            return Optional.ofNullable(entity)
-                    .map(PersonEntityMapper::toDomain);
+            return entity != null ? PersonEntityMapper.toDomain(entity) : null;
         } catch (Exception e) {
             log.error("Ошибка при загрузке персона с id ({}) из БД", id, e);
             throw new RuntimeException("Загрузка персона по id не удалась", e);
@@ -90,24 +87,32 @@ public class PersonRepositoryV2 {
         }
     }
 
-    public boolean deleteById(UUID id) {
+    public void deleteById(UUID id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Передан недопустимый id");
+        }
         Session session = null;
-        boolean deleted = false;
+        Transaction transaction = null;
         try {
             session = hibernateUtil.getSessionFactory().openSession();
-            Transaction transaction = session.beginTransaction();
+            transaction = session.beginTransaction();
             PersonEntity person = session.get(PersonEntity.class, id);
-            if (person != null) {
-                session.remove(person);
-                deleted = true;
+            if (person == null) {
+                throw new PersonNotFoundException(id);
             }
+            session.remove(person);
             transaction.commit();
-        } finally {
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            throw e;
+        }
+        finally {
             if (session != null) {
                 session.close();
             }
         }
-        return deleted;
     }
 
     public boolean isExistDbData() {
@@ -123,6 +128,7 @@ public class PersonRepositoryV2 {
             }
         }
     }
+
     public boolean isExistDbPerson(UUID id) {
         Session session = null;
         try {
@@ -131,7 +137,7 @@ public class PersonRepositoryV2 {
             query.setParameter("id", id);
             Integer count = query.getSingleResult();
             return count > 0;
-        }  finally {
+        } finally {
             if (session != null) {
                 session.close();
             }

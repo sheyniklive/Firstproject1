@@ -146,8 +146,7 @@ public class PetService {
             String wantPerson = console.nextLine().trim();
             try {
                 if (existsPersonsNamesAndId.containsKey(wantPerson)) {
-                    return repoV2.findById(UUID.fromString(existsPersonsNamesAndId.get(wantPerson)))
-                            .orElseThrow(() -> new PersonNotFoundException(UUID.fromString(existsPersonsNamesAndId.get(wantPerson))));
+                    return repoV2.findById(UUID.fromString(existsPersonsNamesAndId.get(wantPerson)));
                 } else {
                     throw new PersonNotFoundException(UUID.fromString(existsPersonsNamesAndId.get(wantPerson)));
                 }
