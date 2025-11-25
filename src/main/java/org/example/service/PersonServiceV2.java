@@ -36,13 +36,16 @@ public class PersonServiceV2 {
         if (person == null) {
             throw new PersonNotFoundException(id);
         }
+        log.info("Персон с id {} загружен из БД", id);
         return PersonApiMapper.toResponse(person);
     }
 
     public List<PersonResponseDto> getAllPersons() {
-        return repoV2.findAll().stream()
+        List<PersonResponseDto> persons = repoV2.findAll().stream()
                 .map(PersonApiMapper::toResponse)
                 .toList();
+        log.info("Все персоны загружены из БД");
+        return persons;
     }
 
     public PersonResponseDto fullUpdatePerson(UUID id, PersonCreateDto dto) {
@@ -55,6 +58,7 @@ public class PersonServiceV2 {
         person.setAge(dto.getAge());
         person.setPets(new ArrayList<>());
         Person updatedPerson = repoV2.save(person);
+        log.info("Персон с id {} обновлен", id);
         return PersonApiMapper.toResponse(updatedPerson);
     }
 

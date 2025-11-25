@@ -25,7 +25,10 @@ public class PetServiceV2 {
     private final PetRepository petRepo;
 
     public List<PetResponseDto> savePets(List<PetCreateDto> petCreateDtos, UUID personId) {
-
+        if (petCreateDtos == null || petCreateDtos.isEmpty()) {
+            log.warn("Список питомцев не может быть пуст");
+            throw new IllegalArgumentException("Список питомцев пуст");
+        }
         if (!personRepoV2.isExistDbPerson(personId)) {
             log.warn("Персон с id {} не найден", personId);
             throw new PersonNotFoundException(personId);
