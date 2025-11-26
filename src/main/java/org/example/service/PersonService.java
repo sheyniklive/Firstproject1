@@ -31,13 +31,17 @@ public class PersonService {
     }
 
     public PersonResponseDto getPersonById(UUID id) {
-        return PersonApiMapper.toResponse(repoV2.findByIdOrThrow(id));
+        Person person = repoV2.findByIdOrThrow(id);
+        log.info("Персон с id {} загружен", id);
+        return PersonApiMapper.toResponse(person);
     }
 
     public List<PersonResponseDto> getAllPersons() {
-        return repoV2.findAll().stream()
+        List<PersonResponseDto> persons = repoV2.findAll().stream()
                 .map(PersonApiMapper::toResponse)
                 .toList();
+        log.info("Персоны загружены из БД");
+        return persons;
     }
 
     public PersonResponseDto fullUpdatePerson(UUID id, PersonCreateDto dto) {
@@ -47,6 +51,7 @@ public class PersonService {
         person.setAge(dto.getAge());
         person.setPets(new ArrayList<>());
         Person updatedPerson = repoV2.save(person);
+        log.info("Персон с id {} обновлен", id);
         return PersonApiMapper.toResponse(updatedPerson);
     }
 

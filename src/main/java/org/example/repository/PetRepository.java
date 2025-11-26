@@ -60,7 +60,6 @@ public class PetRepository {
             List<PetEntity> pets = query.getResultList();
             pets.forEach(petEntity -> Hibernate.initialize(petEntity.getOwner()));
             tx.commit();
-            log.info("Питомцы персон с  id {} загружены", personId);
             return pets.stream()
                     .map(PetEntityMapper::toDomain)
                     .toList();
