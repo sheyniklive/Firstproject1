@@ -9,7 +9,7 @@ import org.example.exception.PersonNotFoundException;
 import org.example.exception.PetNotFoundException;
 import org.example.pet.Pet;
 import org.example.pet.PetApiMapper;
-import org.example.repository.PersonRepositoryV2;
+import org.example.repository.PersonRepository;
 import org.example.repository.PetRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +19,19 @@ import java.util.UUID;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class PetServiceV2 {
+public class PetService {
 
-    private final PersonRepositoryV2 personRepoV2;
+    private final PersonRepository personRepo;
     private final PetRepository petRepo;
 
-    public List<PetResponseDto> savePets(List<PetCreateDto> petCreateDtos, UUID personId) {
+    public List<PetResponseDto> savePetsOrThrow(List<PetCreateDto> petCreateDtos, UUID personId) {
 
-        if (!personRepoV2.isExistDbPerson(personId)) {
+        if (!personRepo.existsPersonById(personId)) {
             log.warn("Персон с id {} не найден", personId);
             throw new PersonNotFoundException(personId);
+        }
+        if (petCreateDtos == null || petCreateDtos.isEmpty()) {
+            throw new IllegalArgumentException("Список питомцев пуст");
         }
         List<Pet> pets = petCreateDtos.stream()
                 .map(PetApiMapper::toDomain)
@@ -42,20 +45,20 @@ public class PetServiceV2 {
                 .toList();
     }
 
-    public List<PetResponseDto> getPets(UUID personId) {
-        if (!personRepoV2.isExistDbPerson(personId)) {
+    public List<PetResponseDto> getPetsByPersonIdOrThrow(UUID personId) {
+        if (!personRepo.existsPersonById(personId)) {
             log.warn("Персона с id {} не найдено", personId);
             throw new PersonNotFoundException(personId);
         }
-        List<Pet> pets = petRepo.getPets(personId);
+        List<Pet> pets = petRepo.getPetsByPersonId(personId);
         log.info("Из БД успешно загружены питомцы персона с id {}", personId);
         return pets.stream()
                 .map(PetApiMapper::toResponse)
                 .toList();
     }
 
-    public void deleteAllPets(UUID personId) {
-        if (!personRepoV2.isExistDbPerson(personId)) {
+    public void deleteAllPetsOrThrow(UUID personId) {
+        if (!personRepo.existsPersonById(personId)) {
             log.warn("Человек с id {} не найден", personId);
             throw new PersonNotFoundException(personId);
         }
@@ -63,12 +66,12 @@ public class PetServiceV2 {
         if (deleted) {
             log.info("Все питомцы персона с id {} удалены", personId);
         } else {
-            log.warn("Не удалось удалить питомцев");
+            log.info("У персона с id {} нет питомцев для удаления", personId);
         }
     }
 
-    public void deletePetById(UUID personId, Long petId) {
-        if (!personRepoV2.isExistDbPerson(personId)) {
+    public void deletePetByIdOrThrow(UUID personId, Long petId) {
+        if (!personRepo.existsPersonById(personId)) {
             log.warn("Человека с id {} не найдено", personId);
             throw new PersonNotFoundException(personId);
         }
@@ -84,7 +87,7 @@ public class PetServiceV2 {
         if (deleted) {
             log.info("У персона с id {} удален питомец с id {}", personId, petId);
         } else {
-            log.warn("Удаление питомца сорвалось");
+            throw new IllegalStateException(String.format("У персона с id %s не произошло удаления питомца с id %s", personId, petId));
         }
     }
 }

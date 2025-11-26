@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -36,6 +37,7 @@ public interface Pet {
     void makeSound();
 }
 
+@AllArgsConstructor
 @Getter
 @Setter
 @Slf4j
@@ -50,12 +52,6 @@ class Cat implements Pet {
         this.name = name;
     }
 
-    public Cat(Long id, String name, UUID ownerId) {
-        this.id = id;
-        this.name = name;
-        this.ownerId = ownerId;
-    }
-
     @Override
     public PetType getType() {
         return PetType.CAT;
@@ -67,6 +63,7 @@ class Cat implements Pet {
     }
 }
 
+@AllArgsConstructor
 @Getter
 @Setter
 @Slf4j
@@ -81,12 +78,6 @@ class Dog implements Pet {
         this.name = name;
     }
 
-    public Dog(Long id, String name,UUID ownerId) {
-        this.id = id;
-        this.name = name;
-        this.ownerId = ownerId;
-    }
-
     @Override
     public PetType getType() {
         return PetType.DOG;
@@ -98,6 +89,7 @@ class Dog implements Pet {
     }
 }
 
+@AllArgsConstructor
 @Getter
 @Setter
 @Slf4j
@@ -110,12 +102,6 @@ class Goose implements Pet {
     @JsonCreator
     public Goose(@JsonProperty("name") String name) {
         this.name = name;
-    }
-
-    public Goose(Long id, String name, UUID ownerId) {
-        this.id = id;
-        this.name = name;
-        this.ownerId = ownerId;
     }
 
     @Override

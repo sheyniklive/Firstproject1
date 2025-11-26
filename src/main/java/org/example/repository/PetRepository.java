@@ -25,9 +25,6 @@ public class PetRepository {
     private final HibernateUtil hibernateUtil;
 
     public List<Pet> saveAll(List<Pet> pets) {
-        if (pets.isEmpty()) {
-            throw new IllegalArgumentException("Список питомцев пуст");
-        }
         Session session = null;
         Transaction tx;
         try {
@@ -51,7 +48,7 @@ public class PetRepository {
         }
     }
 
-    public List<Pet> getPets(UUID personId) {
+    public List<Pet> getPetsByPersonId(UUID personId) {
         Session session = null;
         Transaction tx;
         try {

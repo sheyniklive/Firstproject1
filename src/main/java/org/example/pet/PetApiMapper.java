@@ -11,9 +11,9 @@ public class PetApiMapper {
         }
         String name = petCreateDto.getName();
         return switch (petCreateDto.getType()) {
-            case CAT -> new Cat(null, name, null);
-            case DOG -> new Dog(null, name, null);
-            case GOOSE -> new Goose(null, name, null);
+            case CAT -> new Cat(name);
+            case DOG -> new Dog(name);
+            case GOOSE -> new Goose(name);
         };
     }
 

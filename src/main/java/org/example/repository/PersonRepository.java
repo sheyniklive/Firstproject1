@@ -1,182 +1,122 @@
 package org.example.repository;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.config.DbConfig;
+import org.example.entity.PersonEntity;
+import org.example.exception.PersonNotFoundException;
 import org.example.person.Person;
-import org.example.pet.Pet;
-import org.example.repository.mapper.PersonMapper;
+import org.example.person.PersonEntityMapper;
+import org.example.util.HibernateUtil;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.NativeQuery;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
+import java.util.Objects;
 import java.util.UUID;
 
-import static org.example.repository.mapper.PersonMapper.mapPerson;
-import static org.example.repository.mapper.PersonMapper.mapper;
-
 @Repository
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class PersonRepository {
 
-    private final DbConfig dbConfig;
+    private final HibernateUtil hibernateUtil;
 
-    public void save(Person person) {
+    public Person save(Person person) {
 
-        String jsonPets = prepareJsonPets(person);
-
-        String sqlSelect = "SELECT 1 FROM persons WHERE id = ? FOR UPDATE";
-        String sqlUpdate = "UPDATE persons SET name = ?, surname = ?, age = ?, pets = ? WHERE id = ?";
-        String sqlInsert = "INSERT INTO persons (id, name, surname, age, pets) VALUES (?, ?, ?, ?, ?)";
-
-        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword())) {
-            boolean exists;
-            try (PreparedStatement psSelect = conn.prepareStatement(sqlSelect)) {
-                psSelect.setString(1, String.valueOf(person.getId()));
-                try (ResultSet rs = psSelect.executeQuery()) {
-                    exists = rs.next();
-                }
+        PersonEntity entity = PersonEntityMapper.toEntity(person);
+        PersonEntity merged;
+        Session session = null;
+        Transaction transaction = null;
+        try {
+            session = hibernateUtil.getSessionFactory().openSession();
+            transaction = session.beginTransaction();
+            merged = session.merge(entity);
+            transaction.commit();
+            log.info("Персон успешно сохранен, id: {}", merged.getId());
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
             }
-            if (exists) {
-                try (PreparedStatement psUpdate = conn.prepareStatement(sqlUpdate)) {
-                    psUpdate.setString(1, person.getName());
-                    psUpdate.setString(2, person.getSurname());
-                    psUpdate.setInt(3, person.getAge());
-                    psUpdate.setString(4, jsonPets);
-                    psUpdate.setString(5, String.valueOf(person.getId()));
-                    psUpdate.executeUpdate();
-                }
-            } else {
-                try (PreparedStatement psInsert = conn.prepareStatement(sqlInsert)) {
-                    psInsert.setString(1, String.valueOf(person.getId()));
-                    psInsert.setString(2, person.getName());
-                    psInsert.setString(3, person.getSurname());
-                    psInsert.setInt(4, person.getAge());
-                    psInsert.setString(5, jsonPets);
-                    psInsert.executeUpdate();
-                }
-            }
-            log.info("в БД успешно отправлен персон: {}", person);
-        } catch (SQLException e) {
             log.error("Ошибка при сохранении персона в БД", e);
+            throw new RuntimeException("Сохранение персона сорвалось", e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
+        return PersonEntityMapper.toDomain(merged);
     }
 
-    public boolean deleteById(UUID id) {
-        String sqlDelete = "DELETE FROM persons WHERE id = ?";
-
-        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword());
-             PreparedStatement ps = conn.prepareStatement(sqlDelete)) {
-
-            ps.setString(1, String.valueOf(id));
-            int rowAffected = ps.executeUpdate();
-
-            if (rowAffected > 0) {
-                log.info("Успешно удален из БД персон с id: {}", id);
-                return true;
-            } else {
-                log.warn("Не удалось удалить из БД персона с id: {}", id);
-                return false;
-            }
-        } catch (SQLException e) {
-            log.error("Ошибка при удалении персона с id({}) из БД", id, e);
-            return false;
+    public Person findByIdOrThrow(UUID id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id не может быть null");
         }
-    }
-
-    public Optional<Person> findById(UUID id) {
-        String sqlSelect = "SELECT id, name, surname, age, pets FROM persons WHERE id = ?";
-
-        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword())) {
-            try (PreparedStatement ps = conn.prepareStatement(sqlSelect)) {
-                ps.setString(1, String.valueOf(id));
-                try (ResultSet rs = ps.executeQuery()) {
-                    return rs.next() ? Optional.of(PersonMapper.mapPerson(rs)) : Optional.empty();
-                }
+        Session session = null;
+        try {
+            session = hibernateUtil.getSessionFactory().openSession();
+            PersonEntity entity = session.get(PersonEntity.class, id);
+            if (entity == null) {
+                throw new PersonNotFoundException(id);
             }
-        } catch (SQLException e) {
-            log.error("Ошибка при выгрузке персона из БД", e);
-            return Optional.empty();
-
+            return PersonEntityMapper.toDomain(entity);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
     }
 
     public List<Person> findAll() {
-        String sqlSelect = "SELECT id, name, surname, age, pets FROM persons";
-
-        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword());
-             PreparedStatement ps = conn.prepareStatement(sqlSelect);
-             ResultSet rs = ps.executeQuery()) {
-            List<Person> persons = new ArrayList<>();
-            while (rs.next()) {
-                persons.add(mapPerson(rs));
-            }
-            return persons;
-
-        } catch (SQLException e) {
-            log.error("Ошибка при выгрузке персон из БД, будет выведен пустой список", e);
-            return Collections.emptyList();
-        }
-    }
-
-    public Map<String, String> showAllNames() {
-        String sqlSelectAllNamesAndId = "SELECT id, name FROM persons";
-        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword());
-             PreparedStatement ps = conn.prepareStatement(sqlSelectAllNamesAndId);
-             ResultSet rs = ps.executeQuery()) {
-            Map<String, String> namesAndId = new TreeMap<>();
-            while (rs.next()) {
-                namesAndId.put(rs.getString("name"), rs.getString("id"));
-            }
-            return namesAndId;
-        } catch (SQLException e) {
-            log.error("Ошибка при выгрузке имен из БД", e);
-            return Collections.emptyMap();
-        }
-    }
-
-    public boolean isExistDbData() {
-        String sqlCheckSelect = "SELECT EXISTS(SELECT 1 FROM persons LIMIT 1)";
-
-        try (Connection conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword());
-             PreparedStatement ps = conn.prepareStatement(sqlCheckSelect);
-             ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                return rs.getBoolean(1);
-            } else return false;
-        } catch (SQLException e) {
-            log.error("Не получилось сделать запрос о наличии содержимого в БД", e);
-            return false;
-        }
-    }
-
-    private String prepareJsonPets(Person person) {
-        String jsonPets = "[]";
+        Session session = null;
         try {
-            List<Pet> pets = person.getPets();
-            jsonPets = mapper.writerFor(new TypeReference<List<Pet>>() {
-                    })
-                    .writeValueAsString(pets);
-            log.info("перед отправкой в БД подготовили персону по имени '{}' json-строку в поле питомцев: {}", person.getName(), jsonPets);
-        } catch (Exception e) {
-            log.error("Ошибка при подготовке питомцев в JSON - в БД пойдет пустой", e);
+            session = hibernateUtil.getSessionFactory().openSession();
+            var query = session.createQuery("SELECT DISTINCT p FROM PersonEntity p LEFT JOIN FETCH p.pets", PersonEntity.class);
+            return query.list().stream()
+                    .filter(Objects::nonNull)
+                    .map(PersonEntityMapper::toDomain)
+                    .toList();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
-        return jsonPets;
     }
 
+    public void deleteByIdOrThrow(UUID id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Передан недопустимый id");
+        }
+        Session session = null;
+        try {
+            session = hibernateUtil.getSessionFactory().openSession();
+            Transaction transaction = session.beginTransaction();
+            PersonEntity person = session.get(PersonEntity.class, id);
+            if (person == null) {
+                throw new PersonNotFoundException(id);
+            }
+            session.remove(person);
+            transaction.commit();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    public boolean existsPersonById(UUID id) {
+        Session session = null;
+        try {
+            session = hibernateUtil.getSessionFactory().openSession();
+            NativeQuery<Integer> query = session.createNativeQuery("SELECT COUNT(*) from persons where id = :id", Integer.class);
+            query.setParameter("id", id);
+            Integer count = query.getSingleResult();
+            return count > 0;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
 }
-
-
-
-

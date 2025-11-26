@@ -4,10 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.PersonCreateDto;
 import org.example.dto.PersonResponseDto;
-import org.example.exception.PersonNotFoundException;
 import org.example.person.Person;
 import org.example.person.PersonApiMapper;
-import org.example.repository.PersonRepositoryV2;
+import org.example.repository.PersonRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,9 +16,9 @@ import java.util.UUID;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class PersonServiceV2 {
+public class PersonService {
 
-    private final PersonRepositoryV2 repoV2;
+    private final PersonRepository repoV2;
 
     public PersonResponseDto createPerson(PersonCreateDto dto) {
         Person person = PersonApiMapper.toDomain(dto);
@@ -32,11 +31,7 @@ public class PersonServiceV2 {
     }
 
     public PersonResponseDto getPersonById(UUID id) {
-        Person person = repoV2.findById(id);
-        if (person == null) {
-            throw new PersonNotFoundException(id);
-        }
-        return PersonApiMapper.toResponse(person);
+        return PersonApiMapper.toResponse(repoV2.findByIdOrThrow(id));
     }
 
     public List<PersonResponseDto> getAllPersons() {
@@ -46,10 +41,7 @@ public class PersonServiceV2 {
     }
 
     public PersonResponseDto fullUpdatePerson(UUID id, PersonCreateDto dto) {
-        Person person = repoV2.findById(id);
-        if (person == null) {
-            throw new PersonNotFoundException(id);
-        }
+        Person person = repoV2.findByIdOrThrow(id);
         person.setName(dto.getName());
         person.setSurname(dto.getSurname());
         person.setAge(dto.getAge());
@@ -59,7 +51,7 @@ public class PersonServiceV2 {
     }
 
     public void deletePersonById(UUID id) {
-        repoV2.deleteById(id);
+        repoV2.deleteByIdOrThrow(id);
         log.info("Персон с id: {} успешно удален", id);
     }
 }
