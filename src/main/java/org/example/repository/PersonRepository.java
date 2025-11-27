@@ -72,7 +72,7 @@ public class PersonRepository {
         Session session = null;
         try {
             session = hibernateUtil.getSessionFactory().openSession();
-            var query = session.createQuery("SELECT DISTINCT p FROM PersonEntity p LEFT JOIN FETCH p.pets", PersonEntity.class);
+            var query = session.createQuery("SELECT p FROM PersonEntity p", PersonEntity.class);
             return query.list().stream()
                     .filter(Objects::nonNull)
                     .map(PersonEntityMapper::toDomain)

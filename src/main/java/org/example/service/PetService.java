@@ -36,8 +36,7 @@ public class PetService {
         List<Pet> pets = petCreateDtos.stream()
                 .map(PetApiMapper::toDomain)
                 .toList();
-        pets.forEach(pet -> pet.setOwnerId(personId));
-        List<Pet> savedPets = petRepo.saveAll(pets);
+        List<Pet> savedPets = petRepo.saveAll(pets, personId);
         log.info("Персону с id {} успешно добавлены питомцы: {}", personId, savedPets);
 
         return savedPets.stream()

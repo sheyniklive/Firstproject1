@@ -2,6 +2,7 @@ package org.example.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.entity.PersonEntity;
 import org.example.entity.PetEntity;
 import org.example.pet.Pet;
 import org.example.pet.PetEntityMapper;
@@ -24,15 +25,17 @@ public class PetRepository {
 
     private final HibernateUtil hibernateUtil;
 
-    public List<Pet> saveAll(List<Pet> pets) {
+    public List<Pet> saveAll(List<Pet> pets, UUID personId) {
         Session session = null;
         Transaction tx;
         try {
             session = hibernateUtil.getSessionFactory().openSession();
             tx = session.beginTransaction();
+            PersonEntity personEntity = session.get(PersonEntity.class, personId);
             List<PetEntity> mergedPets = new ArrayList<>();
             for (Pet pet : pets) {
                 PetEntity petEntity = PetEntityMapper.toEntity(pet);
+                personEntity.addPet(petEntity);
                 PetEntity mergedPet = session.merge(petEntity);
                 mergedPets.add(mergedPet);
             }
