@@ -35,11 +35,10 @@ public class PetRepository {
             List<PetEntity> mergedPets = new ArrayList<>();
             for (Pet pet : pets) {
                 PetEntity petEntity = PetEntityMapper.toEntity(pet);
-                personEntity.addPet(petEntity);
+                petEntity.setOwner(personEntity);
                 PetEntity mergedPet = session.merge(petEntity);
                 mergedPets.add(mergedPet);
             }
-            mergedPets.forEach(petEntity -> Hibernate.initialize(petEntity.getOwner()));
             tx.commit();
             return mergedPets.stream()
                     .map(PetEntityMapper::toDomain)

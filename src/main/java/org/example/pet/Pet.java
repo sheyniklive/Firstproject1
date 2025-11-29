@@ -1,12 +1,11 @@
 package org.example.pet;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -32,25 +31,19 @@ public interface Pet {
 
     UUID getOwnerId();
 
-    void setOwnerId(UUID id);
-
     void makeSound();
 }
 
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Getter
 @Setter
 @Slf4j
 @ToString
 class Cat implements Pet {
     private Long id;
-    private String name;
+    private final String name;
     private UUID ownerId;
-
-    @JsonCreator
-    public Cat(@JsonProperty("name") String name) {
-        this.name = name;
-    }
 
     @Override
     public PetType getType() {
@@ -64,19 +57,15 @@ class Cat implements Pet {
 }
 
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Getter
 @Setter
 @Slf4j
 @ToString
 class Dog implements Pet {
     private Long id;
-    private String name;
+    private final String name;
     private UUID ownerId;
-
-    @JsonCreator
-    public Dog(@JsonProperty("name") String name) {
-        this.name = name;
-    }
 
     @Override
     public PetType getType() {
@@ -90,19 +79,15 @@ class Dog implements Pet {
 }
 
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Getter
 @Setter
 @Slf4j
 @ToString
 class Goose implements Pet {
     private Long id;
-    private String name;
+    private final String name;
     private UUID ownerId;
-
-    @JsonCreator
-    public Goose(@JsonProperty("name") String name) {
-        this.name = name;
-    }
 
     @Override
     public PetType getType() {
