@@ -1,14 +1,14 @@
 package org.example.pet;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.example.pet.enums.PetType;
+
+import java.util.UUID;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
@@ -16,25 +16,28 @@ import org.example.pet.enums.PetType;
         @JsonSubTypes.Type(value = Dog.class, name = "dog"),
         @JsonSubTypes.Type(value = Goose.class, name = "goose")
 })
+
 public interface Pet {
+
+    Long getId();
+
     String getName();
 
     @JsonIgnore
     PetType getType();
 
+    UUID getOwnerId();
+
     void makeSound();
 }
 
-@Getter
+@AllArgsConstructor
+@Data
 @Slf4j
-@ToString
 class Cat implements Pet {
+    private Long id;
     private final String name;
-
-    @JsonCreator
-    public Cat(@JsonProperty("name") String name) {
-        this.name = name;
-    }
+    private UUID ownerId;
 
     @Override
     public PetType getType() {
@@ -47,16 +50,13 @@ class Cat implements Pet {
     }
 }
 
-@Getter
+@AllArgsConstructor
+@Data
 @Slf4j
-@ToString
 class Dog implements Pet {
+    private Long id;
     private final String name;
-
-    @JsonCreator
-    public Dog(@JsonProperty("name") String name) {
-        this.name = name;
-    }
+    private UUID ownerId;
 
     @Override
     public PetType getType() {
@@ -69,16 +69,13 @@ class Dog implements Pet {
     }
 }
 
-@Getter
+@AllArgsConstructor
+@Data
 @Slf4j
-@ToString
 class Goose implements Pet {
+    private Long id;
     private final String name;
-
-    @JsonCreator
-    public Goose(@JsonProperty("name") String name) {
-        this.name = name;
-    }
+    private UUID ownerId;
 
     @Override
     public PetType getType() {

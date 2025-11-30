@@ -3,7 +3,7 @@ package org.example.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.PersonCreateDto;
 import org.example.dto.PersonResponseDto;
-import org.example.service.PersonServiceV2;
+import org.example.service.PersonService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,38 +23,31 @@ import java.util.UUID;
 @RequestMapping("/api/v1/persons")
 public class PersonController {
 
-    private final PersonServiceV2 serviceV2;
+    private final PersonService serviceV2;
 
     @GetMapping
     public ResponseEntity<List<PersonResponseDto>> getAllPersons() {
-        List<PersonResponseDto> persons = serviceV2.getAllPersons();
-        return ResponseEntity.ok(persons);
+        return ResponseEntity.ok(serviceV2.getAllPersons());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PersonResponseDto> getPersonById(@PathVariable UUID id) {
-        return serviceV2.getPersonById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(serviceV2.getPersonById(id));
     }
 
     @PostMapping
     public ResponseEntity<PersonResponseDto> createPerson(@RequestBody PersonCreateDto dto) {
-        PersonResponseDto createdPerson = serviceV2.createPerson(dto);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdPerson);
+        return ResponseEntity.status(HttpStatus.CREATED).body(serviceV2.createPerson(dto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePersonById(@PathVariable UUID id) {
-        boolean deleted = serviceV2.deletePersonById(id);
-        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+        serviceV2.deletePersonById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<PersonResponseDto> putPerson(@PathVariable UUID id, @RequestBody PersonCreateDto dto) {
-        return serviceV2.fullUpdatePerson(id, dto)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(serviceV2.fullUpdatePerson(id, dto));
     }
 }

@@ -31,15 +31,11 @@ public class PersonEntity {
     private String surname;
     @Column(name = "age", nullable = false)
     private Integer age;
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<PetEntity> pets = new HashSet<>();
 
     public void addPet(PetEntity petEntity) {
         pets.add(petEntity);
         petEntity.setOwner(this);
-    }
-    public void removePet(PetEntity pet) {
-        pets.remove(pet);
-        pet.setOwner(null);
     }
 }

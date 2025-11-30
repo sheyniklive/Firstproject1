@@ -1,11 +1,9 @@
 package org.example.person;
 
 import org.example.entity.PersonEntity;
-import org.example.pet.Pet;
 import org.example.pet.PetEntityMapper;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class PersonEntityMapper {
 
@@ -38,14 +36,7 @@ public class PersonEntityMapper {
         person.setName(entity.getName());
         person.setSurname(entity.getSurname());
         person.setAge(entity.getAge());
-        List<Pet> pets = new ArrayList<>();
-        if (entity.getPets() != null && !entity.getPets().isEmpty()) {
-            pets = entity.getPets().stream()
-                    .map(PetEntityMapper::toDomain)
-                    .toList();
-        }
-        person.setPets(pets);
+        person.setPets(new ArrayList<>());
         return person;
     }
-
 }

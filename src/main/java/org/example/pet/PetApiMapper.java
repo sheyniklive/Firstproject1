@@ -1,29 +1,30 @@
 package org.example.pet;
 
-import org.example.dto.PetDto;
+import org.example.dto.PetCreateDto;
+import org.example.dto.PetResponseDto;
 
 public class PetApiMapper {
 
-    public static Pet toDomain(PetDto petDto) {
-        if (petDto == null) {
+    public static Pet toDomain(PetCreateDto petCreateDto) {
+        if (petCreateDto == null) {
             return null;
         }
-        String name = petDto.getName();
-        return switch (petDto.getType()) {
+        String name = petCreateDto.getName();
+        return switch (petCreateDto.getType()) {
             case CAT -> new Cat(name);
             case DOG -> new Dog(name);
             case GOOSE -> new Goose(name);
         };
     }
 
-    public static PetDto toResponse(Pet pet) {
+    public static PetResponseDto toResponse(Pet pet) {
         if (pet == null) {
             return null;
         }
-        return new PetDto(
+        return new PetResponseDto(
+                pet.getId(),
                 pet.getName(),
-                pet.getType());
+                pet.getType(),
+                pet.getOwnerId());
     }
-
-
 }

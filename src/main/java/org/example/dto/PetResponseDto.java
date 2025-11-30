@@ -3,12 +3,16 @@ package org.example.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.pet.enums.PetType;
+
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class PersonCreateDto {
+public class PetResponseDto {
+    private Long id;
     private String name;
-    private String surname;
-    private Integer age;
+    private PetType type;
+    private UUID ownerId;
 }
