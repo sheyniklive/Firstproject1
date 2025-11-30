@@ -1,14 +1,12 @@
 package org.example.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.time.Instant;
 
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 public class ErrorResponse {
     private Instant timestamp;
     private Integer status;

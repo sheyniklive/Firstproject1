@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.example.pet.enums.PetType;
 
@@ -35,11 +32,8 @@ public interface Pet {
 }
 
 @AllArgsConstructor
-@RequiredArgsConstructor
-@Getter
-@Setter
+@Data
 @Slf4j
-@ToString
 class Cat implements Pet {
     private Long id;
     private final String name;
@@ -57,11 +51,8 @@ class Cat implements Pet {
 }
 
 @AllArgsConstructor
-@RequiredArgsConstructor
-@Getter
-@Setter
+@Data
 @Slf4j
-@ToString
 class Dog implements Pet {
     private Long id;
     private final String name;
@@ -79,11 +70,8 @@ class Dog implements Pet {
 }
 
 @AllArgsConstructor
-@RequiredArgsConstructor
-@Getter
-@Setter
+@Data
 @Slf4j
-@ToString
 class Goose implements Pet {
     private Long id;
     private final String name;

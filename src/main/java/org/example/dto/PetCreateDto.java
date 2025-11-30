@@ -1,15 +1,13 @@
 package org.example.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.example.pet.enums.PetType;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 public class PetCreateDto {
     private String name;
     private PetType type;
