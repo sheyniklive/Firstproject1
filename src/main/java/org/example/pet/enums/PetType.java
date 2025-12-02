@@ -11,13 +11,4 @@ public enum PetType {
     GOOSE("Гусь");
 
     private final String typeNameForUI;
-
-     public static PetType fromMenuChoice(String menuChoice) {
-        return switch (menuChoice) {
-            case "1" -> CAT;
-            case "2" -> DOG;
-            case "3" -> GOOSE;
-            default -> throw new IllegalArgumentException("Неверный выбор меню: " + menuChoice);
-        };
-    }
 }

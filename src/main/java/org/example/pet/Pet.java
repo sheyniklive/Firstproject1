@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.pet.enums.PetType;
 
@@ -32,6 +33,7 @@ public interface Pet {
 }
 
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Data
 @Slf4j
 class Cat implements Pet {
@@ -51,6 +53,7 @@ class Cat implements Pet {
 }
 
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Data
 @Slf4j
 class Dog implements Pet {
@@ -70,6 +73,7 @@ class Dog implements Pet {
 }
 
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Data
 @Slf4j
 class Goose implements Pet {
