@@ -6,7 +6,6 @@ import org.example.entity.PersonEntity;
 import org.example.exception.PersonNotFoundException;
 import org.example.person.Person;
 import org.example.person.PersonEntityMapper;
-import org.example.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.NativeQuery;
