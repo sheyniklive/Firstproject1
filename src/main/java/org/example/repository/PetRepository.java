@@ -1,7 +1,5 @@
 package org.example.repository;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.example.entity.PersonEntity;
 import org.example.entity.PetEntity;
 import org.example.pet.Pet;
@@ -11,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.MutationQuery;
 import org.hibernate.query.NativeQuery;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -18,36 +17,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-@RequiredArgsConstructor
-@Slf4j
-public class PetRepository {
 
-    private final HibernateUtil hibernateUtil;
-
-    public List<Pet> saveAll(List<Pet> pets, UUID personId) {
-        Session session = null;
-        Transaction tx;
-        try {
-            session = hibernateUtil.getSessionFactory().openSession();
-            tx = session.beginTransaction();
-            PersonEntity personEntity = session.get(PersonEntity.class, personId);
-            List<PetEntity> mergedPets = new ArrayList<>();
-            for (Pet pet : pets) {
-                PetEntity petEntity = PetEntityMapper.toEntity(pet);
-                petEntity.setOwner(personEntity);
-                PetEntity mergedPet = session.merge(petEntity);
-                mergedPets.add(mergedPet);
-            }
-            tx.commit();
-            return mergedPets.stream()
-                    .map(PetEntityMapper::toDomain)
-                    .toList();
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-    }
+public interface PetRepository extends JpaRepository<PetEntity, Long> {
 
     public List<Pet> getPetsByPersonId(UUID personId) {
         Session session = null;
