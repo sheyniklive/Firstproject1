@@ -55,11 +55,13 @@ public class PetService {
     }
 
     public List<PetResponseDto> getPetsByPersonIdOrThrow(UUID personId) {
-        if (!personRepo.existsPersonById(personId)) {
+        if (!personRepo.existsById(personId)) {
             log.warn("Персона с id {} не найдено", personId);
             throw new PersonNotFoundException(personId);
         }
-        List<Pet> pets = petRepo.getPetsByPersonId(personId);
+        List<Pet> pets = petRepo.getPetsByOwnerId(personId).stream()
+                .map(PetEntityMapper::toDomain)
+                .toList();
         log.info("Из БД успешно загружены питомцы персона с id {}", personId);
         return pets.stream()
                 .map(PetApiMapper::toResponse)
@@ -67,12 +69,12 @@ public class PetService {
     }
 
     public void deleteAllPetsOrThrow(UUID personId) {
-        if (!personRepo.existsPersonById(personId)) {
+        if (!personRepo.existsById(personId)) {
             log.warn("Человек с id {} не найден", personId);
             throw new PersonNotFoundException(personId);
         }
-        boolean deleted = petRepo.deleteAllPets(personId);
-        if (deleted) {
+        Integer deleted = petRepo.deleteAllPetsByOwnerId(personId);
+        if (deleted > 0) {
             log.info("Все питомцы персона с id {} удалены", personId);
         } else {
             log.info("У персона с id {} нет питомцев для удаления", personId);
