@@ -82,20 +82,20 @@ public class PetService {
     }
 
     public void deletePetByIdOrThrow(UUID personId, Long petId) {
-        if (!personRepo.existsPersonById(personId)) {
+        if (!personRepo.existsById(personId)) {
             log.warn("Человека с id {} не найдено", personId);
             throw new PersonNotFoundException(personId);
         }
-        if (!petRepo.isExistDbPet(petId)) {
+        if (!petRepo.existsById(petId)) {
             log.warn("Не найдено питомца с id: {}", petId);
             throw new PetNotFoundException(petId);
         }
-        if (!petRepo.isValidOwnership(personId, petId)) {
+        if (!petRepo.existsByOwnerIdAndPetId(personId, petId)) {
             log.warn("Питомец с id '{}' не принадлежит персону с id '{}'", petId, personId);
             throw new InvalidOwnershipException(petId, personId);
         }
-        boolean deleted = petRepo.deletePetById(personId, petId);
-        if (deleted) {
+        Integer deleted = petRepo.deletePetByOwnerIdAndPetId(personId, petId);
+        if (deleted > 0) {
             log.info("У персона с id {} удален питомец с id {}", personId, petId);
         } else {
             throw new IllegalStateException(String.format("У персона с id %s не произошло удаления питомца с id %s", personId, petId));
