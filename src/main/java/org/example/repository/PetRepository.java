@@ -15,7 +15,7 @@ public interface PetRepository extends JpaRepository<PetEntity, Long> {
 
     int deleteAllPetsByOwnerId(UUID ownerId);
 
-    int deletePetByOwnerIdAndPetId(UUID personId, Long petId);
+    int deletePetByOwnerIdAndId(UUID ownerId, Long id);
 
-    boolean existsByOwnerIdAndPetId(UUID ownerId, Long petId);
+    boolean existsByOwnerIdAndId(UUID ownerId, Long id);
 }

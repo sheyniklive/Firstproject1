@@ -15,6 +15,7 @@ import org.example.pet.PetEntityMapper;
 import org.example.repository.PersonRepository;
 import org.example.repository.PetRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ public class PetService {
     private final PersonRepository personRepo;
     private final PetRepository petRepo;
 
+    @Transactional
     public List<PetResponseDto> savePetsOrThrow(List<PetCreateDto> petCreateDtos, UUID personId) {
 
         if (petCreateDtos == null || petCreateDtos.isEmpty()) {
@@ -54,6 +56,7 @@ public class PetService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<PetResponseDto> getPetsByPersonIdOrThrow(UUID personId) {
         if (!personRepo.existsById(personId)) {
             log.warn("Персона с id {} не найдено", personId);
@@ -68,6 +71,7 @@ public class PetService {
                 .toList();
     }
 
+    @Transactional
     public void deleteAllPetsOrThrow(UUID personId) {
         if (!personRepo.existsById(personId)) {
             log.warn("Человек с id {} не найден", personId);
@@ -81,6 +85,7 @@ public class PetService {
         }
     }
 
+    @Transactional
     public void deletePetByIdOrThrow(UUID personId, Long petId) {
         if (!personRepo.existsById(personId)) {
             log.warn("Человека с id {} не найдено", personId);
@@ -90,11 +95,11 @@ public class PetService {
             log.warn("Не найдено питомца с id: {}", petId);
             throw new PetNotFoundException(petId);
         }
-        if (!petRepo.existsByOwnerIdAndPetId(personId, petId)) {
+        if (!petRepo.existsByOwnerIdAndId(personId, petId)) {
             log.warn("Питомец с id '{}' не принадлежит персону с id '{}'", petId, personId);
             throw new InvalidOwnershipException(petId, personId);
         }
-        Integer deleted = petRepo.deletePetByOwnerIdAndPetId(personId, petId);
+        Integer deleted = petRepo.deletePetByOwnerIdAndId(personId, petId);
         if (deleted > 0) {
             log.info("У персона с id {} удален питомец с id {}", personId, petId);
         } else {
