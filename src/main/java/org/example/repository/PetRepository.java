@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface PetRepository extends JpaRepository<PetEntity, Long> {
 
-    List<PetEntity> getPetsByOwnerId(UUID ownerId);
+    List<PetEntity> findPetsByOwnerId(UUID ownerId);
 
     int deleteAllPetsByOwnerId(UUID ownerId);
 

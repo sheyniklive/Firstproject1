@@ -62,7 +62,7 @@ public class PetService {
             log.warn("Персона с id {} не найдено", personId);
             throw new PersonNotFoundException(personId);
         }
-        List<Pet> pets = petRepo.getPetsByOwnerId(personId).stream()
+        List<Pet> pets = petRepo.findPetsByOwnerId(personId).stream()
                 .map(PetEntityMapper::toDomain)
                 .toList();
         log.info("Из БД успешно загружены питомцы персона с id {}", personId);
