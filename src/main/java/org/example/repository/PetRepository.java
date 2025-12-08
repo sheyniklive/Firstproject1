@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-
 public interface PetRepository extends JpaRepository<PetEntity, Long> {
 
     List<PetEntity> findPetsByOwnerId(UUID ownerId);

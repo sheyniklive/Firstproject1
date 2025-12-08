@@ -13,10 +13,4 @@ public class PersonNotFoundException extends RuntimeException {
         super(String.format("Не найдено человека с id:  %s", id));
         this.invalidId = id;
     }
-
-    public PersonNotFoundException() {
-        super("Не найдено ни одного человека");
-        this.invalidId = null;
-
-    }
 }

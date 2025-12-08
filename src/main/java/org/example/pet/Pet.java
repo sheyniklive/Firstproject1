@@ -29,7 +29,6 @@ public interface Pet {
 
     UUID getOwnerId();
 
-    void makeSound();
 }
 
 @AllArgsConstructor
@@ -44,11 +43,6 @@ class Cat implements Pet {
     @Override
     public PetType getType() {
         return PetType.CAT;
-    }
-
-    @Override
-    public void makeSound() {
-        log.info("{}({}) -> Meow", getName(), getType().getTypeNameForUI());
     }
 }
 
@@ -65,11 +59,6 @@ class Dog implements Pet {
     public PetType getType() {
         return PetType.DOG;
     }
-
-    @Override
-    public void makeSound() {
-        log.info("{}({}) -> Wow", getName(), getType().getTypeNameForUI());
-    }
 }
 
 @AllArgsConstructor
@@ -84,10 +73,6 @@ class Goose implements Pet {
     @Override
     public PetType getType() {
         return PetType.GOOSE;
-    }
-
-    public void makeSound() {
-        log.info("{}({}) -> GaGaGa", getName(), getType().getTypeNameForUI());
     }
 }
 
