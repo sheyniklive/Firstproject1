@@ -12,7 +12,7 @@ import org.example.exception.PetNotFoundException;
 import org.example.pet.Pet;
 import org.example.pet.PetApiMapper;
 import org.example.pet.PetEntityMapper;
-import org.example.repository.PersonRepository;
+import org.example.repository.PersonCrudRepository;
 import org.example.repository.PetRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +26,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PetService {
 
-    private final PersonRepository personRepo;
+    private final PersonCrudRepository personRepo;
     private final PetRepository petRepo;
 
     @Transactional
