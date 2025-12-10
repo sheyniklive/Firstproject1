@@ -77,7 +77,7 @@ public class PetService {
             log.warn("Человек с id {} не найден", personId);
             throw new PersonNotFoundException(personId);
         }
-        Integer deleted = petRepo.deleteAllPetsByOwnerId(personId);
+        Integer deleted = petRepo.deleteAllPetsByPersonId(personId);
         if (deleted > 0) {
             log.info("Все питомцы персона с id {} удалены", personId);
         } else {
@@ -99,7 +99,7 @@ public class PetService {
             log.warn("Питомец с id '{}' не принадлежит персону с id '{}'", petId, personId);
             throw new InvalidOwnershipException(petId, personId);
         }
-        Integer deleted = petRepo.deletePetByOwnerIdAndId(personId, petId);
+        Integer deleted = petRepo.deletePetByPersonIdAndId(personId, petId);
         if (deleted > 0) {
             log.info("У персона с id {} удален питомец с id {}", personId, petId);
         } else {
