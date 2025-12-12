@@ -22,8 +22,15 @@ public class PersonRepository {
         return PersonEntityMapper.toDomain(savedEntity);
     }
 
-    public Person findById(UUID id) {
-        return PersonEntityMapper.toDomain(findPersonEntityByIdOrThrow(id));
+    public Person findByIdOrThrow(UUID id) {
+        PersonEntity entity = personCrudRepo.findById(id)
+                .orElseThrow(() -> new PersonNotFoundException(id));
+        return PersonEntityMapper.toDomain(entity);
+    }
+
+    public PersonEntity findByIdOrThrowWithoutMapping(UUID id) {
+        return personCrudRepo.findById(id)
+                .orElseThrow(() -> new PersonNotFoundException(id));
     }
 
     public List<Person> findAll() {
@@ -32,23 +39,12 @@ public class PersonRepository {
                 .toList();
     }
 
-    public Person update(UUID id, Person futurePerson) {
-        PersonEntity entity = findPersonEntityByIdOrThrow(id);
-        entity.setName(futurePerson.getName());
-        entity.setSurname(futurePerson.getSurname());
-        entity.setAge(futurePerson.getAge());
-        entity.getPets().clear();
-
-        return PersonEntityMapper.toDomain(personCrudRepo.save(entity));
+    public Integer deleteById(UUID id) {
+        return personCrudRepo.deletePersonById(id);
     }
 
-    public void deleteById(UUID id) {
-        PersonEntity entity = findPersonEntityByIdOrThrow(id);
-        personCrudRepo.delete(entity);
+    public boolean existsById(UUID id) {
+        return personCrudRepo.existsById(id);
     }
 
-    private PersonEntity findPersonEntityByIdOrThrow(UUID id) {
-        return personCrudRepo.findById(id)
-                .orElseThrow(() -> new PersonNotFoundException(id));
-    }
 }

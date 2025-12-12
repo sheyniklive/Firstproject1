@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.PersonCreateDto;
 import org.example.dto.PersonResponseDto;
+import org.example.exception.PersonNotFoundException;
 import org.example.person.Person;
 import org.example.person.PersonApiMapper;
 import org.example.repository.PersonRepository;
@@ -21,7 +22,7 @@ public class PersonService {
     private final PersonRepository personRepo;
 
     @Transactional
-    public PersonResponseDto createPerson(PersonCreateDto dto) {
+    public PersonResponseDto create(PersonCreateDto dto) {
         if (dto == null) {
             throw new IllegalArgumentException("Входные данные не могут быть пустыми");
         }
@@ -32,14 +33,14 @@ public class PersonService {
     }
 
     @Transactional(readOnly = true)
-    public PersonResponseDto getPersonById(UUID id) {
-        Person person = personRepo.findById(id);
+    public PersonResponseDto findById(UUID id) {
+        Person person = personRepo.findByIdOrThrow(id);
         log.info("Персон с id {} загружен", id);
         return PersonApiMapper.toResponse(person);
     }
 
     @Transactional(readOnly = true)
-    public List<PersonResponseDto> getAllPersons() {
+    public List<PersonResponseDto> findAll() {
         List<PersonResponseDto> persons = personRepo.findAll().stream()
                 .map(PersonApiMapper::toResponse)
                 .toList();
@@ -48,18 +49,24 @@ public class PersonService {
     }
 
     @Transactional
-    public PersonResponseDto fullUpdatePerson(UUID id, PersonCreateDto dto) {
+    public PersonResponseDto fullUpdate(UUID id, PersonCreateDto dto) {
+        if (!personRepo.existsById(id)) {
+            throw new PersonNotFoundException(id);
+        }
         Person futurePerson = PersonApiMapper.toDomain(dto);
-        Person updatedPerson = personRepo.update(id, futurePerson);
+        futurePerson.setId(id);
+        Person updatedPerson = personRepo.save(futurePerson);
         PersonResponseDto response = PersonApiMapper.toResponse(updatedPerson);
         log.info("Персон с id {} обновлен", id);
         return response;
     }
 
     @Transactional
-    public void deletePersonById(UUID id) {
-        personRepo.deleteById(id);
+    public void deleteById(UUID id) {
+        Integer deleted = personRepo.deleteById(id);
+        if (deleted == 0) {
+            throw new PersonNotFoundException(id);
+        }
         log.info("Персон с id: {} успешно удален", id);
     }
-
 }

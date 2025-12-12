@@ -1,27 +1,50 @@
 package org.example.repository;
 
+import lombok.RequiredArgsConstructor;
+import org.example.entity.PersonEntity;
 import org.example.entity.PetEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import org.example.pet.Pet;
+import org.example.pet.PetEntityMapper;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
 
-@Repository
-public interface PetRepository extends JpaRepository<PetEntity, Long> {
+@Component
+@RequiredArgsConstructor
+public class PetRepository {
+    private final PetCrudRepository petCrudRepository;
 
-    List<PetEntity> findPetsByOwnerId(UUID ownerId);
+    public List<Pet> save(List<Pet> pets, PersonEntity owner) {
+        List<PetEntity> petEntities = pets.stream()
+                .map(pet -> {
+                    PetEntity petEntity = PetEntityMapper.toEntity(pet);
+                    petEntity.setOwner(owner);
+                    return petEntity;
+                })
+                .toList();
 
-    @Modifying
-    @Query(value = "DELETE FROM pets WHERE person_id = :personId",  nativeQuery = true)
-    int deleteAllPetsByPersonId(@Param("personId") UUID personId);
+        return petCrudRepository.saveAll(petEntities).stream()
+                .map(PetEntityMapper::toDomain)
+                .toList();
+    }
 
-    @Modifying
-    @Query(value = "DELETE FROM pets WHERE person_Id = :personId AND id = :id",  nativeQuery = true)
-    int deletePetByPersonIdAndId(@Param("personId") UUID personId, @Param("id") Long id);
+    public List<Pet> findByOwnerId(UUID ownerId) {
+        List<PetEntity> petEntities = petCrudRepository.findByOwnerId(ownerId);
+        return petEntities.stream()
+                .map(PetEntityMapper::toDomain)
+                .toList();
+    }
 
-    boolean existsByOwnerIdAndId(UUID ownerId, Long id);
+    public Integer deleteAllByOwnerId(UUID ownerId) {
+        return petCrudRepository.deleteAllByOwnerId(ownerId);
+    }
+
+    public Integer deleteByOwnerAndId(UUID ownerId, Long id) {
+        return petCrudRepository.deleteByOwnerAndId(ownerId, id);
+    }
+
+    public boolean existsById(Long id) {
+        return petCrudRepository.existsById(id);
+    }
 }

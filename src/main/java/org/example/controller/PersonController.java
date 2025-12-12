@@ -27,27 +27,27 @@ public class PersonController {
 
     @GetMapping
     public ResponseEntity<List<PersonResponseDto>> getAllPersons() {
-        return ResponseEntity.ok(personService.getAllPersons());
+        return ResponseEntity.ok(personService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PersonResponseDto> getPersonById(@PathVariable UUID id) {
-        return ResponseEntity.ok(personService.getPersonById(id));
+        return ResponseEntity.ok(personService.findById(id));
     }
 
     @PostMapping
     public ResponseEntity<PersonResponseDto> createPerson(@RequestBody PersonCreateDto dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(personService.createPerson(dto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(personService.create(dto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePersonById(@PathVariable UUID id) {
-        personService.deletePersonById(id);
+        personService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<PersonResponseDto> putPerson(@PathVariable UUID id, @RequestBody PersonCreateDto dto) {
-        return ResponseEntity.ok(personService.fullUpdatePerson(id, dto));
+        return ResponseEntity.ok(personService.fullUpdate(id, dto));
     }
 }
