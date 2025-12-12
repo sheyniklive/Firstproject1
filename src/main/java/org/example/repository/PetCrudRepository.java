@@ -21,5 +21,5 @@ public interface PetCrudRepository extends JpaRepository<PetEntity, Long> {
 
     @Modifying
     @Query(value = "DELETE FROM pets WHERE person_id = :ownerId AND id = :id", nativeQuery = true)
-    int deleteByOwnerAndId(@Param("ownerId") UUID ownerId, @Param("id") Long id);
+    int deleteByOwnerIdAndId(@Param("ownerId") UUID ownerId, @Param("id") Long id);
 }

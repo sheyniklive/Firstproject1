@@ -27,12 +27,12 @@ public class PersonController {
 
     @GetMapping
     public ResponseEntity<List<PersonResponseDto>> getAllPersons() {
-        return ResponseEntity.ok(personService.findAll());
+        return ResponseEntity.ok(personService.list());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PersonResponseDto> getPersonById(@PathVariable UUID id) {
-        return ResponseEntity.ok(personService.findById(id));
+        return ResponseEntity.ok(personService.getById(id));
     }
 
     @PostMapping
@@ -48,6 +48,6 @@ public class PersonController {
 
     @PutMapping("/{id}")
     public ResponseEntity<PersonResponseDto> putPerson(@PathVariable UUID id, @RequestBody PersonCreateDto dto) {
-        return ResponseEntity.ok(personService.fullUpdate(id, dto));
+        return ResponseEntity.ok(personService.update(id, dto));
     }
 }

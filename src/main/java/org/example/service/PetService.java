@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.PetCreateDto;
 import org.example.dto.PetResponseDto;
-import org.example.entity.PersonEntity;
 import org.example.exception.InvalidOwnershipException;
 import org.example.exception.PersonNotFoundException;
 import org.example.exception.PetNotFoundException;
@@ -27,15 +26,14 @@ public class PetService {
     private final PetRepository petRepo;
 
     @Transactional
-    public List<PetResponseDto> saveOrThrow(List<PetCreateDto> petCreateDtos, UUID ownerId) {
+    public List<PetResponseDto> addPets(List<PetCreateDto> petCreateDtos, UUID ownerId) {
         if (petCreateDtos == null || petCreateDtos.isEmpty()) {
             throw new IllegalArgumentException("Список питомцев пуст");
         }
-        PersonEntity owner = personRepo.findByIdOrThrowWithoutMapping(ownerId);
         List<Pet> pets = petCreateDtos.stream()
                 .map(PetApiMapper::toDomain)
                 .toList();
-        List<Pet> savedPets = petRepo.save(pets, owner);
+        List<Pet> savedPets = petRepo.save(pets, ownerId);
         log.info("Персону с id {} успешно добавлены питомцы: {}", ownerId, savedPets);
 
         return savedPets.stream()
@@ -44,7 +42,7 @@ public class PetService {
     }
 
     @Transactional(readOnly = true)
-    public List<PetResponseDto> findByOwnerIdOrThrow(UUID ownerId) {
+    public List<PetResponseDto> list(UUID ownerId) {
         if (!personRepo.existsById(ownerId)) {
             log.warn("Персона с id {} не найдено", ownerId);
             throw new PersonNotFoundException(ownerId);
@@ -57,7 +55,7 @@ public class PetService {
     }
 
     @Transactional
-    public void deleteAllOrThrow(UUID ownerId) {
+    public void deleteAll(UUID ownerId) {
         if (!personRepo.existsById(ownerId)) {
             log.warn("Человек с id {} не найден", ownerId);
             throw new PersonNotFoundException(ownerId);
@@ -71,12 +69,12 @@ public class PetService {
     }
 
     @Transactional
-    public void deleteByOwnerAndIdOrThrow(UUID ownerId, Long id) {
+    public void deleteByOwnerIdAndId(UUID ownerId, Long id) {
         if (!personRepo.existsById(ownerId)) {
             log.warn("Человека с id {} не найдено", ownerId);
             throw new PersonNotFoundException(ownerId);
         }
-        Integer deleted = petRepo.deleteByOwnerAndId(ownerId, id);
+        Integer deleted = petRepo.deleteByOwnerIdAndId(ownerId, id);
         if (deleted == 0) {
             if (!petRepo.existsById(id)) {
                 log.warn("Не найдено питомца с id: {}", id);

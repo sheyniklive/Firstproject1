@@ -33,14 +33,14 @@ public class PersonService {
     }
 
     @Transactional(readOnly = true)
-    public PersonResponseDto findById(UUID id) {
+    public PersonResponseDto getById(UUID id) {
         Person person = personRepo.findByIdOrThrow(id);
         log.info("Персон с id {} загружен", id);
         return PersonApiMapper.toResponse(person);
     }
 
     @Transactional(readOnly = true)
-    public List<PersonResponseDto> findAll() {
+    public List<PersonResponseDto> list() {
         List<PersonResponseDto> persons = personRepo.findAll().stream()
                 .map(PersonApiMapper::toResponse)
                 .toList();
@@ -49,7 +49,7 @@ public class PersonService {
     }
 
     @Transactional
-    public PersonResponseDto fullUpdate(UUID id, PersonCreateDto dto) {
+    public PersonResponseDto update(UUID id, PersonCreateDto dto) {
         if (!personRepo.existsById(id)) {
             throw new PersonNotFoundException(id);
         }

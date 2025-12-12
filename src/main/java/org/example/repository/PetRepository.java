@@ -13,9 +13,11 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class PetRepository {
+    private final PersonRepository personRepository;
     private final PetCrudRepository petCrudRepository;
 
-    public List<Pet> save(List<Pet> pets, PersonEntity owner) {
+    public List<Pet> save(List<Pet> pets, UUID ownerId) {
+        PersonEntity owner = personRepository.findByIdOrThrowWithoutMapping(ownerId);
         List<PetEntity> petEntities = pets.stream()
                 .map(pet -> {
                     PetEntity petEntity = PetEntityMapper.toEntity(pet);
@@ -40,8 +42,8 @@ public class PetRepository {
         return petCrudRepository.deleteAllByOwnerId(ownerId);
     }
 
-    public Integer deleteByOwnerAndId(UUID ownerId, Long id) {
-        return petCrudRepository.deleteByOwnerAndId(ownerId, id);
+    public Integer deleteByOwnerIdAndId(UUID ownerId, Long id) {
+        return petCrudRepository.deleteByOwnerIdAndId(ownerId, id);
     }
 
     public boolean existsById(Long id) {
