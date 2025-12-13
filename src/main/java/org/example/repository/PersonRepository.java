@@ -28,11 +28,6 @@ public class PersonRepository {
         return PersonEntityMapper.toDomain(entity);
     }
 
-    public PersonEntity findByIdOrThrowWithoutMapping(UUID id) {
-        return personCrudRepo.findById(id)
-                .orElseThrow(() -> new PersonNotFoundException(id));
-    }
-
     public List<Person> findAll() {
         return personCrudRepo.findAll().stream()
                 .map(PersonEntityMapper::toDomain)

@@ -3,6 +3,7 @@ package org.example.repository;
 import lombok.RequiredArgsConstructor;
 import org.example.entity.PersonEntity;
 import org.example.entity.PetEntity;
+import org.example.exception.PersonNotFoundException;
 import org.example.pet.Pet;
 import org.example.pet.PetEntityMapper;
 import org.springframework.stereotype.Component;
@@ -13,11 +14,12 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class PetRepository {
-    private final PersonRepository personRepository;
+    private final PersonCrudRepository personCrudRepository;
     private final PetCrudRepository petCrudRepository;
 
     public List<Pet> save(List<Pet> pets, UUID ownerId) {
-        PersonEntity owner = personRepository.findByIdOrThrowWithoutMapping(ownerId);
+        PersonEntity owner = personCrudRepository.findById(ownerId)
+                .orElseThrow(() -> new PersonNotFoundException(ownerId));
         List<PetEntity> petEntities = pets.stream()
                 .map(pet -> {
                     PetEntity petEntity = PetEntityMapper.toEntity(pet);
