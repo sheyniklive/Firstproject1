@@ -26,25 +26,25 @@ public class PetController {
 
     @GetMapping
     public ResponseEntity<List<PetResponseDto>> getPets(@PathVariable("personId") UUID personId) {
-        return ResponseEntity.ok(petService.getPetsByPersonIdOrThrow(personId));
+        return ResponseEntity.ok(petService.list(personId));
     }
 
     @PostMapping
     public ResponseEntity<List<PetResponseDto>> createPets(@PathVariable("personId") UUID personId,
                                            @RequestBody List<PetCreateDto> petCreateDtos) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(petService.savePetsOrThrow(petCreateDtos, personId));
+        return ResponseEntity.status(HttpStatus.CREATED).body(petService.addPets(petCreateDtos, personId));
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteAllPets(@PathVariable("personId") UUID personId) {
-        petService.deleteAllPetsOrThrow(personId);
+        petService.deleteAll(personId);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{petId}")
     public ResponseEntity<Void> deletePetById(@PathVariable("personId") UUID personId,
                               @PathVariable("petId") Long petId) {
-        petService.deletePetByIdOrThrow(personId, petId);
+        petService.deleteByOwnerIdAndId(personId, petId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.pet.enums.PetType;
 
@@ -28,10 +29,10 @@ public interface Pet {
 
     UUID getOwnerId();
 
-    void makeSound();
 }
 
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Data
 @Slf4j
 class Cat implements Pet {
@@ -43,14 +44,10 @@ class Cat implements Pet {
     public PetType getType() {
         return PetType.CAT;
     }
-
-    @Override
-    public void makeSound() {
-        log.info("{}({}) -> Meow", getName(), getType().getTypeNameForUI());
-    }
 }
 
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Data
 @Slf4j
 class Dog implements Pet {
@@ -62,14 +59,10 @@ class Dog implements Pet {
     public PetType getType() {
         return PetType.DOG;
     }
-
-    @Override
-    public void makeSound() {
-        log.info("{}({}) -> Wow", getName(), getType().getTypeNameForUI());
-    }
 }
 
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Data
 @Slf4j
 class Goose implements Pet {
@@ -80,10 +73,6 @@ class Goose implements Pet {
     @Override
     public PetType getType() {
         return PetType.GOOSE;
-    }
-
-    public void makeSound() {
-        log.info("{}({}) -> GaGaGa", getName(), getType().getTypeNameForUI());
     }
 }
 
