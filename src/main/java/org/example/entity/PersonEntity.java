@@ -20,7 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "pets")
 public class PersonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

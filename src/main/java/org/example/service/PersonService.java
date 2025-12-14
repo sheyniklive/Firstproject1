@@ -4,12 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.PersonCreateDto;
 import org.example.dto.PersonResponseDto;
+import org.example.exception.PersonNotFoundException;
 import org.example.person.Person;
 import org.example.person.PersonApiMapper;
 import org.example.repository.PersonRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,45 +19,54 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PersonService {
 
-    private final PersonRepository repoV2;
+    private final PersonRepository personRepo;
 
-    public PersonResponseDto createPerson(PersonCreateDto dto) {
-        Person person = PersonApiMapper.toDomain(dto);
-        if (person == null) {
-            throw new IllegalArgumentException("Персон не может быть пустым");
+    @Transactional
+    public PersonResponseDto create(PersonCreateDto dto) {
+        if (dto == null) {
+            throw new IllegalArgumentException("Входные данные не могут быть пустыми");
         }
-        Person savedPerson = repoV2.save(person);
+        Person person = PersonApiMapper.toDomain(dto);
+        Person savedPerson = personRepo.save(person);
         log.info("Создан и загружен в БД персон: {}", savedPerson);
         return PersonApiMapper.toResponse(savedPerson);
     }
 
-    public PersonResponseDto getPersonById(UUID id) {
-        Person person = repoV2.findByIdOrThrow(id);
+    @Transactional(readOnly = true)
+    public PersonResponseDto getById(UUID id) {
+        Person person = personRepo.findByIdOrThrow(id);
         log.info("Персон с id {} загружен", id);
         return PersonApiMapper.toResponse(person);
     }
 
-    public List<PersonResponseDto> getAllPersons() {
-        List<PersonResponseDto> persons = repoV2.findAll().stream()
+    @Transactional(readOnly = true)
+    public List<PersonResponseDto> list() {
+        List<PersonResponseDto> persons = personRepo.findAll().stream()
                 .map(PersonApiMapper::toResponse)
                 .toList();
         log.info("Персоны загружены из БД");
         return persons;
     }
 
-    public PersonResponseDto fullUpdatePerson(UUID id, PersonCreateDto dto) {
-        Person person = repoV2.findByIdOrThrow(id);
-        person.setName(dto.getName());
-        person.setSurname(dto.getSurname());
-        person.setAge(dto.getAge());
-        person.setPets(new ArrayList<>());
-        Person updatedPerson = repoV2.save(person);
+    @Transactional
+    public PersonResponseDto update(UUID id, PersonCreateDto dto) {
+        if (!personRepo.existsById(id)) {
+            throw new PersonNotFoundException(id);
+        }
+        Person futurePerson = PersonApiMapper.toDomain(dto);
+        futurePerson.setId(id);
+        Person updatedPerson = personRepo.save(futurePerson);
+        PersonResponseDto response = PersonApiMapper.toResponse(updatedPerson);
         log.info("Персон с id {} обновлен", id);
-        return PersonApiMapper.toResponse(updatedPerson);
+        return response;
     }
 
-    public void deletePersonById(UUID id) {
-        repoV2.deleteByIdOrThrow(id);
+    @Transactional
+    public void deleteById(UUID id) {
+        Integer deleted = personRepo.deleteById(id);
+        if (deleted == 0) {
+            throw new PersonNotFoundException(id);
+        }
         log.info("Персон с id: {} успешно удален", id);
     }
 }

@@ -23,31 +23,31 @@ import java.util.UUID;
 @RequestMapping("/api/v1/persons")
 public class PersonController {
 
-    private final PersonService serviceV2;
+    private final PersonService personService;
 
     @GetMapping
     public ResponseEntity<List<PersonResponseDto>> getAllPersons() {
-        return ResponseEntity.ok(serviceV2.getAllPersons());
+        return ResponseEntity.ok(personService.list());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PersonResponseDto> getPersonById(@PathVariable UUID id) {
-        return ResponseEntity.ok(serviceV2.getPersonById(id));
+        return ResponseEntity.ok(personService.getById(id));
     }
 
     @PostMapping
     public ResponseEntity<PersonResponseDto> createPerson(@RequestBody PersonCreateDto dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(serviceV2.createPerson(dto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(personService.create(dto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePersonById(@PathVariable UUID id) {
-        serviceV2.deletePersonById(id);
+        personService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<PersonResponseDto> putPerson(@PathVariable UUID id, @RequestBody PersonCreateDto dto) {
-        return ResponseEntity.ok(serviceV2.fullUpdatePerson(id, dto));
+        return ResponseEntity.ok(personService.update(id, dto));
     }
 }
