@@ -8,5 +8,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class CbrApiProperties {
     private final String baseUrl;
     private final String dailyEndpoint;
-    private final Integer timeout;
+    private final Long timeout;
 }
