@@ -23,7 +23,7 @@ public class CbrDailyResponse {
     private OffsetDateTime timestamp;
 
     @JsonProperty("Valute")
-    private Map<String, Valute> valute;
+    private Map<String, Valute> valutes;
 
     @Data
     public static class Valute {

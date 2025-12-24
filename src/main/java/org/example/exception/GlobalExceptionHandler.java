@@ -41,6 +41,13 @@ public class GlobalExceptionHandler {
                 .body(buildErrorResponse(HttpStatus.BAD_REQUEST, illegalArgumentException.getMessage()));
     }
 
+    @ExceptionHandler(CurrencyNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCurrencyNotFoundException(CurrencyNotFoundException currencyNFE) {
+        log.warn("Валюта не найдена", currencyNFE);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(buildErrorResponse(HttpStatus.NOT_FOUND, currencyNFE.getMessage()));
+    }
+
     @ExceptionHandler(CbrApiException.class)
     public ResponseEntity<ErrorResponse> handleCbrApiException(CbrApiException cbrApiException) {
         log.error("Ошибка при работе с CbrApi", cbrApiException);

@@ -28,7 +28,7 @@ public class CbrApiClient {
                 .build();
         try (Response response = client.newCall(request).execute()) {
             if (response.code() == 503) {
-                throw new CbrApiException("CbrApi is not available");
+                throw new CbrApiException("CbrApi is not available (code: " + response.code() + ")");
             }
             ResponseBody body = response.body();
             if (body == null) {
