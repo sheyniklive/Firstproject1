@@ -41,6 +41,13 @@ public class GlobalExceptionHandler {
                 .body(buildErrorResponse(HttpStatus.BAD_REQUEST, illegalArgumentException.getMessage()));
     }
 
+    @ExceptionHandler(CbrApiException.class)
+    public ResponseEntity<ErrorResponse> handleCbrApiException(CbrApiException cbrApiException) {
+        log.error("Ошибка при работе с CbrApi", cbrApiException);
+        return ResponseEntity.internalServerError()
+                .body(buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, cbrApiException.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception e) {
         log.error("Ошибка сервера", e);
