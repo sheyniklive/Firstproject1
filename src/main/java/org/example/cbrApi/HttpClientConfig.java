@@ -11,7 +11,7 @@ public class HttpClientConfig {
 
     @Bean
     public OkHttpClient createClient(CbrApiProperties cbrApiProperties){
-        return new OkHttpClient().newBuilder()
+        return new OkHttpClient.Builder()
                 .connectTimeout(cbrApiProperties.getTimeout(), TimeUnit.MILLISECONDS)
                 .readTimeout(cbrApiProperties.getTimeout(), TimeUnit.MILLISECONDS)
                 .writeTimeout(cbrApiProperties.getTimeout(), TimeUnit.MILLISECONDS)

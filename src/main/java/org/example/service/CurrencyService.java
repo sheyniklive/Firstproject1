@@ -3,11 +3,16 @@ package org.example.service;
 import lombok.RequiredArgsConstructor;
 import org.example.cbrApi.CbrApiClient;
 import org.example.cbrApi.CbrApiMapper;
-import org.example.dto.*;
+import org.example.dto.CbrApiConvertRequest;
+import org.example.dto.CbrApiConvertResponse;
+import org.example.dto.CbrApiGetAllResponse;
+import org.example.dto.CbrApiGetByCodeResponse;
+import org.example.dto.CbrDailyResponse;
 import org.example.exception.CurrencyNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 @Service
@@ -33,19 +38,24 @@ public class CurrencyService {
         if (request.getAmountInRubles().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Сумма в рублях <= 0 (" + request.getAmountInRubles() + ")");
         }
-        if (request.getTargetCurrency().isEmpty()) {
+        if (request.getTargetCurrency() == null || request.getTargetCurrency().isEmpty()) {
             throw new IllegalArgumentException("Передан неверный код валюты - " + request.getTargetCurrency());
         }
-
         CbrDailyResponse.Valute valute = getValuteByCode(request.getTargetCurrency(), cbrResponse);
 
-        CbrApiConvertResponse response = new CbrApiConvertResponse();
-        response.setFromCurrency("RUB");
-        response.setToCurrency(request.getTargetCurrency());
-        response.setAmountInRubles(request.getAmountInRubles());
-response.setConvertedAmount(converting());
-        response.setRate(valute.getValue());
-        response.setDate(cbrResponse.getDate().toLocalDate());
+        BigDecimal amountRubles = request.getAmountInRubles();
+        BigDecimal rate = valute.getValue();
+        Integer nominal = valute.getNominal();
+
+        BigDecimal convertedAmount = converting(amountRubles, rate, nominal);
+
+        return new CbrApiConvertResponse(
+                "RUB",
+                request.getTargetCurrency(),
+                amountRubles,
+                convertedAmount,
+                rate,
+                cbrResponse.getDate().toLocalDate());
 
 
     }
@@ -58,7 +68,8 @@ response.setConvertedAmount(converting());
         return valute;
     }
 
-    private BigDecimal converting() {
-
+    private BigDecimal converting(BigDecimal amountRubles, BigDecimal rate, Integer nominal) {
+        return amountRubles.multiply(BigDecimal.valueOf(nominal))
+                .divide(rate, 2, RoundingMode.HALF_UP);
     }
 }

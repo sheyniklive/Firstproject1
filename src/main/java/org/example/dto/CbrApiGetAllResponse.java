@@ -6,13 +6,14 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
 @Data
 public class CbrApiGetAllResponse {
     private LocalDate date;
-    private List<Rate> rates;
+    private List<Rate> rates = new ArrayList<>();
 
     @NoArgsConstructor
     @Data

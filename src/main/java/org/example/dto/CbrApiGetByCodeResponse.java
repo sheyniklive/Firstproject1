@@ -1,10 +1,12 @@
 package org.example.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@NoArgsConstructor
 @Data
 public class CbrApiGetByCodeResponse {
     private String currencyCode;
