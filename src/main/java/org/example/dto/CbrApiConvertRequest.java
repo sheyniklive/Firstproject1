@@ -2,20 +2,19 @@ package org.example.dto;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
 
 @AllArgsConstructor
 @Data
-@Validated
 public class CbrApiConvertRequest {
 
-    @NotBlank(message = "Сумма не может быть пустой")//определиться
-    @DecimalMin(value = "0.01", message = "Сумма должна быть больше 0")
+    @NotNull(message = "Сумма не может быть пустой")//определиться
+    @DecimalMin(value = "0.0", inclusive = false, message = "Сумма должна быть больше 0")
     private BigDecimal amountInRubles;
 
     @NotBlank(message = "Код валюты не может быть пустым")//тоже
