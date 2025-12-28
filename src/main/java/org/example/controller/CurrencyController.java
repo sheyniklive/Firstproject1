@@ -29,7 +29,7 @@ public class CurrencyController {
     public ResponseEntity<CbrApiGetByCodeResponse> getByCode(@NotBlank(message = "Код валюты не может быть пустым")
                                                              @Size(min = 3, max = 3, message = "Код валюты должен состоять из 3-х букв")
                                                              @PathVariable String currencyCode) {
-        return ResponseEntity.ok(currencyService.getByCode(currencyCode));
+        return ResponseEntity.ok(currencyService.getByCode(currencyCode.toUpperCase()));
     }
 
     @PostMapping("/convert")
