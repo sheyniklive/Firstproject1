@@ -16,4 +16,9 @@ spring:
       hibernate:
         format_sql: true
         use_sql_comments: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+cbr:
+  api:
+    base-url: https://www.cbr-xml-daily.ru
+    daily-endpoint: /daily_json.js
+    timeout: 10000
