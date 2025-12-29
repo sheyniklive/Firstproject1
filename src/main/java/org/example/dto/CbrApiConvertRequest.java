@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 public class CbrApiConvertRequest {
 
     @NotNull(message = "Сумма не может быть пустой")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Сумма должна быть больше 0")
+    @DecimalMin(value = "0", inclusive = false, message = "Сумма должна быть больше 0")
     private BigDecimal amountInRubles;
 
     @NotBlank(message = "Код валюты не может быть пустым")
