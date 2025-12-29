@@ -18,6 +18,6 @@ public class CbrApiConvertRequest {
     private BigDecimal amountInRubles;
 
     @NotBlank(message = "Код валюты не может быть пустым")
-    @Size(min = 3, max = 3, message = "Код валюты должен состоять из 3-х букв")
+    @Size(min = 3, max = 3, message = "Код валюты должен состоять из 3-х букв верхнего регистра")
     private String targetCurrency;
 }
