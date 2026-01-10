@@ -1,7 +1,7 @@
 package org.example.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.CbrFeignClient.CbrFeignClient;
+import org.example.client.cbr.CbrFeignClient;
 import org.example.mappers.CbrApiMapper;
 import org.example.dto.CbrApiConvertRequest;
 import org.example.dto.CbrApiConvertResponse;

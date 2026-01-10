@@ -21,7 +21,7 @@ spring:
     openfeign:
       client:
         config:
-          default:
+          client-cbr:
             connect-timeout: 5000
             read-timeout: 10000
             logger-level: full
@@ -30,3 +30,7 @@ cbr:
   api:
     base-url: https://www.cbr-xml-daily.ru
     daily-endpoint: /daily_json.js
+
+logging:
+  level:
+    org.example: debug

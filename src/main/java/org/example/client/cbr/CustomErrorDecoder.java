@@ -1,4 +1,4 @@
-package org.example.CbrFeignClient;
+package org.example.client.cbr;
 
 import feign.FeignException;
 import feign.Response;
