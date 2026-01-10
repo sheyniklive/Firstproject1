@@ -1,7 +1,11 @@
-package org.example.pet;
+package org.example.mappers;
 
 import org.example.dto.PetCreateDto;
 import org.example.dto.PetResponseDto;
+import org.example.pet.Cat;
+import org.example.pet.Dog;
+import org.example.pet.Goose;
+import org.example.pet.Pet;
 
 public class PetApiMapper {
 

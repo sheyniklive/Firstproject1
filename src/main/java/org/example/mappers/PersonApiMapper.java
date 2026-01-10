@@ -1,7 +1,8 @@
-package org.example.person;
+package org.example.mappers;
 
 import org.example.dto.PersonCreateDto;
 import org.example.dto.PersonResponseDto;
+import org.example.person.Person;
 
 import java.util.ArrayList;
 

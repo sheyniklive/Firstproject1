@@ -1,6 +1,10 @@
-package org.example.pet;
+package org.example.mappers;
 
 import org.example.entity.PetEntity;
+import org.example.pet.Cat;
+import org.example.pet.Dog;
+import org.example.pet.Goose;
+import org.example.pet.Pet;
 import org.example.pet.enums.PetType;
 
 public class PetEntityMapper {

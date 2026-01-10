@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.entity.PersonEntity;
 import org.example.exception.PersonNotFoundException;
 import org.example.person.Person;
-import org.example.person.PersonEntityMapper;
+import org.example.mappers.PersonEntityMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -9,6 +9,4 @@ public interface CbrFeignClient {
 
     @GetMapping
     CbrDailyResponse getDailyRates();
-
-
 }

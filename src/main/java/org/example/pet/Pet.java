@@ -3,10 +3,6 @@ package org.example.pet;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.example.pet.enums.PetType;
 
 import java.util.UUID;
@@ -29,50 +25,5 @@ public interface Pet {
 
     UUID getOwnerId();
 
-}
-
-@AllArgsConstructor
-@RequiredArgsConstructor
-@Data
-@Slf4j
-class Cat implements Pet {
-    private Long id;
-    private final String name;
-    private UUID ownerId;
-
-    @Override
-    public PetType getType() {
-        return PetType.CAT;
-    }
-}
-
-@AllArgsConstructor
-@RequiredArgsConstructor
-@Data
-@Slf4j
-class Dog implements Pet {
-    private Long id;
-    private final String name;
-    private UUID ownerId;
-
-    @Override
-    public PetType getType() {
-        return PetType.DOG;
-    }
-}
-
-@AllArgsConstructor
-@RequiredArgsConstructor
-@Data
-@Slf4j
-class Goose implements Pet {
-    private Long id;
-    private final String name;
-    private UUID ownerId;
-
-    @Override
-    public PetType getType() {
-        return PetType.GOOSE;
-    }
 }
 
