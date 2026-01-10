@@ -22,7 +22,6 @@
         <spring-cloud.version>2024.0.2</spring-cloud.version>
         <logback.version>1.5.19</logback.version>
         <tomcat.version>10.1.47</tomcat.version>
-        <okhttp.version>4.12.0</okhttp.version>
     </properties>
 
     <dependencyManagement>
@@ -63,12 +62,6 @@
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
             <version>1.6.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>okhttp</artifactId>
-            <version>${okhttp.version}</version>
         </dependency>
 
         <dependency>
