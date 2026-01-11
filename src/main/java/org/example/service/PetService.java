@@ -8,7 +8,7 @@ import org.example.exception.InvalidOwnershipException;
 import org.example.exception.PersonNotFoundException;
 import org.example.exception.PetNotFoundException;
 import org.example.pet.Pet;
-import org.example.pet.PetApiMapper;
+import org.example.mappers.PetApiMapper;
 import org.example.repository.PersonRepository;
 import org.example.repository.PetRepository;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
-package org.example.person;
+package org.example.mappers;
 
 import org.example.entity.PersonEntity;
-import org.example.pet.PetEntityMapper;
+import org.example.person.Person;
 
 import java.util.ArrayList;
 

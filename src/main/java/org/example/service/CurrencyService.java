@@ -1,8 +1,8 @@
 package org.example.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.cbrApi.CbrApiClient;
-import org.example.cbrApi.CbrApiMapper;
+import org.example.cbr.Proxy;
+import org.example.mappers.CbrApiMapper;
 import org.example.dto.CbrApiConvertRequest;
 import org.example.dto.CbrApiConvertResponse;
 import org.example.dto.CbrApiGetAllResponse;
@@ -18,22 +18,22 @@ import java.time.LocalDate;
 @Service
 @RequiredArgsConstructor
 public class CurrencyService {
-    private final CbrApiClient cbrApiClient;
+    private final Proxy proxy;
 
     public CbrApiGetAllResponse list() {
-        CbrDailyResponse cbrResponse = cbrApiClient.getDailyRates();
+        CbrDailyResponse cbrResponse = proxy.getDailyRates();
         return CbrApiMapper.toGetAllResponse(cbrResponse);
     }
 
     public CbrApiGetByCodeResponse getByCode(String currencyCode) {
-        CbrDailyResponse cbrResponse = cbrApiClient.getDailyRates();
+        CbrDailyResponse cbrResponse = proxy.getDailyRates();
         LocalDate date = cbrResponse.getDate().toLocalDate();
         CbrDailyResponse.Valute valute = getValuteByCode(currencyCode, cbrResponse);
         return CbrApiMapper.toGetByCodeResponse(valute, date);
     }
 
     public CbrApiConvertResponse convert(CbrApiConvertRequest request) {
-        CbrDailyResponse cbrResponse = cbrApiClient.getDailyRates();
+        CbrDailyResponse cbrResponse = proxy.getDailyRates();
 
         if (request.getAmountInRubles().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Сумма в рублях <= 0 (" + request.getAmountInRubles() + ")");

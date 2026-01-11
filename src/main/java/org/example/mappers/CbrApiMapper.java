@@ -1,4 +1,4 @@
-package org.example.cbrApi;
+package org.example.mappers;
 
 import org.example.dto.CbrApiGetAllResponse;
 import org.example.dto.CbrApiGetByCodeResponse;

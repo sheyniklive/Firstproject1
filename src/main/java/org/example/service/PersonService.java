@@ -6,7 +6,7 @@ import org.example.dto.PersonCreateDto;
 import org.example.dto.PersonResponseDto;
 import org.example.exception.PersonNotFoundException;
 import org.example.person.Person;
-import org.example.person.PersonApiMapper;
+import org.example.mappers.PersonApiMapper;
 import org.example.repository.PersonRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
