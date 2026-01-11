@@ -21,7 +21,7 @@ spring:
     openfeign:
       client:
         config:
-          client-cbr:
+          cbr:
             connect-timeout: 5000
             read-timeout: 10000
             logger-level: full

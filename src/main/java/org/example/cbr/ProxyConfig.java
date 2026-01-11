@@ -1,4 +1,4 @@
-package org.example.client.cbr;
+package org.example.cbr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Retryer;
@@ -14,7 +14,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 
 import java.util.List;
 
-public class FeignConfig {
+public class ProxyConfig {
 
     @Bean
     public Decoder feignDecoder(ObjectMapper objectMapper) {
