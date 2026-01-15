@@ -31,7 +31,7 @@ public class PetEntity {
     private Long id;
     @Column(name = "name", nullable = false, length = 100)
     private String name;
-    @Column(name = "type", nullable = false, length = 10)
+    @Column(name = "pet_type", nullable = false, length = 10)
     @Enumerated(EnumType.STRING)
     private PetType type;
     @ManyToOne(fetch = FetchType.LAZY)
