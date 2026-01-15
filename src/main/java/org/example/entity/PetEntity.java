@@ -37,5 +37,4 @@ public class PetEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", nullable = false)
     private PersonEntity owner;
-
 }
