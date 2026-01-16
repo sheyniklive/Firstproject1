@@ -31,6 +31,8 @@ public class PersonEntity {
     private String surname;
     @Column(name = "age", nullable = false)
     private Integer age;
+    @Column(name = "email", length = 100)
+    private String email;
     @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<PetEntity> pets = new HashSet<>();
 

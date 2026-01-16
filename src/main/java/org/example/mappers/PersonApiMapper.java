@@ -12,11 +12,16 @@ public class PersonApiMapper {
         if (dto == null) {
             return null;
         }
+        String email = null;
+        if (dto.getEmail() != null) {
+            email = dto.getEmail();
+        }
         return new Person(
                 null,
                 dto.getName(),
                 dto.getSurname(),
                 dto.getAge(),
+                email,
                 new ArrayList<>());
     }
 
@@ -28,6 +33,7 @@ public class PersonApiMapper {
                 person.getId(),
                 person.getName(),
                 person.getSurname(),
-                person.getAge());
+                person.getAge(),
+                person.getEmail());
     }
 }
