@@ -18,6 +18,7 @@ public class PersonEntityMapper {
         entity.setName(person.getName());
         entity.setSurname(person.getSurname());
         entity.setAge(person.getAge());
+        entity.setEmail(person.getEmail());
 
         if (person.getPets() != null && !person.getPets().isEmpty()) {
             person.getPets().stream()
@@ -36,6 +37,7 @@ public class PersonEntityMapper {
         person.setName(entity.getName());
         person.setSurname(entity.getSurname());
         person.setAge(entity.getAge());
+        person.setEmail(entity.getEmail());
         person.setPets(new ArrayList<>());
         return person;
     }
