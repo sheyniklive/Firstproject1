@@ -42,7 +42,7 @@ class PetApiMapperTest {
     }
 
     @Test
-    @DisplayName("toDomain: на null возвращвет null")
+    @DisplayName("toDomain: на null возвращает null")
     void toDomain_shouldReturnNull_whenDtoIsNull() {
         assertThat(PetApiMapper.toDomain(null)).isNull();
     }
@@ -63,7 +63,7 @@ class PetApiMapperTest {
     }
 
     @Test
-    @DisplayName("toResponse: на null возвращвет null")
+    @DisplayName("toResponse: на null возвращает null")
     void toResponse_shouldReturnNull_whenPetIsNull() {
         assertThat(PetApiMapper.toResponse(null)).isNull();
     }

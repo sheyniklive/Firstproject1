@@ -30,7 +30,7 @@ class PersonApiMapperTest {
     }
 
     @Test
-    @DisplayName("toDomain: на null возвращвет null")
+    @DisplayName("toDomain: на null возвращает null")
     void toDomain_shouldReturnNull_whenDtoIsNull() {
         Person person = PersonApiMapper.toDomain(null);
 
@@ -54,7 +54,7 @@ class PersonApiMapperTest {
     }
 
     @Test
-    @DisplayName("toResponse: на null возвращвет null")
+    @DisplayName("toResponse: на null возвращает null")
     void toResponse_shouldReturnNull_whenPersonIsNull() {
         PersonResponseDto personResponseDto = PersonApiMapper.toResponse(null);
 
