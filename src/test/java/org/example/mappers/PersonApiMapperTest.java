@@ -21,10 +21,10 @@ class PersonApiMapperTest {
         Person person = PersonApiMapper.toDomain(personCreateDto);
 
         assertThat(person).isNotNull();
-        assertThat(person.getName()).isEqualTo(personCreateDto.getName());
-        assertThat(person.getSurname()).isEqualTo(personCreateDto.getSurname());
-        assertThat(person.getAge()).isEqualTo(personCreateDto.getAge());
-        assertThat(person.getEmail()).isEqualTo(personCreateDto.getEmail());
+        assertThat(person.getName()).isEqualTo("Биба");
+        assertThat(person.getSurname()).isEqualTo("Боба");
+        assertThat(person.getAge()).isEqualTo(2);
+        assertThat(person.getEmail()).isEqualTo("horoshihcheloveka@mail.ru");
         assertThat(person.getId()).isNull();
         assertThat(person.getPets()).isEmpty();
     }
@@ -40,16 +40,17 @@ class PersonApiMapperTest {
     @Test
     @DisplayName("toResponse: маппит все поля из Person в DTO")
     void toResponse_shouldMapAllFields() {
-        Person person = new Person(UUID.randomUUID(), "Веня", "Дизельков", 3, "forsag@mail.ru", new ArrayList<>());
+        UUID id = UUID.randomUUID();
+        Person person = new Person(id, "Веня", "Дизельков", 3, "forsag@mail.ru", new ArrayList<>());
 
         PersonResponseDto personResponseDto = PersonApiMapper.toResponse(person);
 
         assertThat(personResponseDto).isNotNull();
-        assertThat(personResponseDto.getId()).isEqualTo(person.getId());
-        assertThat(personResponseDto.getName()).isEqualTo(person.getName());
-        assertThat(personResponseDto.getSurname()).isEqualTo(person.getSurname());
-        assertThat(personResponseDto.getAge()).isEqualTo(person.getAge());
-        assertThat(personResponseDto.getEmail()).isEqualTo(person.getEmail());
+        assertThat(personResponseDto.getId()).isEqualTo(id);
+        assertThat(personResponseDto.getName()).isEqualTo("Веня");
+        assertThat(personResponseDto.getSurname()).isEqualTo("Дизельков");
+        assertThat(personResponseDto.getAge()).isEqualTo(3);
+        assertThat(personResponseDto.getEmail()).isEqualTo("forsag@mail.ru");
     }
 
     @Test
