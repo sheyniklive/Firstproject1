@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,7 +32,7 @@ class CbrApiMapperTest {
     void toGetAllResponse_shouldMapDateAndFields() {
         CbrDailyResponse daily = new CbrDailyResponse();
         daily.setDate(OffsetDateTime.of(2026, 7, 1, 12, 0, 0, 0, ZoneOffset.UTC));
-        Map<String, CbrDailyResponse.Valute> valutes = new HashMap<>();
+        Map<String, CbrDailyResponse.Valute> valutes = new LinkedHashMap<>();
         valutes.put("USD", valute("USD", "Доллар США", 1, "75.5000", "75.1000"));
         daily.setValutes(valutes);
 
@@ -55,7 +55,7 @@ class CbrApiMapperTest {
     void toGetAllResponse_shouldMapAllValutes() {
         CbrDailyResponse daily = new CbrDailyResponse();
         daily.setDate(OffsetDateTime.of(2026, 7, 1, 12, 0, 0, 0, ZoneOffset.UTC));
-        Map<String, CbrDailyResponse.Valute> valutes = new HashMap<>();
+        Map<String, CbrDailyResponse.Valute> valutes = new LinkedHashMap<>();
         valutes.put("USD", valute("USD", "Доллар США", 1, "75.5", "75.1"));
         valutes.put("EUR", valute("EUR", "Евро", 1, "82.3", "82.0"));
         daily.setValutes(valutes);
