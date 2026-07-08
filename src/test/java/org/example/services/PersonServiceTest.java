@@ -2,6 +2,7 @@ package org.example.services;
 
 import org.example.dto.PersonCreateDto;
 import org.example.dto.PersonResponseDto;
+import org.example.exception.PersonNotFoundException;
 import org.example.person.Person;
 import org.example.repository.PersonRepository;
 import org.example.service.PersonService;
@@ -14,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -76,8 +78,37 @@ class PersonServiceTest {
         verify(repo).findByIdOrThrow(id);
     }
 
+    @Test
+    @DisplayName("getById: пробрасывает PersonNotFoundException из репозитория")
+    void getById_shouldPropagatePNF() {
+        UUID id = UUID.randomUUID();
+        when(repo.findByIdOrThrow(id)).thenThrow(new PersonNotFoundException(id));
 
+        assertThatThrownBy(() -> service.getById(id))
+        .isInstanceOf(PersonNotFoundException.class);
+    }
 
+    @Test
+    @DisplayName("list: маппит всех людей в ответы")
+    void list_shouldMapAll() {
+        Person p1 = new Person(UUID.randomUUID(), "Иван", "Петров", 30, "i@mail.ru", new ArrayList<>());
+        Person p2 = new Person(UUID.randomUUID(), "Пётр", "Иванов", 40, "p@mail.ru", new ArrayList<>());
+        when(repo.findAll()).thenReturn(List.of(p1, p2));
+
+        List<PersonResponseDto> result = service.list();
+
+        assertThat(result)
+                .hasSize(2)
+                .extracting(PersonResponseDto::getName)
+                .containsExactly("Иван", "Пётр");
+    }
+
+    @Test
+    @DisplayName("list: пустой список отдаёт как пустой")
+    void list_shouldReturnEmpty_whenNoPersons() {
+        when(repo.findAll()).thenReturn(List.of());
+        assertThat(service.list()).isEmpty();
+    }
 
 
 }
