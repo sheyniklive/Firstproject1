@@ -28,5 +28,4 @@ class PetServiceTest {
     @Captor
     ArgumentCaptor<List<Pet>> captor;
 
-
 }
