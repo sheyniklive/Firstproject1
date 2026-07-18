@@ -2,6 +2,7 @@ package org.example.services;
 
 import org.example.dto.PetCreateDto;
 import org.example.dto.PetResponseDto;
+import org.example.exception.PersonNotFoundException;
 import org.example.pet.Cat;
 import org.example.pet.Dog;
 import org.example.pet.Pet;
@@ -12,12 +13,7 @@ import org.example.service.PetService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InOrder;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -27,8 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PetServiceTest {
@@ -108,6 +103,56 @@ class PetServiceTest {
         inOrder.verify(personRepo).existsById(ownerId);
         inOrder.verify(petRepo).findByOwnerId(ownerId);
     }
+
+    @Test
+    @DisplayName("list: если владельца нет — PersonNotFoundException и без запроса питомцев")
+    void list_shouldThrowPNF_whenOwnerMissing() {
+        UUID ownerId = UUID.randomUUID();
+        when(personRepo.existsById(ownerId)).thenReturn(false);
+
+        assertThatThrownBy(() -> petService.list(ownerId))
+                .isInstanceOf(PersonNotFoundException.class);
+
+        verifyNoInteractions(petRepo);
+    }
+
+    @Test
+    @DisplayName("deleteAll: при существующем владельце удаляет всех питомцев")
+    void deleteAll_shouldDelete_whenOwnerAndPetsExists() {
+        UUID ownerId = UUID.randomUUID();
+        when(personRepo.existsById(ownerId)).thenReturn(true);
+        when(petRepo.deleteAllByOwnerId(ownerId)).thenReturn(3);
+
+        petService.deleteAll(ownerId);
+
+        verify(petRepo).deleteAllByOwnerId(ownerId);
+    }
+
+    @Test
+    @DisplayName("deleteAll: если питомцев не было (0 удалено) — не падает")
+    void deleteAll_shouldNotThrow_whenNothingDeleted() {
+        UUID ownerId = UUID.randomUUID();
+        when(personRepo.existsById(ownerId)).thenReturn(true);
+        when(petRepo.deleteAllByOwnerId(ownerId)).thenReturn(0);
+
+        petService.deleteAll(ownerId);
+
+        verify(petRepo).deleteAllByOwnerId(ownerId);
+    }
+
+    @Test
+    @DisplayName("deleteAll: если владельца нет — PersonNotFoundException и без удаления")
+    void deleteAll_shouldThrow_whenOwnerMissing() {
+        UUID ownerId = UUID.randomUUID();
+        when(personRepo.existsById(ownerId)).thenReturn(false);
+
+        assertThatThrownBy(() -> petService.deleteAll(ownerId))
+                .isInstanceOf(PersonNotFoundException.class);
+
+        verify(petRepo, never()).deleteAllByOwnerId(any());
+    }
+
+
 
 
 }
