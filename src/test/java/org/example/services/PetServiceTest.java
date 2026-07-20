@@ -2,7 +2,9 @@ package org.example.services;
 
 import org.example.dto.PetCreateDto;
 import org.example.dto.PetResponseDto;
+import org.example.exception.InvalidOwnershipException;
 import org.example.exception.PersonNotFoundException;
+import org.example.exception.PetNotFoundException;
 import org.example.pet.Cat;
 import org.example.pet.Dog;
 import org.example.pet.Pet;
@@ -152,7 +154,57 @@ class PetServiceTest {
         verify(petRepo, never()).deleteAllByOwnerId(any());
     }
 
+    @Test
+    @DisplayName("delete: успешное удаление своего питомца")
+    void delete_shouldSucceed_whenPetDeleted() {
+        UUID ownerId = UUID.randomUUID();
+        Long petId = 7L;
+        when(personRepo.existsById(ownerId)).thenReturn(true);
+        when(petRepo.deleteByOwnerIdAndId(ownerId, petId)).thenReturn(1);
 
+        petService.deleteByOwnerIdAndId(ownerId, petId);
+
+        verify(petRepo).deleteByOwnerIdAndId(ownerId, petId);
+    }
+
+    @Test
+    @DisplayName("delete: владельца нет — PersonNotFoundException, до удаления не доходит")
+    void delete_shouldThrow_whenOwnerMissing() {
+        UUID ownerId = UUID.randomUUID();
+        Long petId = 7L;
+        when(personRepo.existsById(ownerId)).thenReturn(false);
+
+        assertThatThrownBy(() -> petService.deleteByOwnerIdAndId(ownerId, petId))
+                .isInstanceOf(PersonNotFoundException.class);
+
+        verify(petRepo, never()).deleteByOwnerIdAndId(any(), anyLong());
+    }
+
+    @Test
+    @DisplayName("delete: удалено 0 и питомца нет вовсе — PetNotFoundException")
+    void delete_shouldThrow_whenPetDoesNotExist() {
+        UUID ownerId = UUID.randomUUID();
+        Long petId = 7L;
+        when(personRepo.existsById(ownerId)).thenReturn(true);
+        when(petRepo.deleteByOwnerIdAndId(ownerId, petId)).thenReturn(0);
+        when(petRepo.existsById(petId)).thenReturn(false);
+
+        assertThatThrownBy(() -> petService.deleteByOwnerIdAndId(ownerId, petId))
+                .isInstanceOf(PetNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("delete: удалено 0, но питомец есть (чужой) — InvalidOwnershipException")
+    void delete_shouldThrow_whenPetBelongsToAnother() {
+        UUID ownerId = UUID.randomUUID();
+        Long petId = 7L;
+        when(personRepo.existsById(ownerId)).thenReturn(true);
+        when(petRepo.deleteByOwnerIdAndId(ownerId, petId)).thenReturn(0);
+        when(petRepo.existsById(petId)).thenReturn(true);
+
+        assertThatThrownBy(() -> petService.deleteByOwnerIdAndId(ownerId, petId))
+                .isInstanceOf(InvalidOwnershipException.class);
+    }
 
 
 }
